@@ -2504,8 +2504,8 @@
     const c2 = document.getElementById('c2').value.trim();
     const c3 = document.getElementById('c3').value.trim();
 
-    if (uploadedImages.length === 0) { alert('Пожалуйста, загрузите скриншот диаграммы'); return; }
-    if (!c1) { alert('Укажите хотя бы одну жалобу клиента'); return; }
+    if (!c1) { alert('Укажите хотя бы одну жалобу или цель клиента'); return; }
+    if (uploadedImages.length === 0 && !c1) { alert('Загрузите диаграмму или укажите цель клиента'); return; }
     if (!checkTestLimit()) return;
 
     const stage        = document.querySelector('input[name="stage"]:checked')?.value || 'first_contact';
