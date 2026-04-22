@@ -1679,6 +1679,261 @@
     body.light .chat-input-row input { background: #fff8f0; border-color: #d4b890; color: #1a0f07; }
     body.light .chat-input-row input::placeholder { color: #c4a07a; }
     body.light .chat-input-row input:focus { border-color: #b8860b; }
+
+    /* ══════════════════════════════════════
+       ВКЛАДКА КЛИЕНТЫ
+       ══════════════════════════════════════ */
+
+    .clients-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .clients-header h2 { font-size: 1.1rem; font-weight: 700; }
+
+    .btn-new-client {
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-new-client:hover { background: #e85d2a; }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .client-card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .client-card:hover { border-color: #ff6b35; }
+
+    .client-card-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: #f0f0f0;
+    }
+
+    .client-card-meta {
+      font-size: 0.78rem;
+      color: #777;
+      margin-bottom: 0.6rem;
+    }
+
+    .client-card-sessions {
+      font-size: 0.78rem;
+      color: #aaa;
+    }
+
+    .client-card-sessions span {
+      background: #333;
+      border-radius: 20px;
+      padding: 0.15rem 0.6rem;
+      margin-right: 0.4rem;
+    }
+
+    .clients-empty {
+      text-align: center;
+      color: #555;
+      padding: 3rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* ── Модал создания клиента ── */
+    .client-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .client-modal-overlay.open { display: flex; }
+
+    .client-modal {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .client-modal h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+
+    .client-modal .field-group { margin-bottom: 0.85rem; }
+
+    .client-modal label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #999;
+      margin-bottom: 0.3rem;
+    }
+
+    .client-modal input,
+    .client-modal select,
+    .client-modal textarea {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      color: #f0f0f0;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .client-modal input:focus,
+    .client-modal select:focus,
+    .client-modal textarea:focus { border-color: #ff6b35; }
+    .client-modal textarea { resize: vertical; min-height: 70px; }
+
+    .client-modal-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .client-modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .btn-modal-save {
+      flex: 1;
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-modal-save:hover { background: #e85d2a; }
+    .btn-modal-save:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-modal-cancel {
+      background: #333;
+      color: #aaa;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.1rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-modal-cancel:hover { background: #3a3a3a; }
+
+    /* ── Карточка клиента (детальный вид) ── */
+    .client-detail-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    .client-detail-overlay.open { display: flex; }
+
+    .client-detail {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .client-detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+
+    .client-detail-name { font-size: 1.15rem; font-weight: 700; }
+    .client-detail-meta { font-size: 0.8rem; color: #777; margin-top: 0.2rem; }
+
+    .btn-close-detail {
+      background: none;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #aaa;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .btn-close-detail:hover { border-color: #666; color: #f0f0f0; }
+
+    .sessions-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .session-item {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .session-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .session-date { font-size: 0.8rem; font-weight: 600; color: #ff6b35; }
+    .session-type { font-size: 0.72rem; color: #666; }
+    .session-complaints { font-size: 0.82rem; color: #bbb; }
+
+    .btn-delete-client {
+      background: none;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #777;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-top: 1.25rem;
+      transition: all 0.2s;
+    }
+    .btn-delete-client:hover { border-color: #c0392b; color: #c0392b; }
+
   </style>
 </head>
 <body>
@@ -1774,6 +2029,9 @@
         </button>
         <button class="tab-btn" onclick="switchTab('stats')">
           <span class="tab-icon">📊</span> Статистика
+        </button>
+        <button class="tab-btn" onclick="switchTab('clients')">
+          <span class="tab-icon">👥</span> Клиенты
         </button>
       </div>
     </nav>
@@ -1989,8 +2247,75 @@
           <div id="stats-content"></div>
         </div>
 
+        <!-- ════════════════════════════════════════
+             ВКЛАДКА 4: КЛИЕНТЫ
+             ════════════════════════════════════════ -->
+        <div class="tab-panel" id="panel-clients">
+          <div class="clients-header">
+            <h2>Мои клиенты</h2>
+            <button class="btn-new-client" onclick="openCreateClientModal()">+ Новый клиент</button>
+          </div>
+          <div id="clients-list-container">
+            <div class="clients-empty">Загрузка...</div>
+          </div>
+        </div>
+
       </div>
     </main>
+
+    <!-- ── Модал: создать клиента ── -->
+    <div class="client-modal-overlay" id="create-client-modal">
+      <div class="client-modal">
+        <h3>Новый клиент</h3>
+        <div class="field-group">
+          <label>Имя *</label>
+          <input type="text" id="new-client-name" placeholder="Например: Анна К.">
+        </div>
+        <div class="client-modal-row">
+          <div class="field-group">
+            <label>Возраст</label>
+            <input type="number" id="new-client-age" placeholder="45" min="1" max="120">
+          </div>
+          <div class="field-group">
+            <label>Пол</label>
+            <select id="new-client-gender">
+              <option value="">— не указан —</option>
+              <option value="female">Женский</option>
+              <option value="male">Мужской</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Телефон</label>
+          <input type="text" id="new-client-phone" placeholder="+7 000 000-00-00">
+        </div>
+        <div class="field-group">
+          <label>Заметки</label>
+          <textarea id="new-client-notes" placeholder="Любая важная информация..."></textarea>
+        </div>
+        <div id="create-client-error" style="color:#e74c3c;font-size:0.82rem;margin-top:0.5rem;display:none;"></div>
+        <div class="client-modal-actions">
+          <button class="btn-modal-cancel" onclick="closeCreateClientModal()">Отмена</button>
+          <button class="btn-modal-save" id="btn-create-client-save" onclick="createClient()">Создать</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Модал: карточка клиента ── -->
+    <div class="client-detail-overlay" id="client-detail-overlay">
+      <div class="client-detail">
+        <div class="client-detail-top">
+          <div>
+            <div class="client-detail-name" id="detail-name"></div>
+            <div class="client-detail-meta" id="detail-meta"></div>
+          </div>
+          <button class="btn-close-detail" onclick="closeClientDetail()">✕ Закрыть</button>
+        </div>
+        <div class="sessions-title">История сессий</div>
+        <div id="detail-sessions"></div>
+        <button class="btn-delete-client" onclick="deleteCurrentClient()">Удалить клиента</button>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -2136,11 +2461,12 @@
   // ════════════════════════════════════════
   function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', ['invite','decode','stats'][i] === name);
+      btn.classList.toggle('active', ['invite','decode','stats','clients'][i] === name);
     });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     if (name === 'stats') renderStats();
+    if (name === 'clients') loadClients();
   }
 
   // ════════════════════════════════════════
@@ -3448,6 +3774,175 @@
       }, 2000);
     });
   }
+
+  // ════════════════════════════════════════
+  // КЛИЕНТЫ (Vercel KV)
+  // ════════════════════════════════════════
+
+  let _currentClientId = null;
+
+  function clientsApiToken() {
+    return sessionStorage.getItem('auth_token') || '';
+  }
+
+  async function loadClients() {
+    const container = document.getElementById('clients-list-container');
+    container.innerHTML = '<div class="clients-empty">Загрузка...</div>';
+    try {
+      const res = await fetch(`/api/clients?action=list&token=${clientsApiToken()}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      renderClientsList(data.clients || []);
+    } catch (e) {
+      container.innerHTML = `<div class="clients-empty">Не удалось загрузить клиентов: ${e.message}</div>`;
+    }
+  }
+
+  function renderClientsList(clients) {
+    const container = document.getElementById('clients-list-container');
+    if (!clients.length) {
+      container.innerHTML = '<div class="clients-empty">Клиентов пока нет — нажмите «+ Новый клиент»</div>';
+      return;
+    }
+    const genderLabel = g => g === 'male' ? 'муж' : g === 'female' ? 'жен' : '';
+    container.innerHTML = `<div class="clients-grid">${clients.map(c => `
+      <div class="client-card" onclick="openClientDetail('${c.id}')">
+        <div class="client-card-name">${c.name}</div>
+        <div class="client-card-meta">${[c.age ? c.age + ' лет' : '', genderLabel(c.gender)].filter(Boolean).join(' · ')}</div>
+        <div class="client-card-sessions">
+          <span>Начало: ${c.created}</span>
+          ${c.lastSession ? `<span>Последняя сессия: ${c.lastSession}</span>` : ''}
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  function openCreateClientModal() {
+    document.getElementById('new-client-name').value = '';
+    document.getElementById('new-client-age').value = '';
+    document.getElementById('new-client-gender').value = '';
+    document.getElementById('new-client-phone').value = '';
+    document.getElementById('new-client-notes').value = '';
+    document.getElementById('create-client-error').style.display = 'none';
+    document.getElementById('create-client-modal').classList.add('open');
+    setTimeout(() => document.getElementById('new-client-name').focus(), 100);
+  }
+
+  function closeCreateClientModal() {
+    document.getElementById('create-client-modal').classList.remove('open');
+  }
+
+  async function createClient() {
+    const name = document.getElementById('new-client-name').value.trim();
+    const errEl = document.getElementById('create-client-error');
+    if (!name) {
+      errEl.textContent = 'Введите имя клиента';
+      errEl.style.display = 'block';
+      return;
+    }
+    const btn = document.getElementById('btn-create-client-save');
+    btn.disabled = true;
+    btn.textContent = 'Сохраняю...';
+    errEl.style.display = 'none';
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          token: clientsApiToken(),
+          name,
+          age: document.getElementById('new-client-age').value || '',
+          gender: document.getElementById('new-client-gender').value || '',
+          phone: document.getElementById('new-client-phone').value.trim(),
+          notes: document.getElementById('new-client-notes').value.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      closeCreateClientModal();
+      loadClients();
+    } catch (e) {
+      errEl.textContent = e.message;
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Создать';
+    }
+  }
+
+  async function openClientDetail(clientId) {
+    _currentClientId = clientId;
+    const overlay = document.getElementById('client-detail-overlay');
+    overlay.classList.add('open');
+    document.getElementById('detail-name').textContent = 'Загрузка...';
+    document.getElementById('detail-meta').textContent = '';
+    document.getElementById('detail-sessions').innerHTML = '';
+    try {
+      const res = await fetch(`/api/clients?action=get&id=${clientId}&token=${clientsApiToken()}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      const c = data.client;
+      const genderLabel = g => g === 'male' ? 'Мужской' : g === 'female' ? 'Женский' : '';
+      document.getElementById('detail-name').textContent = c.name;
+      document.getElementById('detail-meta').textContent = [
+        c.age ? c.age + ' лет' : '',
+        genderLabel(c.gender),
+        c.phone || ''
+      ].filter(Boolean).join(' · ');
+
+      const sessionsEl = document.getElementById('detail-sessions');
+      if (!c.sessions || !c.sessions.length) {
+        sessionsEl.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:0.5rem 0">Сессий пока нет</div>';
+      } else {
+        const typeLabel = t => t === 'medical' ? 'Мед. документы' : 'Трекер здоровья';
+        sessionsEl.innerHTML = [...c.sessions].reverse().map(s => `
+          <div class="session-item">
+            <div class="session-item-header">
+              <span class="session-date">${s.date}</span>
+              <span class="session-type">${typeLabel(s.type)}</span>
+            </div>
+            <div class="session-complaints">${s.complaints || '—'}</div>
+          </div>`).join('');
+      }
+      if (c.notes) {
+        document.getElementById('detail-sessions').insertAdjacentHTML('beforebegin',
+          `<div style="font-size:0.82rem;color:#888;margin-bottom:1rem;padding:0.6rem 0.85rem;background:#1e1e1e;border-radius:8px">${c.notes}</div>`);
+      }
+    } catch (e) {
+      document.getElementById('detail-name').textContent = 'Ошибка загрузки';
+    }
+  }
+
+  function closeClientDetail() {
+    document.getElementById('client-detail-overlay').classList.remove('open');
+    _currentClientId = null;
+  }
+
+  async function deleteCurrentClient() {
+    if (!_currentClientId) return;
+    if (!confirm('Удалить клиента? Это действие нельзя отменить.')) return;
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', token: clientsApiToken(), clientId: _currentClientId })
+      });
+      if (!res.ok) throw new Error('Ошибка удаления');
+      closeClientDetail();
+      loadClients();
+    } catch (e) {
+      alert('Не удалось удалить: ' + e.message);
+    }
+  }
+
+  // Закрытие модалов по клику на фон
+  document.getElementById('create-client-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeCreateClientModal();
+  });
+  document.getElementById('client-detail-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeClientDetail();
+  });
 </script>
 
   <!-- Модал завершения серии касаний -->
