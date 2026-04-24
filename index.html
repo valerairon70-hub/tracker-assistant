@@ -517,6 +517,9 @@
     .card-followup .result-card-header { border-left: 3px solid #ff6b35; }
     .card-tip      .result-card-header { border-left: 3px solid #f59e0b; }
 
+    /* ── Шаг 0: Квалификация (Kennedy) ── */
+    .card-qualification .result-card-header { border-left: 3px solid #a78bfa; }
+
     /* ── Серия касаний (Kennedy) ── */
     .card-touch1 .result-card-header { border-left: 3px solid #666; }
     .card-touch2 .result-card-header { border-left: 3px solid #f59e0b; }
@@ -2895,6 +2898,7 @@
       return m ? m[0].replace(new RegExp(`<\\/?${tag}>`,'g'),'').trim() : '';
     };
     return {
+      qualification: extract('квалификация'),
       touch1:   extract('касание_1'),
       touch2:   extract('касание_2'),
       touch3:   extract('касание_3'),
@@ -2926,7 +2930,18 @@
       { cls: 'card-seg-cold', icon: '❄️', title: 'Не интересует пока', when: 'Через 2-3 недели',   content: data.ifCold },
     ];
 
-    const touchHtml = `
+    const qualHtml = data.qualification ? `
+      <div class="result-card card-qualification" style="animation-delay:0s">
+        <div class="result-card-header">
+          <div class="card-title">🎯 Шаг 0 — Квалификация (до серии)</div>
+          <button class="btn-copy" onclick="copyText(this, \`${escBt(data.qualification)}\`)">Скопировать</button>
+        </div>
+        <div class="touch-meta" style="padding:0.4rem 1.1rem 0">Задай этот вопрос ДО первого касания</div>
+        <div class="result-card-body">${renderText(data.qualification)}</div>
+      </div>
+    ` : '';
+
+    const touchHtml = qualHtml + `
       <div class="section-divider">Серия касаний · метод Кеннеди</div>
       ${touches.map((t, i) => `
         <div class="result-card ${t.cls}" style="animation-delay:${i * 0.07}s">
