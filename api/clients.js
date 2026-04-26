@@ -208,6 +208,47 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true, status: client.status, nextActionDate: client.nextActionDate });
     }
 
+    // ── POST: добавить запись о контакте ──
+    if (action === 'add-contact') {
+      const { clientId, text } = req.body;
+      if (!clientId || !text?.trim()) return res.status(400).json({ error: 'Не указан clientId или text' });
+
+      const client = await kvGet(`client:${clientId}`);
+      if (!client) return res.status(404).json({ error: 'Клиент не найден' });
+
+      const contactId = generateId();
+      const now = new Date().toISOString().slice(0, 10);
+      const contact = { id: contactId, date: now, text: text.trim() };
+
+      if (!client.contacts) client.contacts = [];
+      client.contacts.push(contact);
+      await kvSet(`client:${clientId}`, client);
+
+      const index = await kvGet('clients:index') || [];
+      const entry = index.find(c => c.id === clientId);
+      if (entry) {
+        entry.lastContact = now;
+        entry.lastContactText = text.trim().slice(0, 80);
+        await kvSet('clients:index', index);
+      }
+
+      return res.status(200).json({ ok: true, contact });
+    }
+
+    // ── POST: удалить запись о контакте ──
+    if (action === 'delete-contact') {
+      const { clientId, contactId } = req.body;
+      if (!clientId || !contactId) return res.status(400).json({ error: 'Не указан clientId или contactId' });
+
+      const client = await kvGet(`client:${clientId}`);
+      if (!client) return res.status(404).json({ error: 'Клиент не найден' });
+
+      client.contacts = (client.contacts || []).filter(c => c.id !== contactId);
+      await kvSet(`client:${clientId}`, client);
+
+      return res.status(200).json({ ok: true });
+    }
+
     // ── POST: удалить клиента ──
     if (action === 'delete') {
       const { clientId } = req.body;

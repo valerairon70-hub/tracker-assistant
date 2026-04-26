@@ -1981,6 +1981,86 @@
     }
     .btn-delete-client:hover { border-color: #c0392b; color: #c0392b; }
 
+    /* ── Журнал контактов ── */
+    .contact-section-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1rem 0 0.6rem;
+    }
+    .contact-item {
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-left: 3px solid #ff6b35;
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .contact-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.3rem;
+    }
+    .contact-date { font-size: 0.8rem; font-weight: 600; color: #ff6b35; }
+    .contact-text { font-size: 0.84rem; color: #ccc; line-height: 1.45; white-space: pre-wrap; }
+    .btn-del-contact {
+      background: none;
+      border: none;
+      color: #3a3a3a;
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0 0.2rem;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-del-contact:hover { color: #e74c3c; }
+    .add-contact-form {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      margin-top: 0.6rem;
+    }
+    .add-contact-form textarea {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 0.85rem;
+      font-family: inherit;
+      padding: 0.55rem 0.8rem;
+      resize: none;
+      outline: none;
+      min-height: 42px;
+      line-height: 1.4;
+    }
+    .add-contact-form textarea:focus { border-color: #ff6b35; }
+    .btn-add-contact {
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .btn-add-contact:hover { opacity: 0.85; }
+    .btn-add-contact:disabled { opacity: 0.45; cursor: default; }
+    .last-contact-snippet {
+      font-size: 0.74rem;
+      color: #555;
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     /* ── Статусы клиентов ── */
     .status-badge {
       display: inline-block;
@@ -2469,7 +2549,13 @@
             <span id="detail-overdue-label" style="color:#e74c3c;display:none">просрочено</span>
           </div>
         </div>
-        <div class="sessions-title">История сессий</div>
+        <div class="contact-section-title">Журнал контактов</div>
+        <div id="detail-contacts-list"></div>
+        <div class="add-contact-form">
+          <textarea id="detail-contact-text" rows="2" placeholder="Что произошло? Позвонил — договорились встретиться 30 апр..."></textarea>
+          <button class="btn-add-contact" id="btn-add-contact" onclick="addContactEntry()">+ Запись</button>
+        </div>
+        <div class="contact-section-title" style="margin-top:1.5rem">Расшифровки ИИ</div>
         <div id="detail-sessions"></div>
         <button class="btn-delete-client" onclick="deleteCurrentClient()">Удалить клиента</button>
       </div>
@@ -4054,6 +4140,7 @@
         ${statusBadge(c.status)}${overdue ? '<span class="overdue-badge">просрочено</span>' : ''}
         <div class="client-card-name">${c.name}</div>
         <div class="client-card-meta">${[c.age ? c.age + ' лет' : '', genderLabel(c.gender)].filter(Boolean).join(' · ')}</div>
+        ${c.lastContactText ? `<div class="last-contact-snippet">💬 ${c.lastContact} — ${escHtml(c.lastContactText)}</div>` : ''}
         <div class="next-action-row${overdue ? ' overdue' : ''}">
           ${c.nextActionDate ? 'Следующий шаг: ' + c.nextActionDate : ''}
         </div>
@@ -4123,6 +4210,9 @@
     document.getElementById('detail-name').textContent = 'Загрузка...';
     document.getElementById('detail-meta').textContent = '';
     document.getElementById('detail-sessions').innerHTML = '';
+    document.getElementById('detail-contacts-list').innerHTML = '';
+    const prevNotes = document.getElementById('detail-notes-block');
+    if (prevNotes) prevNotes.remove();
     try {
       const res = await fetch(`/api/clients?action=get&id=${clientId}&token=${clientsApiToken()}`);
       const data = await res.json();
@@ -4144,9 +4234,16 @@
       const overdueLabel = document.getElementById('detail-overdue-label');
       overdueLabel.style.display = isOverdue(c.nextActionDate) ? 'inline' : 'none';
 
+      renderContacts(c.contacts || []);
+
+      if (c.notes) {
+        document.getElementById('detail-contacts-list').insertAdjacentHTML('beforebegin',
+          `<div id="detail-notes-block" style="font-size:0.82rem;color:#888;margin-bottom:0.75rem;padding:0.6rem 0.85rem;background:#1e1e1e;border-radius:8px;border:1px solid #2e2e2e">📝 ${escHtml(c.notes)}</div>`);
+      }
+
       const sessionsEl = document.getElementById('detail-sessions');
       if (!c.sessions || !c.sessions.length) {
-        sessionsEl.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:0.5rem 0">Сессий пока нет</div>';
+        sessionsEl.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:0.5rem 0">Расшифровок пока нет</div>';
       } else {
         const typeLabel = t => t === 'medical' ? 'Мед. документы' : 'Трекер здоровья';
         sessionsEl.innerHTML = [...c.sessions].reverse().map(s => `
@@ -4155,12 +4252,8 @@
               <span class="session-date">${s.date}</span>
               <span class="session-type">${typeLabel(s.type)}</span>
             </div>
-            <div class="session-complaints">${s.complaints || '—'}</div>
+            <div class="session-complaints">${escHtml(s.complaints || '—')}</div>
           </div>`).join('');
-      }
-      if (c.notes) {
-        document.getElementById('detail-sessions').insertAdjacentHTML('beforebegin',
-          `<div style="font-size:0.82rem;color:#888;margin-bottom:1rem;padding:0.6rem 0.85rem;background:#1e1e1e;border-radius:8px">${c.notes}</div>`);
       }
     } catch (e) {
       document.getElementById('detail-name').textContent = 'Ошибка загрузки';
@@ -4170,6 +4263,63 @@
   function closeClientDetail() {
     document.getElementById('client-detail-overlay').classList.remove('open');
     _currentClientId = null;
+  }
+
+  function renderContacts(contacts) {
+    const el = document.getElementById('detail-contacts-list');
+    if (!contacts || !contacts.length) {
+      el.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:0.35rem 0">Записей пока нет — добавьте первый контакт</div>';
+      return;
+    }
+    el.innerHTML = [...contacts].reverse().map(c => `
+      <div class="contact-item">
+        <div class="contact-item-header">
+          <span class="contact-date">${c.date}</span>
+          <button class="btn-del-contact" onclick="deleteContactEntry('${c.id}')" title="Удалить">✕</button>
+        </div>
+        <div class="contact-text">${escHtml(c.text)}</div>
+      </div>`).join('');
+  }
+
+  async function addContactEntry() {
+    const text = document.getElementById('detail-contact-text').value.trim();
+    if (!text || !_currentClientId) return;
+    const btn = document.getElementById('btn-add-contact');
+    btn.disabled = true;
+    btn.textContent = '...';
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add-contact', token: clientsApiToken(), clientId: _currentClientId, text })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      document.getElementById('detail-contact-text').value = '';
+      const clientRes = await fetch(`/api/clients?action=get&id=${_currentClientId}&token=${clientsApiToken()}`);
+      const clientData = await clientRes.json();
+      renderContacts(clientData.client?.contacts || []);
+      loadClients();
+    } catch (e) {
+      alert('Не удалось сохранить: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '+ Запись';
+    }
+  }
+
+  async function deleteContactEntry(contactId) {
+    if (!_currentClientId) return;
+    try {
+      await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete-contact', token: clientsApiToken(), clientId: _currentClientId, contactId })
+      });
+      const clientRes = await fetch(`/api/clients?action=get&id=${_currentClientId}&token=${clientsApiToken()}`);
+      const clientData = await clientRes.json();
+      renderContacts(clientData.client?.contacts || []);
+    } catch (e) { /* тихая ошибка */ }
   }
 
   function onStatusChange() {
