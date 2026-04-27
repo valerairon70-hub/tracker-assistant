@@ -1261,7 +1261,6 @@
     .proto-tbl .dash { color: #3a3a3a; }
 
     .card-pointab  .result-card-header { border-left: 3px solid #10b981; }
-    .card-schedule .result-card-header { border-left: 3px solid #06b6d4; }
     .card-water    .result-card-header { border-left: 3px solid #3b82f6; }
     .card-urgent   .result-card-header { border-left: 3px solid #ef4444; }
     .card-urgent { border-color: rgba(239,68,68,0.35); box-shadow: 0 0 0 1px rgba(239,68,68,0.2); }
@@ -3425,7 +3424,6 @@
       script:   extract('скрипт'),
       logic:    extract('логика'),
       pointab:  extract('точка_а_б'),
-      schedule: extract('схема_приема'),
       water:    extract('вода')
     };
   }
@@ -3445,7 +3443,6 @@
       { cls: 'card-script',   icon: '💬', title: 'Скрипт консультации',             content: data.script,   copyable: true },
       { cls: 'card-logic',    icon: '💡', title: 'Почему такой протокол',           content: data.logic,    copyable: false },
       { cls: 'card-pointab',  icon: '🎯', title: 'Точка А → Точка Б (цель 90 дней)', content: data.pointab,  copyable: true },
-      { cls: 'card-schedule', icon: '📅', title: 'Схема приёма',                    content: data.schedule, copyable: true },
       { cls: 'card-water',    icon: '💧', title: 'Вода и гидратация',               content: data.water,    copyable: false }
     ];
     const cards = allCards.filter(c => !c.optional || c.content);
@@ -4188,7 +4185,6 @@
         { icon: '💬', title: 'Скрипт консультации',                 content: parsed.script,    copyable: true },
         { icon: '💡', title: 'Почему такой протокол',               content: parsed.logic,     copyable: false },
         { icon: '🎯', title: 'Точка А → Точка Б (цель 90 дней)',   content: parsed.pointab,   copyable: true },
-        { icon: '📅', title: 'Схема приёма',                        content: parsed.schedule,  copyable: true },
         { icon: '💧', title: 'Вода и гидратация',                   content: parsed.water,     copyable: false },
       ];
       body.innerHTML = cards.map(c => `
