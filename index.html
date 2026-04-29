@@ -2207,6 +2207,115 @@
     }
     .stc-name-input:focus { border-color: #ff6b35; }
 
+    /* ── Вкладка «Кто я?» ── */
+    .identity-wrap { max-width: 720px; margin: 0 auto; padding: 1.5rem 0 3rem; }
+
+    .identity-intro {
+      background: #242424;
+      border: 1px solid #333;
+      border-left: 4px solid #ff6b35;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.6;
+    }
+    .identity-intro strong { color: #f0f0f0; }
+
+    .identity-section { margin-bottom: 2.5rem; }
+
+    .identity-section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f0f0f0;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .descriptor-group { margin-bottom: 1.25rem; }
+
+    .descriptor-group-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ff6b35;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .descriptor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.2s;
+    }
+    .descriptor-item:hover { border-color: #555; }
+
+    .descriptor-item-text {
+      font-size: 0.92rem;
+      color: #f0f0f0;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .btn-copy-desc {
+      background: transparent;
+      border: 1px solid #555;
+      border-radius: 6px;
+      color: #aaa;
+      font-size: 0.78rem;
+      padding: 0.3rem 0.65rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-copy-desc:hover { border-color: #ff6b35; color: #ff6b35; }
+    .btn-copy-desc.copied { border-color: #10b981; color: #10b981; }
+
+    .pos-result { margin-top: 1.5rem; display: none; }
+    .pos-result-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ff6b35;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .pos-result-card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .pos-result-text {
+      font-size: 0.95rem;
+      color: #f0f0f0;
+      flex: 1;
+      line-height: 1.5;
+      min-height: 1.2em;
+    }
+    .pos-streaming {
+      opacity: 0.6;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+    }
+
   </style>
 </head>
 <body>
@@ -2305,6 +2414,9 @@
         </button>
         <button class="tab-btn" onclick="switchTab('clients')">
           <span class="tab-icon">👥</span> <span class="clients-tab-label">Клиенты<span class="clients-overdue-dot" id="clients-overdue-dot"></span></span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('identity')">
+          <span class="tab-icon">🪞</span> Кто я?
         </button>
       </div>
     </nav>
@@ -2533,6 +2645,99 @@
           </div>
         </div>
 
+        <!-- ════════════════════════════════
+             ВКЛАДКА 5: КТО Я?
+             ════════════════════════════════ -->
+        <div class="tab-panel" id="panel-identity">
+          <div class="identity-wrap">
+
+            <div class="identity-intro">
+              <strong>Дескриптор</strong> — короткая фраза, которая с первых слов объясняет, чем вы занимаетесь. Вместо «консультирую по БАДам» — «Навигатор нутрицевтики». Помогает уверенно ответить на вопрос «А чем вы занимаетесь?» — без растерянности и долгих объяснений.
+            </div>
+
+            <!-- Блок 1: Готовые варианты -->
+            <section class="identity-section">
+              <h3 class="identity-section-title">Готовые варианты</h3>
+
+              <div class="descriptor-group">
+                <div class="descriptor-group-label">Короткие и экспертные (2–3 слова)</div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Навигатор нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор нутрицевтики')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Стратег здоровья</span><button class="btn-copy-desc" onclick="copyDesc(this,'Стратег здоровья')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Куратор долголетия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор долголетия')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Архитектор самочувствия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор самочувствия')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Трекер нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Трекер нутрицевтики')">Скопировать</button></div>
+              </div>
+
+              <div class="descriptor-group">
+                <div class="descriptor-group-label">По ценности для клиента</div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма</span><button class="btn-copy-desc" onclick="copyDesc(this,'Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма')">Скопировать</button></div>
+              </div>
+
+              <div class="descriptor-group">
+                <div class="descriptor-group-label">Дружелюбные / разговорные</div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать</span><button class="btn-copy-desc" onclick="copyDesc(this,'Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения</span><button class="btn-copy-desc" onclick="copyDesc(this,'Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь</span><button class="btn-copy-desc" onclick="copyDesc(this,'Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели</span><button class="btn-copy-desc" onclick="copyDesc(this,'Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели')">Скопировать</button></div>
+              </div>
+
+              <div class="descriptor-group">
+                <div class="descriptor-group-label">На языке боли клиента</div>
+                <div class="descriptor-item"><span class="descriptor-item-text">"Больше энергии — меньше усталости!" — помогаю восполнить дефициты и вернуть силы через нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Больше энергии — меньше усталости!» — помогаю восполнить дефициты и вернуть силы через нутрицевтики')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">"Спите плохо? Исправим без снотворных!" — нутрицевтики для крепкого сна и качественного отдыха</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Спите плохо? Исправим без снотворных!» — нутрицевтики для крепкого сна и качественного отдыха')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">"Болит спина, суставы? Давайте разберёмся" — подбираю добавки для восстановления опорно-двигательной системы</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Болит спина, суставы? Давайте разберёмся» — подбираю добавки для восстановления опорно-двигательной системы')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">"Крепкий иммунитет без аптек" — подбираю рабочие БАДы, чтобы ваш организм справлялся сам</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Крепкий иммунитет без аптек» — подбираю рабочие БАДы, чтобы ваш организм справлялся сам')">Скопировать</button></div>
+              </div>
+
+              <div class="descriptor-group">
+                <div class="descriptor-group-label">Харизматичные / с юмором</div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму</span><button class="btn-copy-desc" onclick="copyDesc(this,'Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки</span><button class="btn-copy-desc" onclick="copyDesc(this,'Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы')">Скопировать</button></div>
+                <div class="descriptor-item"><span class="descriptor-item-text">Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат</span><button class="btn-copy-desc" onclick="copyDesc(this,'Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат')">Скопировать</button></div>
+              </div>
+            </section>
+
+            <!-- Блок 2: Создать свой -->
+            <section class="identity-section">
+              <h3 class="identity-section-title">Создать свой дескриптор</h3>
+              <div class="field-group">
+                <div class="field-label">Что главное в вашей работе с клиентами?</div>
+                <textarea class="field-input" id="pos-strength" rows="3"
+                  placeholder="Например: я помогаю людям разобраться в нутрицевтике без лишних трат — объясняю просто, всегда на связи, слежу за результатом"></textarea>
+              </div>
+              <div class="field-group">
+                <div class="field-label">Чем вы отличаетесь от других?</div>
+                <textarea class="field-input" id="pos-difference" rows="3"
+                  placeholder="Например: не просто продаю, а сопровождаю — объясняю, почему именно эти продукты, и корректирую курс по ходу"></textarea>
+              </div>
+              <button class="btn-analyze" id="pos-btn" onclick="generatePositioning()">Создать дескриптор</button>
+
+              <div id="pos-result" class="pos-result">
+                <div class="pos-result-label">Короткий (2–4 слова)</div>
+                <div class="pos-result-card">
+                  <span class="pos-result-text" id="pos-text-1"></span>
+                  <button class="btn-copy-desc" id="pos-copy-1" style="display:none" onclick="copyDesc(this, document.getElementById('pos-text-1').textContent)">Скопировать</button>
+                </div>
+                <div class="pos-result-label">Средний (одно предложение)</div>
+                <div class="pos-result-card">
+                  <span class="pos-result-text" id="pos-text-2"></span>
+                  <button class="btn-copy-desc" id="pos-copy-2" style="display:none" onclick="copyDesc(this, document.getElementById('pos-text-2').textContent)">Скопировать</button>
+                </div>
+                <div class="pos-result-label">Развёрнутый (2 предложения)</div>
+                <div class="pos-result-card">
+                  <span class="pos-result-text" id="pos-text-3"></span>
+                  <button class="btn-copy-desc" id="pos-copy-3" style="display:none" onclick="copyDesc(this, document.getElementById('pos-text-3').textContent)">Скопировать</button>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -2758,12 +2963,114 @@
   // ════════════════════════════════════════
   function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', ['invite','decode','stats','clients'][i] === name);
+      btn.classList.toggle('active', ['invite','decode','stats','clients','identity'][i] === name);
     });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     if (name === 'stats') renderStats();
     if (name === 'clients') loadClients();
+  }
+
+  // ════════════════════════════════════════
+  // ВКЛАДКА «КТО Я?» — ПОЗИЦИОНИРОВАНИЕ
+  // ════════════════════════════════════════
+
+  function copyDesc(btn, text) {
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Скопировано!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+
+  async function generatePositioning() {
+    const strength = document.getElementById('pos-strength').value.trim();
+    const difference = document.getElementById('pos-difference').value.trim();
+
+    if (!strength && !difference) {
+      alert('Заполните хотя бы одно поле');
+      return;
+    }
+
+    const btn = document.getElementById('pos-btn');
+    btn.disabled = true;
+    btn.textContent = 'Генерирую...';
+
+    const resultBox = document.getElementById('pos-result');
+    resultBox.style.display = 'block';
+
+    const texts = { 1: '', 2: '', 3: '' };
+    ['1','2','3'].forEach(n => {
+      document.getElementById('pos-text-' + n).textContent = '';
+      document.getElementById('pos-copy-' + n).style.display = 'none';
+    });
+
+    try {
+      const resp = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'positioning', token: sessionStorage.getItem('auth_token'), strength, difference })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        alert(err.error || 'Ошибка сервера');
+        btn.disabled = false;
+        btn.textContent = 'Создать дескриптор';
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      let fullText = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') break;
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.done) break;
+            if (evt.error) { alert(evt.error); break; }
+            if (evt.text) {
+              fullText += evt.text;
+              parsePosResult(fullText, texts);
+            }
+          } catch {}
+        }
+      }
+
+      parsePosResult(fullText, texts, true);
+      ['1','2','3'].forEach(n => {
+        if (texts[n].trim()) document.getElementById('pos-copy-' + n).style.display = '';
+      });
+
+    } catch (err) {
+      alert('Ошибка соединения: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Создать дескриптор';
+    }
+  }
+
+  function parsePosResult(text, texts, final) {
+    [1,2,3].forEach(n => {
+      const tag = 'дескриптор_' + n;
+      const re = new RegExp('<' + tag + '>([\\s\\S]*?)' + (final ? '<\\/' + tag + '>' : '(?:<\\/' + tag + '>|$)'));
+      const m = text.match(re);
+      if (m) {
+        texts[n] = m[1].trim();
+        document.getElementById('pos-text-' + n).textContent = texts[n];
+      }
+    });
   }
 
   // ════════════════════════════════════════

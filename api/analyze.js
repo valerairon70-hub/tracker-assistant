@@ -1388,6 +1388,106 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
     return res.end();
   }
 
+  // ── РЕЖИМ ПОЗИЦИОНИРОВАНИЯ ──
+  if (mode === 'positioning') {
+    const strength = req.body.strength || '';
+    const difference = req.body.difference || '';
+
+    if (!strength.trim() && !difference.trim()) {
+      return res.status(400).json({ error: 'Укажите хотя бы одно поле' });
+    }
+
+    const posSystem = `Ты — эксперт по личному брендингу для специалистов в области нутрицевтики и здоровья.
+
+Твоя задача — создать 3 персональных дескриптора для дистрибьютора Coral Club. Дескриптор — это короткое определение, которое объясняет, чем человек занимается и чем полезен клиенту.
+
+ПРАВИЛА ХОРОШЕГО ДЕСКРИПТОРА:
+- Мгновенно объясняет суть работы
+- Показывает пользу для клиента
+- Запоминается с первого раза
+- Звучит как живой человек, не реклама
+- Никаких слов "консультирую по БАДам" или "продаю добавки"
+
+ФОРМАТ ОТВЕТА — строго три XML-блока, никакого другого текста:
+
+<дескриптор_1>
+[КОРОТКИЙ — 2–4 слова: роль-образ, например "Навигатор нутрицевтики"]
+</дескриптор_1>
+
+<дескриптор_2>
+[СРЕДНИЙ — одно предложение: роль + конкретная польза для клиента]
+</дескриптор_2>
+
+<дескриптор_3>
+[РАЗВЁРНУТЫЙ — 2 предложения: роль + польза + что отличает этого специалиста]
+</дескриптор_3>
+
+Используй только то, что следует из ответов пользователя. Пиши по-русски, живо и уверенно.`;
+
+    const posUserText = [
+      strength.trim() ? `Что главное в моей работе с клиентами: ${strength.trim()}` : '',
+      difference.trim() ? `Чем я отличаюсь от других: ${difference.trim()}` : ''
+    ].filter(Boolean).join('\n');
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    try {
+      const posRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 800,
+          stream: true,
+          system: posSystem,
+          messages: [{ role: 'user', content: posUserText }]
+        })
+      });
+
+      if (!posRes.ok) {
+        const errorText = await posRes.text();
+        res.write(`data: ${JSON.stringify({ error: 'Ошибка Claude API', details: errorText })}\n\n`);
+        return res.end();
+      }
+
+      const posReader = posRes.body.getReader();
+      const posDecoder = new TextDecoder();
+      let posBuf = '';
+      let posDone = false;
+
+      while (true) {
+        const { done, value } = await posReader.read();
+        if (done) break;
+        posBuf += posDecoder.decode(value, { stream: true });
+        const lines = posBuf.split('\n');
+        posBuf = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') { posDone = true; break; }
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.type === 'content_block_delta' && evt.delta?.text) {
+              res.write(`data: ${JSON.stringify({ text: evt.delta.text })}\n\n`);
+            }
+          } catch {}
+        }
+        if (posDone) break;
+      }
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    } catch (err) {
+      console.error('Handler error (positioning):', err);
+      res.write(`data: ${JSON.stringify({ error: 'Внутренняя ошибка', details: err.message })}\n\n`);
+    }
+    return res.end();
+  }
+
   // ── РЕЖИМ РАСШИФРОВКИ (по умолчанию) ──
   const allImages = images || (image ? [{ base64: image, mimeType: imageType || 'image/jpeg' }] : []);
 
