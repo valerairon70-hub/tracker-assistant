@@ -2234,7 +2234,22 @@
       border-bottom: 1px solid #333;
     }
 
-    .descriptor-group { margin-bottom: 1.25rem; }
+    .descriptor-group { margin-bottom: 0.5rem; }
+
+    .descriptor-group-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .descriptor-group-toggle:hover { border-color: #555; background: #2a2a2a; }
+    .descriptor-group-toggle.open { border-color: #ff6b35; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
 
     .descriptor-group-label {
       font-size: 0.78rem;
@@ -2242,8 +2257,27 @@
       letter-spacing: 0.05em;
       color: #ff6b35;
       font-weight: 600;
-      margin-bottom: 0.6rem;
     }
+
+    .descriptor-group-arrow {
+      color: #888;
+      font-size: 0.75rem;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .descriptor-group-toggle.open .descriptor-group-arrow { transform: rotate(180deg); }
+
+    .descriptor-group-body {
+      display: none;
+      border: 1px solid #ff6b35;
+      border-top: none;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      padding: 0.5rem;
+      background: #1e1e1e;
+      margin-bottom: 0.5rem;
+    }
+    .descriptor-group-body.open { display: block; }
 
     .descriptor-item {
       display: flex;
@@ -2660,44 +2694,69 @@
               <h3 class="identity-section-title">Готовые варианты</h3>
 
               <div class="descriptor-group">
-                <div class="descriptor-group-label">Короткие и экспертные (2–3 слова)</div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Навигатор нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор нутрицевтики')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Стратег здоровья</span><button class="btn-copy-desc" onclick="copyDesc(this,'Стратег здоровья')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Куратор долголетия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор долголетия')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Архитектор самочувствия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор самочувствия')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Трекер нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Трекер нутрицевтики')">Скопировать</button></div>
+                <button class="descriptor-group-toggle" onclick="toggleDescGroup(this)">
+                  <span class="descriptor-group-label">Короткие и экспертные (2–3 слова)</span>
+                  <span class="descriptor-group-arrow">▼</span>
+                </button>
+                <div class="descriptor-group-body">
+                  <div class="descriptor-item"><span class="descriptor-item-text">Навигатор нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор нутрицевтики')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Стратег здоровья</span><button class="btn-copy-desc" onclick="copyDesc(this,'Стратег здоровья')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Куратор долголетия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор долголетия')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Архитектор самочувствия</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор самочувствия')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Трекер нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'Трекер нутрицевтики')">Скопировать</button></div>
+                </div>
               </div>
 
               <div class="descriptor-group">
-                <div class="descriptor-group-label">По ценности для клиента</div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма</span><button class="btn-copy-desc" onclick="copyDesc(this,'Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма')">Скопировать</button></div>
+                <button class="descriptor-group-toggle" onclick="toggleDescGroup(this)">
+                  <span class="descriptor-group-label">По ценности для клиента</span>
+                  <span class="descriptor-group-arrow">▼</span>
+                </button>
+                <div class="descriptor-group-body">
+                  <div class="descriptor-item"><span class="descriptor-item-text">Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Навигатор в мире здоровья — помогу разобраться в лучших решениях превентивной медицины и подобрать эффективные методы')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости</span><button class="btn-copy-desc" onclick="copyDesc(this,'Архитектор персонального здоровья — подскажу, как построить свою стратегию укрепления организма, чтобы наслаждаться жизнью без болезней и усталости')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты</span><button class="btn-copy-desc" onclick="copyDesc(this,'Куратор личной системы здоровья — создам для вас план действий, который легко впишется в вашу жизнь и принесёт реальные результаты')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма</span><button class="btn-copy-desc" onclick="copyDesc(this,'Эксперт по омоложению изнутри — расскажу, как замедлить старение и запустить естественные процессы регенерации организма')">Скопировать</button></div>
+                </div>
               </div>
 
               <div class="descriptor-group">
-                <div class="descriptor-group-label">Дружелюбные / разговорные</div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать</span><button class="btn-copy-desc" onclick="copyDesc(this,'Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения</span><button class="btn-copy-desc" onclick="copyDesc(this,'Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь</span><button class="btn-copy-desc" onclick="copyDesc(this,'Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели</span><button class="btn-copy-desc" onclick="copyDesc(this,'Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели')">Скопировать</button></div>
+                <button class="descriptor-group-toggle" onclick="toggleDescGroup(this)">
+                  <span class="descriptor-group-label">Дружелюбные / разговорные</span>
+                  <span class="descriptor-group-arrow">▼</span>
+                </button>
+                <div class="descriptor-group-body">
+                  <div class="descriptor-item"><span class="descriptor-item-text">Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать</span><button class="btn-copy-desc" onclick="copyDesc(this,'Помогаю разобраться в мире БАДов — объясню, какие нутрицевтики работают, как их правильно принимать и чего ожидать')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения</span><button class="btn-copy-desc" onclick="copyDesc(this,'Сопровождаю на пути к здоровью — не просто советую БАДы, а помогаю выстроить систему их грамотного применения')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь</span><button class="btn-copy-desc" onclick="copyDesc(this,'Объясняю, как заботиться о здоровье без стресса — простые шаги, которые легко впишутся в вашу жизнь')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели</span><button class="btn-copy-desc" onclick="copyDesc(this,'Не оставлю вас наедине с баночками — помогу внедрить БАДы в жизнь, понять их эффект и адаптировать курс под ваши цели')">Скопировать</button></div>
+                </div>
               </div>
 
               <div class="descriptor-group">
-                <div class="descriptor-group-label">На языке боли клиента</div>
-                <div class="descriptor-item"><span class="descriptor-item-text">"Больше энергии — меньше усталости!" — помогаю восполнить дефициты и вернуть силы через нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Больше энергии — меньше усталости!» — помогаю восполнить дефициты и вернуть силы через нутрицевтики')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">"Спите плохо? Исправим без снотворных!" — нутрицевтики для крепкого сна и качественного отдыха</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Спите плохо? Исправим без снотворных!» — нутрицевтики для крепкого сна и качественного отдыха')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">"Болит спина, суставы? Давайте разберёмся" — подбираю добавки для восстановления опорно-двигательной системы</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Болит спина, суставы? Давайте разберёмся» — подбираю добавки для восстановления опорно-двигательной системы')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">"Крепкий иммунитет без аптек" — подбираю рабочие БАДы, чтобы ваш организм справлялся сам</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Крепкий иммунитет без аптек» — подбираю рабочие БАДы, чтобы ваш организм справлялся сам')">Скопировать</button></div>
+                <button class="descriptor-group-toggle" onclick="toggleDescGroup(this)">
+                  <span class="descriptor-group-label">На языке боли клиента</span>
+                  <span class="descriptor-group-arrow">▼</span>
+                </button>
+                <div class="descriptor-group-body">
+                  <div class="descriptor-item"><span class="descriptor-item-text">"Больше энергии — меньше усталости!" — помогаю восполнить дефициты и вернуть силы через нутрицевтики</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Больше энергии — меньше усталости!» — помогаю восполнить дефициты и вернуть силы через нутрицевтики')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">"Спите плохо? Исправим без снотворных!" — нутрицевтики для крепкого сна и качественного отдыха</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Спите плохо? Исправим без снотворных!» — нутрицевтики для крепкого сна и качественного отдыха')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">"Болит спина, суставы? Давайте разберёмся" — подбираю добавки для восстановления опорно-двигательной системы</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Болит спина, суставы? Давайте разберёмся» — подбираю добавки для восстановления опорно-двигательной системы')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">"Крепкий иммунитет без аптек" — подбираю рабочие БАДы, чтобы ваш организм справлялся сам</span><button class="btn-copy-desc" onclick="copyDesc(this,'«Крепкий иммунитет без аптек» — подбираю рабочие БАДы, чтобы ваш организм справлялся сам')">Скопировать</button></div>
+                </div>
               </div>
 
               <div class="descriptor-group">
-                <div class="descriptor-group-label">Харизматичные / с юмором</div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму</span><button class="btn-copy-desc" onclick="copyDesc(this,'Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки</span><button class="btn-copy-desc" onclick="copyDesc(this,'Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы')">Скопировать</button></div>
-                <div class="descriptor-item"><span class="descriptor-item-text">Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат</span><button class="btn-copy-desc" onclick="copyDesc(this,'Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат')">Скопировать</button></div>
+                <button class="descriptor-group-toggle" onclick="toggleDescGroup(this)">
+                  <span class="descriptor-group-label">Харизматичные / с юмором</span>
+                  <span class="descriptor-group-arrow">▼</span>
+                </button>
+                <div class="descriptor-group-body">
+                  <div class="descriptor-item"><span class="descriptor-item-text">Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму</span><button class="btn-copy-desc" onclick="copyDesc(this,'Четкий план, а не горы баночек — подберу только то, что нужно именно вашему организму')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки</span><button class="btn-copy-desc" onclick="copyDesc(this,'Здоровье — не лотерея! Создадим для вас персональный план нутрицевтической поддержки')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы</span><button class="btn-copy-desc" onclick="copyDesc(this,'Разбираю причину — даю решение. Не просто устраняю симптомы, а помогаю найти корень проблемы')">Скопировать</button></div>
+                  <div class="descriptor-item"><span class="descriptor-item-text">Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат</span><button class="btn-copy-desc" onclick="copyDesc(this,'Добавки, которые встраиваются в вашу жизнь — никакой сложной теории, только практика и результат')">Скопировать</button></div>
+                </div>
               </div>
             </section>
 
@@ -2974,6 +3033,12 @@
   // ════════════════════════════════════════
   // ВКЛАДКА «КТО Я?» — ПОЗИЦИОНИРОВАНИЕ
   // ════════════════════════════════════════
+
+  function toggleDescGroup(btn) {
+    const body = btn.nextElementSibling;
+    const open = btn.classList.toggle('open');
+    body.classList.toggle('open', open);
+  }
 
   function copyDesc(btn, text) {
     navigator.clipboard.writeText(text.trim()).then(() => {
