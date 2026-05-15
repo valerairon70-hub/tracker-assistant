@@ -2508,10 +2508,17 @@
     color: #1a1a1a;
     line-height: 1.3;
   }
+  .pc-product-why {
+    font-size: 11px;
+    color: #e85520;
+    margin-top: 2px;
+    line-height: 1.4;
+    font-style: italic;
+  }
   .pc-product-dose {
     font-size: 11px;
     color: #666;
-    margin-top: 1px;
+    margin-top: 2px;
     line-height: 1.4;
   }
   .pc-min-block {
@@ -4172,7 +4179,7 @@
         <div class="result-card-header">
           <div class="card-title">${c.icon} ${c.title}</div>
           <div style="display:flex;gap:6px;align-items:center;">
-            ${c.downloadable ? `<button class="btn-download-card" onclick="downloadProtocolCard(this,'${escBt(clientName || '')}')">📥 Карточку</button>` : ''}
+            ${c.downloadable ? `<button class="btn-download-card" data-protocol="${escHtml(c.content)}" onclick="downloadProtocolCard(this,'${escBt(clientName || '')}')">📥 Карточку</button>` : ''}
             ${c.copyable ? `<button class="btn-copy" data-copy="${escHtml(c.content)}" onclick="copyText(this)">Скопировать</button>` : ''}
           </div>
         </div>
@@ -5289,23 +5296,19 @@
 
   // ── Скачать карточку протокола как PNG ──
   function downloadProtocolCard(btn, clientName) {
-    const protocolCard = document.querySelector('.card-protocol .result-card-body');
-    if (!protocolCard) return;
-    const protocolText = protocolCard.innerText || '';
+    const protocolText = btn.dataset.protocol || '';
+    if (!protocolText) return;
 
     btn.classList.add('loading');
     btn.textContent = '⏳ Готовлю...';
 
-    // Заполняем шаблон
     const card = document.getElementById('protocol-card-print');
-    document.getElementById('pc-title').textContent = clientName
-      ? 'Программа для ' + clientName
-      : 'Программа восстановления';
-    document.getElementById('pc-sub').textContent = 'Нутрициологическая поддержка · Coral Club';
+    // Заголовок: имя клиента как подзаголовок, не в title
+    document.getElementById('pc-title').textContent = 'Программа восстановления';
+    document.getElementById('pc-sub').textContent = clientName ? clientName : '';
     document.getElementById('pc-date').textContent = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
     document.getElementById('pc-body').innerHTML = buildProtocolCardBody(protocolText);
 
-    // Временно показываем карточку для захвата
     card.style.left = '-9999px';
     card.style.top = '0';
     card.style.display = 'block';
@@ -5328,63 +5331,81 @@
   function buildProtocolCardBody(text) {
     const lines = text.split('\n');
     let html = '';
+    let inMonth = false;
     let inMin = false;
 
     for (const raw of lines) {
       const line = raw.trim();
       if (!line) continue;
 
-      // Заголовок месяца
-      if (/^МЕСЯЦ\s+1/i.test(line) || /^МЕСЯЦ\s+2/i.test(line)) {
-        const m = line.match(/^(МЕСЯЦ\s+\d+[^:]*)/i);
-        html += `<div class="pc-month"><div class="pc-month-title">${m ? m[1] : line}</div>`;
-        inMin = false;
+      // Заголовок МЕСЯЦ 1 / МЕСЯЦ 2 (raw markdown: **МЕСЯЦ 1 — ...**)
+      const monthMatch = line.match(/^\*?\*?(МЕСЯЦ\s+(\d+)[^*]*)\*?\*?:?$/i);
+      if (monthMatch) {
+        if (inMonth) html += '</div>';
+        const num = monthMatch[2];
+        const label = num === '1' ? 'МЕСЯЦ 1 — Начинаем здесь' : 'МЕСЯЦ 2 — Углубление';
+        html += `<div class="pc-month"><div class="pc-month-title">${label}</div>`;
+        inMonth = true; inMin = false;
         continue;
       }
 
       // Минимальный старт
-      if (/^Минимальный/i.test(line)) {
-        html += `</div><div class="pc-min-block"><div class="pc-min-title">Минимальный старт</div>`;
+      if (/\*?\*?Минимальный/i.test(line)) {
+        if (inMonth) { html += '</div>'; inMonth = false; }
+        html += `<div class="pc-min-block"><div class="pc-min-title">Минимальный старт</div>`;
         inMin = true;
         continue;
       }
 
-      // Система (в скобках или без)
-      if (/^\[.+\]/.test(line) || (/^[А-ЯЁ]/.test(line) && line.endsWith(':'))) {
-        const sys = line.replace(/[\[\]:]/g, '').trim();
+      // Название системы в квадратных скобках: [Кишечник — 55% ПЕРЕГРУЗ]
+      if (/^\[.+\]/.test(line)) {
+        const sys = line.replace(/\[|\]/g, '').replace(/—.*$/, '').trim();
         html += `<div class="pc-system">${sys}</div>`;
         continue;
       }
 
-      // Продукт: - **Название**: зачем → дозировка
-      const prodMatch = line.match(/^[-•]\s+\*{0,2}(.+?)\*{0,2}:?\s*(.+?)\s*→\s*(.+)$/);
-      if (prodMatch) {
-        const name = prodMatch[1].replace(/\*/g, '').trim();
-        const dose = prodMatch[3].trim();
+      // Продукт с → : - **Название**: зачем → дозировка
+      const prodFull = line.match(/^-\s+\*\*(.+?)\*\*:?\s*(.+?)\s*→\s*(.+)$/);
+      if (prodFull) {
+        const name = prodFull[1].trim();
+        const why  = prodFull[2].trim();
+        const dose = prodFull[3].trim();
         if (inMin) {
           html += `<div class="pc-min-item"><b>${name}</b> — ${dose}</div>`;
         } else {
-          html += `<div class="pc-product"><div class="pc-product-dot"></div><div class="pc-product-info"><div class="pc-product-name">${name}</div><div class="pc-product-dose">${dose}</div></div></div>`;
+          html += `<div class="pc-product">
+            <div class="pc-product-dot"></div>
+            <div class="pc-product-info">
+              <div class="pc-product-name">${name}</div>
+              <div class="pc-product-why">${why}</div>
+              <div class="pc-product-dose">${dose}</div>
+            </div>
+          </div>`;
         }
         continue;
       }
 
-      // Простая строка с продуктом без →
-      const simpleMatch = line.match(/^[-•]\s+\*{0,2}(.+?)\*{0,2}:?\s*(.+)$/);
-      if (simpleMatch) {
-        const name = simpleMatch[1].replace(/\*/g, '').trim();
-        const desc = simpleMatch[2].trim();
+      // Продукт без → : - **Название**: описание
+      const prodSimple = line.match(/^-\s+\*\*(.+?)\*\*:?\s*(.+)$/);
+      if (prodSimple) {
+        const name = prodSimple[1].trim();
+        const desc = prodSimple[2].trim();
         if (inMin) {
           html += `<div class="pc-min-item"><b>${name}</b> — ${desc}</div>`;
         } else {
-          html += `<div class="pc-product"><div class="pc-product-dot"></div><div class="pc-product-info"><div class="pc-product-name">${name}</div><div class="pc-product-dose">${desc}</div></div></div>`;
+          html += `<div class="pc-product">
+            <div class="pc-product-dot"></div>
+            <div class="pc-product-info">
+              <div class="pc-product-name">${name}</div>
+              <div class="pc-product-dose">${desc}</div>
+            </div>
+          </div>`;
         }
       }
     }
 
-    // Закрываем открытые блоки
     if (inMin) html += '</div>';
-    else html += '</div>';
+    else if (inMonth) html += '</div>';
 
     return html;
   }
