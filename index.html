@@ -50,20 +50,43 @@
       margin-bottom: 2rem;
     }
 
-    .password-card input[type="password"] {
+    .pwd-wrapper {
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+    .password-card .pwd-input {
       width: 100%;
+      box-sizing: border-box;
       background: #1a1a1a;
       border: 1px solid #444;
       border-radius: 8px;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 2.8rem 0.75rem 1rem;
       color: #f0f0f0;
       font-size: 1rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0;
       outline: none;
       transition: border-color 0.2s;
     }
-
-    .password-card input[type="password"]:focus { border-color: #ff6b35; }
+    .password-card .pwd-input:focus { border-color: #ff6b35; }
+    .password-card .pwd-input::placeholder { color: #555; }
+    .pwd-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
+      z-index: 2;
+    }
+    .pwd-toggle:hover { color: #ff6b35; }
+    .pwd-input::-webkit-credentials-auto-fill-button,
+    .pwd-input::-webkit-strong-password-auto-fill-button { display: none !important; visibility: hidden; }
 
     .password-card .btn-login {
       width: 100%;
@@ -240,23 +263,33 @@
     textarea.field-input:focus, input.field-input:focus { border-color: #ff6b35; }
     textarea.field-input::placeholder, input.field-input::placeholder { color: #555; }
 
-    .tracker-protocols-block { margin-top: 0.75rem; }
-    .tracker-protocols-block summary {
-      cursor: pointer;
-      font-size: 0.82rem;
-      color: #888;
-      list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      user-select: none;
-      padding: 0.3rem 0;
-    }
-    .tracker-protocols-block summary::-webkit-details-marker { display: none; }
-    .tracker-protocols-block summary::before { content: '▶'; font-size: 0.65rem; transition: transform 0.2s; }
-    .tracker-protocols-block[open] summary::before { transform: rotate(90deg); }
-    .tracker-protocols-block summary:hover { color: #bbb; }
+    .tracker-protocols-block { margin-top: 0; }
     .upload-zone.upload-protocols { border-color: #3a4a3a; padding: 0.85rem; min-height: 80px; }
+    .step-label {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .step-num {
+      background: #ff6b35;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #d0d0d0;
+    }
+    .step-hint {
+      font-size: 0.75rem;
+      color: #666;
+      margin: 0 0 0.5rem;
+    }
     .proto-or-divider {
       text-align: center;
       font-size: 0.75rem;
@@ -1602,11 +1635,13 @@
     }
     body.light .password-card h1 { color: #1a0f07; }
     body.light .password-card .subtitle { color: #907050; }
-    body.light .password-card input[type="password"] {
+    body.light .password-card .pwd-input {
       background: #fff8f0; border-color: #d4b890; color: #1a0f07;
     }
-    body.light .password-card input[type="password"]::placeholder { color: #c4a07a; }
-    body.light .password-card input[type="password"]:focus { border-color: #b8860b; box-shadow: 0 0 0 2px rgba(184,134,11,0.12); }
+    body.light .password-card .pwd-input::placeholder { color: #c4a07a; }
+    body.light .password-card .pwd-input:focus { border-color: #b8860b; box-shadow: 0 0 0 2px rgba(184,134,11,0.12); }
+    body.light .pwd-toggle { color: #b8960a; }
+    body.light .pwd-toggle:hover { color: #e85520; }
 
     /* Хедер */
     body.light header {
@@ -1646,6 +1681,8 @@
     }
     body.light .input-panel h2 { color: #1a0f07; }
     body.light .field-label { color: #907050; }
+    body.light .step-title { color: #5a3a1a; }
+    body.light .step-hint { color: #a07040; }
 
     body.light textarea.field-input, body.light input.field-input {
       background: #fff8f0; border-color: #d4b890; color: #1a0f07;
@@ -2521,6 +2558,33 @@
     margin-top: 2px;
     line-height: 1.4;
   }
+  .pc-diagram {
+    text-align: center;
+    padding: 16px 0 10px;
+    border-bottom: 2px solid #ffe8de;
+    margin-bottom: 14px;
+  }
+  .pc-diagram-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    margin-bottom: 10px;
+  }
+  .pc-diagram-legend {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 8px;
+    font-size: 10px;
+    color: #666;
+  }
+  .pc-diagram-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
   .pc-min-block {
     background: #fff8f4;
     border: 1px solid #ffe0cc;
@@ -2593,10 +2657,19 @@
       </div>
       <h1>AI-ассистент</h1>
       <p class="subtitle">Трекер здоровья · Coral Club · Метод Бутаковой</p>
-      <input type="password" id="pwd-input" placeholder="Введите пароль (латиница)"
-        lang="en" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
-        onkeydown="if(event.key==='Enter') login()" oninput="checkLang(this)">
-      <p style="font-size:0.75rem;color:#666;margin:-0.75rem 0 1rem;text-align:left">Пароль вводится английскими буквами</p>
+      <div class="pwd-wrapper">
+        <input type="password" id="pwd-input" placeholder="Введите пароль"
+          class="pwd-input"
+          autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+          oninput="enforceLatin(this)" onkeydown="if(event.key==='Enter') login()">
+        <button type="button" class="pwd-toggle" onclick="togglePwd()" id="pwd-toggle-btn" title="Показать/скрыть пароль">
+          <svg id="pwd-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <p style="font-size:0.75rem;color:#777;margin:-0.25rem 0 1rem;text-align:left">Русская раскладка переведётся автоматически</p>
       <button class="btn-login" onclick="login()">Войти</button>
       <div class="error-msg" id="pwd-error"></div>
     </div>
@@ -2756,15 +2829,19 @@
             <div class="input-panel">
               <h2>Данные клиента</h2>
 
-              <!-- Загрузка диаграммы -->
+              <!-- Загрузка диаграммы — Шаг 1 -->
               <div class="field-group">
-                <div class="field-label">Скриншоты диаграммы или результаты анализов</div>
+                <div class="step-label">
+                  <span class="step-num">ШАГ 1</span>
+                  <span class="step-title">Диаграмма трекера или результаты анализов</span>
+                </div>
+                <p class="step-hint">Скриншот круговой диаграммы, анализы крови, МРТ, УЗИ — сюда</p>
                 <div class="upload-zone" id="upload-zone">
                   <input type="file" id="file-input" accept="image/*" multiple style="display:none">
                   <div id="upload-placeholder">
                     <div class="upload-icon">📊</div>
-                    <div class="upload-text">Диаграмма трекера, анализы крови, МРТ, УЗИ</div>
-                    <div class="upload-hint">Можно загрузить несколько файлов сразу</div>
+                    <div class="upload-text">Нажмите, перетащите или вставьте (Ctrl+V)</div>
+                    <div class="upload-hint">Диаграмма трекера, анализы крови, МРТ, УЗИ — можно несколько</div>
                   </div>
                   <div id="thumbs-container" style="display:none; flex-direction:column; align-items:center; width:100%; gap:0.5rem; padding:0.5rem 0;">
                     <div class="thumbs-grid" id="thumbs-grid"></div>
@@ -2851,25 +2928,29 @@
                 </div>
               </div>
 
-              <!-- Протоколы трекера (необязательно) -->
-              <details class="tracker-protocols-block" id="tracker-protocols-details">
-                <summary>Протоколы из трекера (если есть)</summary>
-                <div class="upload-zone upload-protocols" id="upload-zone-protocols" style="margin-top:0.6rem">
+              <!-- Протоколы трекера — Шаг 2 -->
+              <div class="field-group tracker-protocols-block" id="tracker-protocols-details">
+                <div class="step-label">
+                  <span class="step-num" style="background:#555">ШАГ 2</span>
+                  <span class="step-title" style="color:#999">Рекомендации трекера <span style="font-weight:400;font-size:0.8rem">(необязательно)</span></span>
+                </div>
+                <p class="step-hint">Если в приложении трекера есть раздел «Рекомендации» по каждой системе — загрузите скриншоты или вставьте текст. AI сравнит с базой Coral Club и составит лучший протокол.</p>
+                <div class="upload-zone upload-protocols" id="upload-zone-protocols">
                   <input type="file" id="file-input-protocols" accept="image/*" multiple style="display:none">
                   <div id="upload-placeholder-protocols">
                     <div class="upload-icon" style="font-size:1.3rem">📋</div>
-                    <div class="upload-text" style="font-size:0.82rem">Скриншоты протоколов из трекера</div>
-                    <div class="upload-hint">Claude сравнит их со своей базой и выдаст синтезированный протокол</div>
+                    <div class="upload-text" style="font-size:0.82rem">Скриншоты рекомендаций трекера</div>
+                    <div class="upload-hint">Нажмите или перетащите — можно несколько</div>
                   </div>
                   <div id="thumbs-container-protocols" style="display:none; flex-direction:column; align-items:center; width:100%; gap:0.5rem; padding:0.5rem 0;">
                     <div class="thumbs-grid" id="thumbs-grid-protocols"></div>
                     <span class="upload-add-more">+ добавить ещё</span>
                   </div>
                 </div>
-                <div class="proto-or-divider">или вставьте текст из трекера</div>
-                <textarea id="tracker-protocols-text" rows="4"
-                  placeholder="Скопируйте текст из трекера (нажмите на систему → скопируйте рекомендации) — можно сразу несколько систем"></textarea>
-              </details>
+                <div class="proto-or-divider">или вставьте текст</div>
+                <textarea id="tracker-protocols-text" rows="3"
+                  placeholder="Скопируйте текст рекомендаций из трекера (нажмите на систему → скопируйте) — можно сразу несколько систем"></textarea>
+              </div>
 
               <button class="btn-action" id="analyze-btn" onclick="analyze()">
                 <span id="btn-icon">🔍</span>
@@ -3168,13 +3249,34 @@
   // АВТОРИЗАЦИЯ
   // ════════════════════════════════════════
 
-  function checkLang(input) {
-    const err = document.getElementById('pwd-error');
-    if (/[а-яёА-ЯЁ]/.test(input.value)) {
-      err.textContent = 'Переключите клавиатуру на английский язык';
-    } else {
-      err.textContent = '';
+  const RU_TO_EN = {
+    'й':'q','ц':'w','у':'e','к':'r','е':'t','н':'y','г':'u','ш':'i','щ':'o','з':'p','х':'[','ъ':']',
+    'ф':'a','ы':'s','в':'d','а':'f','п':'g','р':'h','о':'j','л':'k','д':'l','ж':';','э':"'",
+    'я':'z','ч':'x','с':'c','м':'v','и':'b','т':'n','ь':'m','б':',','ю':'.',
+    'Й':'Q','Ц':'W','У':'E','К':'R','Е':'T','Н':'Y','Г':'U','Ш':'I','Щ':'O','З':'P','Х':'{','Ъ':'}',
+    'Ф':'A','Ы':'S','В':'D','А':'F','П':'G','Р':'H','О':'J','Л':'K','Д':'L','Ж':':','Э':'"',
+    'Я':'Z','Ч':'X','С':'C','М':'V','И':'B','Т':'N','Ь':'M','Б':'<','Ю':'>'
+  };
+
+  function enforceLatin(input) {
+    const pos = input.selectionStart;
+    const newVal = input.value.split('').map(c => RU_TO_EN[c] !== undefined ? RU_TO_EN[c] : c).join('');
+    if (newVal !== input.value) {
+      input.value = newVal;
+      try { input.setSelectionRange(pos, pos); } catch(_) {}
     }
+    document.getElementById('pwd-error').textContent = '';
+  }
+
+  function togglePwd() {
+    const inp = document.getElementById('pwd-input');
+    const icon = document.getElementById('pwd-eye-icon');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    icon.innerHTML = show
+      ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
+      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+    inp.focus();
   }
 
   const TEST_LIMIT = 10;
@@ -3442,6 +3544,17 @@
     e.preventDefault();
     uploadZone.classList.remove('drag-over');
     handleFiles(e.dataTransfer.files);
+  });
+
+  document.addEventListener('paste', e => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    const imageFiles = Array.from(items)
+      .filter(item => item.type.startsWith('image/'))
+      .map(item => item.getAsFile())
+      .filter(Boolean);
+    if (imageFiles.length === 0) return;
+    handleFiles(imageFiles);
   });
 
   function handleFiles(files) {
@@ -4071,6 +4184,11 @@
     input.disabled = true;
     sendBtn.disabled = true;
 
+    const watchdog = setTimeout(() => {
+      input.disabled = false;
+      sendBtn.disabled = false;
+    }, 90000);
+
     appendChatMessage('user', text);
     chatHistory.push({ role: 'user', content: text });
 
@@ -4130,6 +4248,7 @@
       errEl.textContent = 'Ошибка: ' + err.message;
       assistantDiv.classList.remove('streaming');
     } finally {
+      clearTimeout(watchdog);
       input.disabled = false;
       sendBtn.disabled = false;
       input.focus();
@@ -5328,11 +5447,78 @@
     });
   }
 
+  function parseSystemsFromProtocol(text) {
+    const statusMap = new Map();
+    const sysMap = [
+      { i: 0,  keys: ['цнс', 'центральная нервная', 'нервная система'] },
+      { i: 1,  keys: ['дс', 'дыхательная'] },
+      { i: 2,  keys: ['ссс', 'сердечно-сосудистая', 'сердечно', 'сердце'] },
+      { i: 3,  keys: ['кс', 'кроветворная', 'кровь', 'гемоглобин'] },
+      { i: 4,  keys: ['пс', 'пищеварительная', 'пищеварение', 'кишечник', 'желудок', 'жкт', 'печень'] },
+      { i: 5,  keys: ['мвс', 'мочевыделительная', 'почки', 'кожа'] },
+      { i: 6,  keys: ['рс', 'репродуктивная', 'репродукт'] },
+      { i: 7,  keys: ['эс', 'эндокринная', 'щитовидная', 'гормональная'] },
+      { i: 8,  keys: ['кмс', 'костно-мышечная', 'суставы', 'кости', 'мышцы', 'позвоночник'] },
+      { i: 9,  keys: ['лс', 'лимфатическая', 'лимфа'] },
+      { i: 10, keys: ['ис', 'иммунная', 'иммунитет'] },
+      { i: 11, keys: ['пнс', 'периферическая'] },
+    ];
+    const re = /\[([^\]]+?)\s*[—–-]\s*[^\]]*?(ПЕРЕГРУЗ|НАГРУЗКА|НОРМА)[^\]]*\]/gi;
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const nameLower = m[1].toLowerCase();
+      const s = m[2].toUpperCase();
+      const color = s === 'ПЕРЕГРУЗ' ? 'red' : s === 'НАГРУЗКА' ? 'yellow' : 'green';
+      for (const { i, keys } of sysMap) {
+        if (keys.some(k => nameLower.includes(k))) {
+          if (!statusMap.has(i)) statusMap.set(i, color);
+          break;
+        }
+      }
+    }
+    return statusMap;
+  }
+
+  function buildSystemsClockSVG(statusMap) {
+    const cx = 140, cy = 140, R = 95, r = 40, LR = 120;
+    const labels = ['ЦНС','ДС','ССС','КС','ПС','МВС','РС','ЭС','КМС','ЛС','ИС','ПНС'];
+    const clr = { red: '#f44336', yellow: '#ffc107', green: '#4caf50', gray: '#ddd' };
+    function pt(radius, deg) {
+      const rad = deg * Math.PI / 180;
+      return [cx + radius * Math.cos(rad), cy + radius * Math.sin(rad)];
+    }
+    let s = `<svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">`;
+    for (let i = 0; i < 12; i++) {
+      const sd = -90 + i * 30, ed = -90 + (i + 1) * 30, g = 1.8;
+      const [x1,y1] = pt(R, sd+g), [x2,y2] = pt(R, ed-g);
+      const [x3,y3] = pt(r, ed-g), [x4,y4] = pt(r, sd+g);
+      const fill = clr[statusMap.get(i) || 'gray'];
+      s += `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)} L${x3.toFixed(1)},${y3.toFixed(1)} A${r},${r} 0 0,0 ${x4.toFixed(1)},${y4.toFixed(1)} Z" fill="${fill}" stroke="#fff" stroke-width="2.5"/>`;
+      const [lx,ly] = pt(LR, -90 + i*30 + 15);
+      s += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dy="0.35em" font-size="9.5" font-weight="700" fill="#555" font-family="Arial,Helvetica,sans-serif">${labels[i]}</text>`;
+    }
+    const found = statusMap.size;
+    s += `<text x="${cx}" y="${cy-9}" text-anchor="middle" dy="0.35em" font-size="15" font-weight="800" fill="#444" font-family="Arial,Helvetica,sans-serif">${found}</text>`;
+    s += `<text x="${cx}" y="${cy+10}" text-anchor="middle" dy="0.35em" font-size="9" fill="#999" font-family="Arial,Helvetica,sans-serif">систем</text>`;
+    s += `</svg>`;
+    return s;
+  }
+
   function buildProtocolCardBody(text) {
     const lines = text.split('\n');
     let html = '';
     let inMonth = false;
     let inMin = false;
+
+    const statusMap = parseSystemsFromProtocol(text);
+    if (statusMap.size > 0) {
+      const legend = [
+        ['#f44336','ПЕРЕГРУЗ'],
+        ['#ffc107','НАГРУЗКА'],
+        ['#4caf50','НОРМА'],
+      ].map(([c,l]) => `<span><svg width="10" height="10" style="vertical-align:middle"><circle cx="5" cy="5" r="4" fill="${c}"/></svg> ${l}</span>`).join('');
+      html += `<div class="pc-diagram"><div class="pc-diagram-title">Состояние систем организма</div>${buildSystemsClockSVG(statusMap)}<div class="pc-diagram-legend">${legend}</div></div>`;
+    }
 
     for (const raw of lines) {
       const line = raw.trim();
