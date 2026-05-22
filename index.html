@@ -193,7 +193,7 @@
       background: none;
       border: none;
       border-bottom: 3px solid transparent;
-      padding: 0.85rem 1.25rem;
+      padding: 0.85rem 1rem;
       color: #666;
       font-size: 0.85rem;
       font-weight: 600;
@@ -1798,12 +1798,17 @@
     .btn-open-record:hover { border-color: #ff6b35; color: #ff6b35; }
 
     /* ── Адаптив ── */
+    @media (max-width: 960px) {
+      .tab-btn .tab-icon { display: none; }
+      .tab-btn { padding: 0.85rem 0.85rem; }
+    }
+
     @media (max-width: 720px) {
       .layout { grid-template-columns: 1fr; }
       header h1 { font-size: 0.9rem; }
       .password-card { padding: 2rem 1.25rem; }
       .stats-summary { grid-template-columns: repeat(3, 1fr); }
-      .tab-btn { padding: 0.75rem 0.85rem; font-size: 0.78rem; }
+      .tab-btn { padding: 0.75rem 0.75rem; font-size: 0.78rem; }
       .tab-btn .tab-icon { display: none; }
       .channel-grid { grid-template-columns: 1fr 1fr; }
       .records-table { font-size: 0.75rem; }
