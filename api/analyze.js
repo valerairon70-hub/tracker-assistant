@@ -1706,7 +1706,7 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 2000,
           system: INVITE_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]
@@ -1773,7 +1773,7 @@ ${trackerSummary.trim()}
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 1500,
           system: REENGAGEMENT_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]
@@ -1829,7 +1829,7 @@ ${rejectionReason && rejectionReason.trim() ? `Что сказал при отк
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 2000,
           system: REJECTION_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]
@@ -1889,7 +1889,7 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 1200,
           system: DIALOG_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]
@@ -1945,7 +1945,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 2000,
           system: THINKING_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]
@@ -2183,7 +2183,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-6',
+          model: 'claude-sonnet-4-6',
           max_tokens: 900,
           system: CLIENT_ACTION_SYSTEM_PROMPT,
           messages: [{ role: 'user', content: userText }]

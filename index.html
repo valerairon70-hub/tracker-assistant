@@ -6374,8 +6374,8 @@
       return `
       <div class="client-card" onclick="openClientDetail('${c.id}')">
         ${statusBadge(c.status)}${overdue ? '<span class="overdue-badge">просрочено</span>' : ''}
-        <div class="client-card-name">${c.name}</div>
-        <div class="client-card-meta">${[c.age ? c.age + ' лет' : '', genderLabel(c.gender)].filter(Boolean).join(' · ')}</div>
+        <div class="client-card-name">${escHtml(c.name)}</div>
+        <div class="client-card-meta">${[c.age ? escHtml(c.age) + ' лет' : '', genderLabel(c.gender)].filter(Boolean).join(' · ')}</div>
         ${c.lastContactText ? `<div class="last-contact-snippet">💬 ${c.lastContact} — ${escHtml(c.lastContactText)}</div>` : ''}
         <div class="next-action-row${overdue ? ' overdue' : ''}">
           ${c.nextActionDate ? 'Следующий шаг: ' + c.nextActionDate : ''}
