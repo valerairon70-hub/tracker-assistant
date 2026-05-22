@@ -1502,6 +1502,127 @@
     }
     .card-internal .result-card-header { border-left: 3px solid #444; }
 
+    /* ── Дисконт-ссылка в «Кто я?» ── */
+    .discount-link-desc {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+      line-height: 1.55;
+    }
+    .discount-link-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .discount-link-input {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      color: #f0f0f0;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .discount-link-input:focus { border-color: #ff6b35; }
+    .btn-save-link {
+      background: #ff6b35;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.6rem 1.1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-save-link:hover { background: #e05a25; }
+    .discount-link-saved {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(76,175,80,0.08);
+      border: 1px solid rgba(76,175,80,0.25);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+    }
+    .discount-link-saved-text {
+      flex: 1;
+      font-size: 0.85rem;
+      color: #70e070;
+      word-break: break-all;
+    }
+    .btn-edit-link {
+      background: none;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #888;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-edit-link:hover { border-color: #ff6b35; color: #ff6b35; }
+
+    /* ── Блок «Как приобрести» в расшифровке ── */
+    .purchase-block {
+      background: #1a241a;
+      border: 1px solid #2a3a2a;
+      border-left: 4px solid #4caf50;
+      border-radius: 12px;
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+    .purchase-block-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #70e070;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.65rem;
+    }
+    .purchase-script-card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 8px;
+      margin-bottom: 0.4rem;
+      overflow: hidden;
+    }
+    .purchase-script-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: #d0d0d0;
+      transition: background 0.15s;
+    }
+    .purchase-script-header:hover { background: #2a2a2a; }
+    .purchase-script-body {
+      padding: 0.75rem 0.9rem 0.85rem;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: #ccc;
+      border-top: 1px solid #333;
+      display: none;
+    }
+    .purchase-link-missing {
+      font-size: 0.82rem;
+      color: #ff6b35;
+      background: rgba(255,107,53,0.07);
+      border: 1px solid rgba(255,107,53,0.2);
+      border-radius: 8px;
+      padding: 0.55rem 0.85rem;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+    }
+    .purchase-link-missing:hover { background: rgba(255,107,53,0.12); }
+
     /* ── Онбординг-подсказка ── */
     .onboarding-hint {
       display: flex;
@@ -2118,6 +2239,15 @@
     body.light .btn-outcome:hover { border-color: #907050; color: #1a0f07; }
     body.light .objection-row input { background: #fff8f0; border-color: #d4b890; color: #1a0f07; }
     body.light .objection-row input::placeholder { color: #c4a07a; }
+    body.light .purchase-block { background: #f0faf0; border-color: #c8e6c9; border-left-color: #4caf50; }
+    body.light .purchase-block-title { color: #2e7d32; }
+    body.light .purchase-script-card { background: #fff; border-color: #ddd; }
+    body.light .purchase-script-header { color: #2c1a0e; }
+    body.light .purchase-script-body { color: #3a2010; border-top-color: #e0e0e0; }
+    body.light .purchase-link-missing { color: #c0392b; }
+    body.light .discount-link-input { background: #fff8f0; border-color: #d4b890; color: #2c1a0e; }
+    body.light .discount-link-saved { background: rgba(76,175,80,0.08); }
+    body.light .discount-link-saved-text { color: #2e7d32; }
 
     /* Блок отказа */
     body.light .rejection-block { background: #fff5f5; border-color: #f0c0c0; }
@@ -3577,6 +3707,22 @@
         <div class="tab-panel" id="panel-identity">
           <div class="identity-wrap">
 
+            <!-- Моя ссылка для регистрации -->
+            <section class="identity-section">
+              <h3 class="identity-section-title">🔗 Моя ссылка для регистрации клиентов</h3>
+              <p class="discount-link-desc">Когда клиент регистрируется по вашей ссылке — получает дисконт 20%, а все его покупки фиксируются под вами. Ссылка автоматически появится в карточке протокола.</p>
+              <div class="discount-link-row" id="discount-link-row">
+                <input type="url" class="discount-link-input" id="discount-link-input"
+                  placeholder="https://coral.club/1234567.html"
+                  onkeydown="if(event.key==='Enter')saveDiscountLink()">
+                <button class="btn-save-link" onclick="saveDiscountLink()">Сохранить</button>
+              </div>
+              <div class="discount-link-saved" id="discount-link-saved">
+                <span class="discount-link-saved-text" id="discount-link-saved-text"></span>
+                <button class="btn-edit-link" onclick="editDiscountLink()">Изменить</button>
+              </div>
+            </section>
+
             <div class="identity-intro">
               <strong>Дескриптор</strong> — короткая фраза, которая с первых слов объясняет, чем вы занимаетесь. Вместо «консультирую по БАДам» — «Навигатор нутрицевтики». Помогает уверенно ответить на вопрос «А чем вы занимаетесь?» — без растерянности и долгих объяснений.
             </div>
@@ -3911,6 +4057,9 @@
 
     // Инициализация мини-CRM
     crmRenderTabs();
+
+    // Восстановить дисконт-ссылку если сохранена
+    initDiscountLinkSection();
   });
 
   function dismissOnboarding() {
@@ -5114,6 +5263,104 @@
     };
   }
 
+  // ════════════════════════════════════════
+  // ДИСКОНТ-ССЫЛКА
+  // ════════════════════════════════════════
+
+  function getDiscountLink() {
+    return localStorage.getItem('cc_discount_link') || '';
+  }
+
+  function saveDiscountLink() {
+    const input = document.getElementById('discount-link-input');
+    if (!input) return;
+    const val = input.value.trim();
+    if (!val) { input.style.borderColor = '#ff6b35'; return; }
+    localStorage.setItem('cc_discount_link', val);
+    input.style.borderColor = '';
+    const row = document.getElementById('discount-link-row');
+    const saved = document.getElementById('discount-link-saved');
+    const text = document.getElementById('discount-link-saved-text');
+    if (row) row.style.display = 'none';
+    if (saved) saved.style.display = 'flex';
+    if (text) text.textContent = val;
+  }
+
+  function editDiscountLink() {
+    const row = document.getElementById('discount-link-row');
+    const saved = document.getElementById('discount-link-saved');
+    const input = document.getElementById('discount-link-input');
+    if (row) row.style.display = 'flex';
+    if (saved) saved.style.display = 'none';
+    if (input) { input.value = getDiscountLink(); input.focus(); }
+  }
+
+  function initDiscountLinkSection() {
+    const link = getDiscountLink();
+    if (!link) return;
+    const row = document.getElementById('discount-link-row');
+    const saved = document.getElementById('discount-link-saved');
+    const text = document.getElementById('discount-link-saved-text');
+    const input = document.getElementById('discount-link-input');
+    if (row) row.style.display = 'none';
+    if (saved) saved.style.display = 'flex';
+    if (text) text.textContent = link;
+    if (input) input.value = link;
+  }
+
+  function renderPurchaseBlock() {
+    const link = getDiscountLink();
+    const linkLine = link
+      ? `\nСсылка для регистрации: ${link}`
+      : '\n(Добавьте вашу ссылку в разделе «Кто я?»)';
+
+    const unreg = `Кстати — у Coral Club есть программа для участников: регистрируешься один раз и получаешь личный дисконт 20% на все продукты. Никаких обязательных закупок и планов — просто своя скидка на всё что берёшь.${linkLine}\n\nРегистрация занимает 2-3 минуты. Напишите мне как зарегистрируетесь — помогу оформить первый заказ.`;
+
+    const reg = `Если вы уже зарегистрированы в Coral Club — просто зайдите в личный кабинет и добавьте продукты в корзину. Если нужна помощь с заказом или не помните данные для входа — напишите, разберём вместе.`;
+
+    const uid = Date.now();
+    const missingHint = !link ? `
+      <div class="purchase-link-missing" onclick="switchTab('identity')">
+        ⚠️ Добавьте вашу ссылку в <strong>«Кто я?»</strong> — она подставится здесь автоматически
+      </div>` : '';
+
+    return `
+    <div class="purchase-block">
+      <div class="purchase-block-title">💳 Как клиенту приобрести продукты</div>
+      ${missingHint}
+      <div class="purchase-script-card" id="psc-unreg-${uid}">
+        <div class="purchase-script-header" onclick="togglePurchaseScript('psc-unreg-${uid}')">
+          <span>Не зарегистрирован в Coral Club — как объяснить</span>
+          <span>▼</span>
+        </div>
+        <div class="purchase-script-body" id="psb-unreg-${uid}">
+          ${renderText(unreg)}
+          <button class="btn-copy" data-copy="${escHtml(unreg)}" onclick="copyText(this)" style="margin-top:0.65rem">Скопировать</button>
+        </div>
+      </div>
+      <div class="purchase-script-card" id="psc-reg-${uid}">
+        <div class="purchase-script-header" onclick="togglePurchaseScript('psc-reg-${uid}')">
+          <span>Уже зарегистрирован — как помочь с заказом</span>
+          <span>▼</span>
+        </div>
+        <div class="purchase-script-body" id="psb-reg-${uid}">
+          ${renderText(reg)}
+          <button class="btn-copy" data-copy="${escHtml(reg)}" onclick="copyText(this)" style="margin-top:0.65rem">Скопировать</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function togglePurchaseScript(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const body = card.querySelector('.purchase-script-body');
+    const arrow = card.querySelector('.purchase-script-header span:last-child');
+    const open = body && body.style.display === 'block';
+    if (body) body.style.display = open ? 'none' : 'block';
+    if (arrow) arrow.textContent = open ? '▼' : '▲';
+  }
+
   function renderDecodeResults(data, complaints, clientName, resultText, clientGender) {
     const panel = document.getElementById('decode-results');
     const recId = genId();
@@ -5200,7 +5447,7 @@
         ${internalHtml}
       </div>` : '';
 
-    panel.innerHTML = saveBlock + urgentBlock + stepsHtml + consultantBlock + renderDecodeOutcomeBlock(recId, clientDesc);
+    panel.innerHTML = saveBlock + urgentBlock + stepsHtml + renderPurchaseBlock() + consultantBlock + renderDecodeOutcomeBlock(recId, clientDesc);
     initAccordionCards(panel);
 
     // Показываем чат и сохраняем контекст анализа
