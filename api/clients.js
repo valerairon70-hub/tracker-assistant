@@ -1,7 +1,25 @@
 const crypto = require('crypto');
 
-function makeToken(mode, secret) {
-  return crypto.createHmac('sha256', secret).update(mode).digest('hex').slice(0, 32);
+function makeToken(slug, secret) {
+  return crypto.createHmac('sha256', secret).update(slug).digest('hex').slice(0, 32);
+}
+
+function getPartnerSlugs(secret) {
+  const raw = process.env.PARTNERS || '';
+  if (raw) {
+    return raw.split(',').map(pair => {
+      const idx = pair.indexOf(':');
+      if (idx === -1) return null;
+      const slug = pair.slice(0, idx).trim();
+      if (!slug) return null;
+      return { slug, token: makeToken(slug, secret) };
+    }).filter(Boolean);
+  }
+  // Обратная совместимость: если PARTNERS не задан
+  return [
+    { slug: 'main', token: makeToken('main', secret) },
+    { slug: 'test', token: makeToken('test', secret) },
+  ];
 }
 
 async function kvCmd(...args) {
@@ -29,6 +47,26 @@ async function kvSet(key, value) {
 
 async function kvDel(key) {
   await kvCmd('DEL', key);
+}
+
+// Ключи с пространством имён
+function indexKey(ns)       { return `ns:${ns}:clients:index`; }
+function clientKey(ns, id)  { return `ns:${ns}:client:${id}`; }
+
+// Одноразовая миграция: если у main нет данных в новом формате — копируем из старого
+async function maybeMigrateMain(ns) {
+  if (ns !== 'main') return;
+  const existing = await kvGet(indexKey('main'));
+  if (existing !== null) return; // уже мигрировано
+  const oldIndex = await kvGet('clients:index');
+  if (!oldIndex || oldIndex.length === 0) return;
+  // Копируем индекс
+  await kvSet(indexKey('main'), oldIndex);
+  // Копируем каждого клиента
+  await Promise.all(oldIndex.map(async entry => {
+    const client = await kvGet(`client:${entry.id}`);
+    if (client) await kvSet(clientKey('main', entry.id), client);
+  }));
 }
 
 function generateId() {
@@ -67,22 +105,27 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'KV не настроен' });
   }
 
-  // Проверка токена
+  // Определяем пространство имён по токену
+  let ns = null;
   if (tokenSecret) {
     const token = req.method === 'GET' ? req.query?.token : req.body?.token;
-    const mainToken = makeToken('main', tokenSecret);
-    const testToken = makeToken('test', tokenSecret);
-    if (token !== mainToken && token !== testToken) {
-      return res.status(401).json({ error: 'Нет доступа' });
-    }
+    const partners = getPartnerSlugs(tokenSecret);
+    const matched = partners.find(p => p.token === token);
+    if (!matched) return res.status(401).json({ error: 'Нет доступа' });
+    ns = matched.slug;
+  } else {
+    ns = 'main'; // dev-режим без секрета
   }
+
+  // Одноразовая миграция данных main при первом обращении
+  await maybeMigrateMain(ns);
 
   const action = req.method === 'GET' ? req.query?.action : req.body?.action;
 
   try {
     // ── GET: список всех клиентов ──
     if (req.method === 'GET' && action === 'list') {
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       return res.status(200).json({ clients: index });
     }
 
@@ -90,7 +133,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET' && action === 'get') {
       const { id } = req.query;
       if (!id) return res.status(400).json({ error: 'Не указан id' });
-      const client = await kvGet(`client:${id}`);
+      const client = await kvGet(clientKey(ns, id));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
       return res.status(200).json({ client });
     }
@@ -110,13 +153,11 @@ module.exports = async function handler(req, res) {
 
       const client = { id, name, age: age || '', gender: gender || '', phone: phone || '', notes: notes || '', created: now, status: 'invited', nextActionDate, sessions: [] };
 
-      // Сохраняем клиента
-      await kvSet(`client:${id}`, client);
+      await kvSet(clientKey(ns, id), client);
 
-      // Обновляем индекс
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       index.unshift({ id, name, age: age || '', gender: gender || '', created: now, status: 'invited', nextActionDate, lastSession: null });
-      await kvSet('clients:index', index);
+      await kvSet(indexKey(ns), index);
 
       return res.status(200).json({ ok: true, client });
     }
@@ -126,7 +167,7 @@ module.exports = async function handler(req, res) {
       const { clientId, complaints, stage, mood, result, protocol, systems, sessionType } = req.body;
       if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
 
-      const client = await kvGet(`client:${clientId}`);
+      const client = await kvGet(clientKey(ns, clientId));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
 
       const sessionId = generateId();
@@ -145,12 +186,11 @@ module.exports = async function handler(req, res) {
       };
 
       client.sessions.push(session);
-      await kvSet(`client:${clientId}`, client);
+      await kvSet(clientKey(ns, clientId), client);
 
-      // Обновляем lastSession в индексе
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       const entry = index.find(c => c.id === clientId);
-      if (entry) { entry.lastSession = now; await kvSet('clients:index', index); }
+      if (entry) { entry.lastSession = now; await kvSet(indexKey(ns), index); }
 
       return res.status(200).json({ ok: true, session });
     }
@@ -160,7 +200,7 @@ module.exports = async function handler(req, res) {
       const { clientId, name, age, gender, phone, notes } = req.body;
       if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
 
-      const client = await kvGet(`client:${clientId}`);
+      const client = await kvGet(clientKey(ns, clientId));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
 
       if (name !== undefined) client.name = name;
@@ -169,16 +209,15 @@ module.exports = async function handler(req, res) {
       if (phone !== undefined) client.phone = phone;
       if (notes !== undefined) client.notes = notes;
 
-      await kvSet(`client:${clientId}`, client);
+      await kvSet(clientKey(ns, clientId), client);
 
-      // Синхронизируем имя в индексе
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       const entry = index.find(c => c.id === clientId);
       if (entry) {
         if (name !== undefined) entry.name = name;
         if (age !== undefined) entry.age = age;
         if (gender !== undefined) entry.gender = gender;
-        await kvSet('clients:index', index);
+        await kvSet(indexKey(ns), index);
       }
 
       return res.status(200).json({ ok: true, client });
@@ -189,7 +228,7 @@ module.exports = async function handler(req, res) {
       const { clientId, status, nextActionDate } = req.body;
       if (!clientId || !status) return res.status(400).json({ error: 'Не указан clientId или status' });
 
-      const client = await kvGet(`client:${clientId}`);
+      const client = await kvGet(clientKey(ns, clientId));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
 
       client.status = status;
@@ -197,14 +236,14 @@ module.exports = async function handler(req, res) {
       const today = new Date().toISOString().slice(0, 10);
       client.nextActionDate = nextActionDate || (days !== null ? addDays(today, days) : null);
 
-      await kvSet(`client:${clientId}`, client);
+      await kvSet(clientKey(ns, clientId), client);
 
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       const entry = index.find(c => c.id === clientId);
       if (entry) {
         entry.status = client.status;
         entry.nextActionDate = client.nextActionDate;
-        await kvSet('clients:index', index);
+        await kvSet(indexKey(ns), index);
       }
 
       return res.status(200).json({ ok: true, status: client.status, nextActionDate: client.nextActionDate });
@@ -215,7 +254,7 @@ module.exports = async function handler(req, res) {
       const { clientId, text } = req.body;
       if (!clientId || !text?.trim()) return res.status(400).json({ error: 'Не указан clientId или text' });
 
-      const client = await kvGet(`client:${clientId}`);
+      const client = await kvGet(clientKey(ns, clientId));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
 
       const contactId = generateId();
@@ -224,14 +263,14 @@ module.exports = async function handler(req, res) {
 
       if (!client.contacts) client.contacts = [];
       client.contacts.push(contact);
-      await kvSet(`client:${clientId}`, client);
+      await kvSet(clientKey(ns, clientId), client);
 
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       const entry = index.find(c => c.id === clientId);
       if (entry) {
         entry.lastContact = now;
         entry.lastContactText = text.trim().slice(0, 80);
-        await kvSet('clients:index', index);
+        await kvSet(indexKey(ns), index);
       }
 
       return res.status(200).json({ ok: true, contact });
@@ -242,11 +281,11 @@ module.exports = async function handler(req, res) {
       const { clientId, contactId } = req.body;
       if (!clientId || !contactId) return res.status(400).json({ error: 'Не указан clientId или contactId' });
 
-      const client = await kvGet(`client:${clientId}`);
+      const client = await kvGet(clientKey(ns, clientId));
       if (!client) return res.status(404).json({ error: 'Клиент не найден' });
 
       client.contacts = (client.contacts || []).filter(c => c.id !== contactId);
-      await kvSet(`client:${clientId}`, client);
+      await kvSet(clientKey(ns, clientId), client);
 
       return res.status(200).json({ ok: true });
     }
@@ -256,11 +295,11 @@ module.exports = async function handler(req, res) {
       const { clientId } = req.body;
       if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
 
-      await kvDel(`client:${clientId}`);
+      await kvDel(clientKey(ns, clientId));
 
-      const index = await kvGet('clients:index') || [];
+      const index = await kvGet(indexKey(ns)) || [];
       const updated = index.filter(c => c.id !== clientId);
-      await kvSet('clients:index', updated);
+      await kvSet(indexKey(ns), updated);
 
       return res.status(200).json({ ok: true });
     }

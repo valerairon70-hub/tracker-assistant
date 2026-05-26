@@ -1713,6 +1713,7 @@ module.exports = async function handler(req, res) {
     clientDesc, healthHints, channel, senderGender,
     stage, readiness,
     clientName, clientGender,
+    trackerText,
     trackerProtocols, trackerProtocolsText,
     rejectionReason, thinkingReason,
     refinement, previousResult,
@@ -1753,12 +1754,13 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 2000,
-          system: INVITE_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: INVITE_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -1820,12 +1822,13 @@ ${trackerSummary.trim()}
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 1500,
-          system: REENGAGEMENT_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: REENGAGEMENT_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -1876,12 +1879,13 @@ ${rejectionReason && rejectionReason.trim() ? `Что сказал при отк
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 2000,
-          system: REJECTION_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: REJECTION_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -1936,12 +1940,13 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 1200,
-          system: DIALOG_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: DIALOG_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -1992,12 +1997,13 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 2000,
-          system: THINKING_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: THINKING_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -2038,13 +2044,14 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 1500,
           stream: true,
-          system: chatSystem,
+          system: [{ type: 'text', text: chatSystem, cache_control: { type: 'ephemeral' } }],
           messages: chatMessages
         })
       });
@@ -2141,13 +2148,14 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 800,
           stream: true,
-          system: posSystem,
+          system: [{ type: 'text', text: posSystem, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: posUserText }]
         })
       });
@@ -2230,12 +2238,13 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'prompt-caching-2024-07-31'
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 900,
-          system: CLIENT_ACTION_SYSTEM_PROMPT,
+          system: [{ type: 'text', text: CLIENT_ACTION_SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
           messages: [{ role: 'user', content: userText }]
         })
       });
@@ -2298,8 +2307,11 @@ ${hasPrev
 • Если это диаграмма трекера здоровья — определи статус каждой из 12 систем по цвету секторов (зелёный=норма, жёлтый=нагрузка, красный=перегруз), учти процентные значения.
 • Если это медицинские документы (анализы крови/мочи, МРТ, УЗИ, КТ, заключения врача) — работай как нутрициолог: соотнеси отклонения с системами по Бутаковой, определи фазу (острая / подострая / восстановление).
 • Если переданы и трекер, и анализы — используй оба источника для полной картины.${imageCount > 1 ? '\nИспользуй все изображения.' : ''}`
+    : trackerText
+    ? `Данные трекера здоровья переданы в текстовом виде (ниже). Проанализируй их как результаты трекера: определи статус каждой упомянутой системы по процентной нагрузке (до 30% — норма/зелёный, 31–60% — нагрузка/жёлтый, более 60% — перегруз/красный). Для систем без явного процента — определи статус по контексту описания.`
     : `Диаграмма трекера не предоставлена. Клиент обратился с запросом/целью без прохождения трекера. Работай только на основе жалоб и целей клиента. В блоке <системы> укажи предположительно затронутые системы на основе жалоб. В скрипте предложи клиенту пройти трекер для точной картины.`
 }
+${trackerText ? `\n═══ ДАННЫЕ ТРЕКЕРА (текст) ═══\n${trackerText}\n═══════════════════════════` : ''}
 
 ${(trackerProtocols && trackerProtocols.length > 0) || trackerProtocolsText ? `
 ═══ ПРОТОКОЛЫ ТРЕКЕРА (рекомендации автора метода) ═══

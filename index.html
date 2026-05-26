@@ -557,6 +557,45 @@
       text-underline-offset: 2px;
     }
 
+    .input-mode-toggle {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+    .mode-btn {
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      color: #aaa;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .mode-btn.active {
+      background: #ff6b35;
+      border-color: #ff6b35;
+      color: #fff;
+    }
+    .tracker-text-input {
+      display: none;
+      width: 100%;
+      min-height: 120px;
+      background: #1a1a1a;
+      border: 1px dashed #3a3a3a;
+      border-radius: 10px;
+      color: #f0f0f0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      padding: 0.75rem;
+      resize: vertical;
+      outline: none;
+      font-family: monospace;
+      box-sizing: border-box;
+    }
+    .tracker-text-input:focus { border-color: #ff6b35; }
+    .tracker-text-input::placeholder { color: #555; }
+
     /* ── Жалобы ── */
     .complaint-row {
       display: flex;
@@ -2204,6 +2243,11 @@
     }
     body.light .upload-zone .upload-text { color: #5a3a1a; }
     body.light .upload-zone .upload-hint { color: #907050; }
+    body.light .mode-btn { background: #fff8f0; border-color: #d4b890; color: #7a5020; }
+    body.light .mode-btn.active { background: #ff6b35; border-color: #ff6b35; color: #fff; }
+    body.light .tracker-text-input { background: #fff8f0; border-color: #d4b890; color: #1a0f07; }
+    body.light .tracker-text-input:focus { border-color: #b8860b; }
+    body.light .tracker-text-input::placeholder { color: #c4a07a; }
 
     /* Жалобы */
     body.light .complaint-num { background: rgba(184,134,11,0.12); color: #8b6914; }
@@ -3585,7 +3629,12 @@
 
             <!-- Форма расшифровки -->
             <div class="input-panel">
-              <h2>Данные клиента</h2>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem">
+                <h2 style="margin:0">Данные клиента</h2>
+                <button onclick="resetDecodeForm()" style="background:none;border:1px solid #3a3a3a;border-radius:8px;color:#666;font-size:0.8rem;padding:0.3rem 0.85rem;cursor:pointer;transition:all 0.15s;white-space:nowrap"
+                  onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
+                  onmouseout="this.style.borderColor='#3a3a3a';this.style.color='#666'">+ Новый анализ</button>
+              </div>
 
               <!-- Загрузка диаграммы — Шаг 1 -->
               <div class="field-group">
@@ -3594,6 +3643,10 @@
                   <span class="step-title">Диаграмма трекера или результаты анализов</span>
                 </div>
                 <p class="step-hint">Скриншот круговой диаграммы, анализы крови, МРТ, УЗИ — сюда</p>
+                <div class="input-mode-toggle">
+                  <button type="button" class="mode-btn active" id="mode-btn-image" onclick="setInputMode('image')">📷 Скриншот</button>
+                  <button type="button" class="mode-btn" id="mode-btn-text" onclick="setInputMode('text')">📝 Текст</button>
+                </div>
                 <div class="upload-zone" id="upload-zone">
                   <input type="file" id="file-input" accept="image/*" multiple style="display:none">
                   <div id="upload-placeholder">
@@ -3606,6 +3659,8 @@
                     <span class="upload-add-more">+ добавить ещё скриншоты</span>
                   </div>
                 </div>
+                <textarea id="tracker-text-input" class="tracker-text-input" rows="5"
+                  placeholder="Вставьте данные трекера — например:&#10;НАГРУЗКА 45% КРОВЕТВОРНАЯ СИСТЕМА / КС&#10;НАГРУЗКА 35% ЦЕНТРАЛЬНАЯ НЕРВНАЯ СИСТЕМА / ЦНС&#10;НАГРУЗКА 20% ОПОРНО-ДВИГАТЕЛЬНАЯ СИСТЕМА / ОДС"></textarea>
               </div>
 
               <!-- Клиент -->
@@ -4165,7 +4220,7 @@
     inp.focus();
   }
 
-  const TEST_LIMIT = 10;
+  const TEST_LIMIT = 30;
 
   async function login() {
     const val = document.getElementById('pwd-input').value.trim();
@@ -4189,7 +4244,7 @@
         return;
       }
 
-      if (data.mode === 'test' && getTestCount() >= TEST_LIMIT) {
+      if (data.mode !== 'main' && getTestCount() >= TEST_LIMIT) {
         showLimitModal();
         return;
       }
@@ -4220,7 +4275,7 @@
   }
 
   const stored = localStorage.getItem('auth');
-  if ((stored === 'main' || stored === 'test') && localStorage.getItem('auth_token')) {
+  if (stored && localStorage.getItem('auth_token')) {
     document.getElementById('password-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     updateReminderBadge();
@@ -4237,7 +4292,7 @@
   }
 
   function isTestMode() {
-    return localStorage.getItem('auth') === 'test';
+    return localStorage.getItem('auth') !== 'main';
   }
 
   function checkTestLimit() {
@@ -4573,6 +4628,15 @@
   // ЗАГРУЗКА ИЗОБРАЖЕНИЙ
   // ════════════════════════════════════════
   let uploadedImages = [];
+  let trackerInputMode = 'image';
+
+  window.setInputMode = function(mode) {
+    trackerInputMode = mode;
+    document.getElementById('mode-btn-image').classList.toggle('active', mode === 'image');
+    document.getElementById('mode-btn-text').classList.toggle('active', mode === 'text');
+    document.getElementById('upload-zone').style.display = mode === 'image' ? '' : 'none';
+    document.getElementById('tracker-text-input').style.display = mode === 'text' ? 'block' : 'none';
+  };
 
   const uploadZone = document.getElementById('upload-zone');
   const fileInput  = document.getElementById('file-input');
@@ -5167,6 +5231,53 @@
     initAccordionCards(panel);
   }
 
+  function resetDecodeForm() {
+    // Очищаем загруженные файлы
+    uploadedImages = [];
+    prevImages = [];
+    protocolImages = [];
+    renderThumbnails();
+    renderThumbnailsPrev();
+    renderThumbnailsProto();
+
+    // Сбрасываем режим ввода на скриншот
+    setInputMode('image');
+
+    // Очищаем текстовые поля
+    document.getElementById('tracker-text-input').value = '';
+    document.getElementById('c1').value = '';
+    document.getElementById('c2').value = '';
+    document.getElementById('c3').value = '';
+    document.getElementById('client-name').value = '';
+    const trackerText = document.getElementById('tracker-protocols-text');
+    if (trackerText) trackerText.value = '';
+
+    // Сбрасываем переключатели на значения по умолчанию
+    const stageFirst = document.getElementById('st-first');
+    if (stageFirst) stageFirst.checked = true;
+    const cgF = document.getElementById('cg-f');
+    if (cgF) cgF.checked = true;
+    const readinessOpen = document.querySelector('input[name="readiness"][value="open"]');
+    if (readinessOpen) readinessOpen.checked = true;
+
+    // Скрываем блок предыдущего трекера
+    const prevBlock = document.getElementById('prev-tracker-block');
+    if (prevBlock) prevBlock.classList.remove('visible');
+
+    // Очищаем результаты
+    document.getElementById('decode-results').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>Загрузите диаграмму, укажите жалобы и этап — здесь появится полная расшифровка</p>
+      </div>`;
+
+    // Скрываем чат
+    const chat = document.getElementById('analysis-chat');
+    if (chat) chat.style.display = 'none';
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) chatMessages.innerHTML = '';
+  }
+
   function resetInviteForm() {
     document.getElementById('inv-person').value = '';
     const healthHints = document.getElementById('inv-health');
@@ -5221,6 +5332,9 @@
       ? protocolImages.map(img => ({ base64: img.base64, mimeType: img.mimeType }))
       : null;
     const trackerProtocolsText = document.getElementById('tracker-protocols-text').value.trim() || null;
+    const trackerText = trackerInputMode === 'text'
+      ? (document.getElementById('tracker-text-input').value.trim() || null)
+      : null;
 
     setDecodeLoading(true);
 
@@ -5230,13 +5344,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode: 'decode',
-          images: uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
+          images: trackerInputMode === 'image' ? uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })) : [],
           prevImages: prevImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
           complaints: [c1, c2, c3].filter(Boolean),
           stage,
           readiness,
           clientName,
           clientGender,
+          trackerText: trackerText || null,
           trackerProtocols: trackerProtocols || null,
           trackerProtocolsText: trackerProtocolsText || null,
           token: localStorage.getItem('auth_token')
