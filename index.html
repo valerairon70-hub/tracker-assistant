@@ -168,6 +168,27 @@
 
     header .logout:hover { border-color: #ff6b35; color: #ff6b35; }
 
+    .usage-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 20px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+    .usage-counter.ok   { color: #4ade80; border-color: #2a4a2a; }
+    .usage-counter.warn { color: #f59e0b; border-color: #4a3a1a; }
+    .usage-counter.low  { color: #f87171; border-color: #4a2020; }
+    .usage-counter .usage-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor; flex-shrink: 0;
+    }
+
     .container {
       max-width: 980px;
       margin: 0 auto;
@@ -790,6 +811,27 @@
 
     .btn-copy:hover { border-color: #ff6b35; color: #ff6b35; }
     .btn-copy.copied { border-color: #22c55e; color: #22c55e; }
+
+    .btn-wa, .btn-tg {
+      background: none;
+      border: 1px solid;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      line-height: 1;
+    }
+    .btn-wa { border-color: #25D366; color: #25D366; }
+    .btn-wa:hover { background: #25D366; color: #fff; }
+    .btn-tg { border-color: #229ED9; color: #229ED9; }
+    .btn-tg:hover { background: #229ED9; color: #fff; }
 
     /* ── Блок исхода консультации ── */
     .outcome-block {
@@ -2643,6 +2685,43 @@
       margin-bottom: 0.75rem;
     }
 
+    .btn-compare-sessions {
+      width: 100%;
+      background: linear-gradient(135deg, #1e3a2e, #1e2a3a);
+      border: 1px solid #2a4a3a;
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      color: #4ade80;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    .btn-compare-sessions:hover { border-color: #4ade80; background: #1e3a2e; }
+    .btn-compare-sessions:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .compare-result {
+      background: #1a2a1a;
+      border: 1px solid #2a3d2a;
+      border-radius: 12px;
+      padding: 1.1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      display: none;
+    }
+    .compare-result.visible { display: block; }
+    .compare-section { margin-bottom: 0.9rem; }
+    .compare-section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    .compare-section.plus  .compare-section-title { color: #4ade80; }
+    .compare-section.minus .compare-section-title { color: #f59e0b; }
+    .compare-section.fix   .compare-section-title { color: #60a5fa; }
+    .compare-section.msg   .compare-section-title { color: #c084fc; }
+    .compare-section-body { color: #ccc; white-space: pre-wrap; }
+
     .session-item {
       background: #1e1e1e;
       border: 1px solid #2e2e2e;
@@ -3393,7 +3472,11 @@
   .home-greeting { font-size: 1.6rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.25rem; }
   .home-subtitle { color: #888; font-size: 0.95rem; margin-bottom: 2rem; }
   .home-section { margin-bottom: 1.5rem; }
-  .home-section-title { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-bottom: 0.75rem; }
+  .home-section-title { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #888; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; transition: color 0.15s; }
+  .home-section-title:hover { color: #bbb; }
+  .home-section-chevron { font-size: 0.7rem; transition: transform 0.2s; opacity: 0.7; }
+  .home-section-title.collapsed .home-section-chevron { transform: rotate(-90deg); }
+  .home-section-body.collapsed { display: none; }
   .home-item { border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.6rem; background: #242424; border: 1px solid #2e2e2e; }
   .home-item-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.2rem; }
   .home-item-name { font-weight: 600; color: #f0f0f0; font-size: 0.97rem; }
@@ -3423,6 +3506,173 @@
   body.light .home-item-result { background: #f7f3ee; color: #444; }
   body.light .home-quick-btn { background: #f7f3ee; border-color: #e0d8cc; color: #555; }
   body.light .home-divider { border-color: #e8e0d5; }
+
+  /* ══ Калькулятор набора ══ */
+  .calc-block {
+    background: #242424;
+    border: 1px solid #333;
+    border-left: 3px solid #ff6b35;
+    border-radius: 12px;
+    padding: 1.25rem 1.25rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .calc-block-title { font-size: 0.95rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.2rem; }
+  .calc-note { font-size: 0.75rem; color: #777; margin-bottom: 0.9rem; }
+  .calc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .calc-row-left { flex: 1; min-width: 0; }
+  .calc-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #e8e8e8;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .calc-sys-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    color: #555;
+    background: #1e1e1e;
+    border-radius: 4px;
+    padding: 0 4px;
+    margin-top: 0.1rem;
+  }
+  .calc-row-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+  .calc-prices { display: flex; flex-direction: column; align-items: flex-end; gap: 0.05rem; }
+  .calc-retail-price { font-size: 0.7rem; color: #555; text-decoration: line-through; line-height: 1; }
+  .calc-club-price { font-size: 0.85rem; font-weight: 600; color: #ff6b35; line-height: 1; }
+  .calc-qty-ctrl {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .calc-qty-ctrl button {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1rem;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.12s, background 0.12s;
+    flex-shrink: 0;
+  }
+  .calc-qty-ctrl button:hover { color: #ff6b35; background: rgba(255,107,53,0.08); }
+  .calc-qty-val { font-size: 0.82rem; color: #e0e0e0; min-width: 18px; text-align: center; }
+  .calc-remove {
+    background: none;
+    border: none;
+    color: #484848;
+    font-size: 0.78rem;
+    cursor: pointer;
+    padding: 3px 2px;
+    line-height: 1;
+    transition: color 0.12s;
+  }
+  .calc-remove:hover { color: #ef4444; }
+  .calc-empty { text-align: center; color: #555; font-size: 0.82rem; padding: 0.8rem 0; }
+  .calc-add-row { display: flex; gap: 0.45rem; margin-top: 0.8rem; }
+  .calc-add-select {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    color: #bbb;
+    font-size: 0.8rem;
+    padding: 0.42rem 0.65rem;
+    outline: none;
+    cursor: pointer;
+    min-width: 0;
+  }
+  .calc-add-select:focus { border-color: #ff6b35; }
+  .btn-calc-add {
+    background: none;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    color: #aaa;
+    font-size: 0.8rem;
+    padding: 0.42rem 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .btn-calc-add:hover { border-color: #ff6b35; color: #ff6b35; }
+  .calc-totals {
+    margin-top: 0.9rem;
+    padding: 0.85rem 1rem;
+    background: #1e1e1e;
+    border-radius: 10px;
+  }
+  .calc-total-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #888; margin-bottom: 0.3rem; }
+  .calc-total-row.hl { color: #f0f0f0; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.28rem; }
+  .calc-total-club { color: #ff6b35; }
+  .calc-total-row.savings { color: #22c55e; margin-bottom: 0.55rem; }
+  .calc-cashback-note { font-size: 0.74rem; color: #777; margin-bottom: 0.8rem; line-height: 1.4; }
+  .calc-register-btn {
+    display: block;
+    text-align: center;
+    background: #ff6b35;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .calc-register-btn:hover { background: #e85c28; }
+  .calc-register-btn.no-link { background: #252525; color: #555; cursor: pointer; }
+  .calc-register-btn.no-link:hover { background: #2a2a2a; color: #888; }
+  .calc-distributor {
+    margin-top: 0.9rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    background: #1a1a1a;
+  }
+  .calc-dist-label { font-size: 0.68rem; color: #444; text-align: center; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.55rem; }
+  .calc-dist-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.82rem; color: #777; margin-bottom: 0.45rem; }
+  .calc-pts-val { font-weight: 700; color: #a78bfa; font-size: 1.05rem; }
+  .calc-progress-wrap { height: 5px; background: #252525; border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; }
+  .calc-progress-bar { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 3px; transition: width 0.35s ease; }
+  .calc-dist-targets { font-size: 0.72rem; color: #555; line-height: 1.55; }
+  /* Light theme */
+  body.light .calc-block { background: #fff8f0; border-color: #e8d4b0; border-left-color: #ff6b35; }
+  body.light .calc-block-title { color: #2c1a0e; }
+  body.light .calc-note { color: #a07050; }
+  body.light .calc-row { border-bottom-color: #eee; }
+  body.light .calc-name { color: #1a0f07; }
+  body.light .calc-sys-badge { background: #f0e8dc; color: #a07050; }
+  body.light .calc-retail-price { color: #bbb; }
+  body.light .calc-qty-ctrl { background: #fff; border-color: #d4b890; }
+  body.light .calc-qty-ctrl button { color: #907050; }
+  body.light .calc-qty-val { color: #2c1a0e; }
+  body.light .calc-totals { background: #fffaf4; }
+  body.light .calc-total-row { color: #907050; }
+  body.light .calc-total-row.hl { color: #2c1a0e; }
+  body.light .calc-cashback-note { color: #b09070; }
+  body.light .calc-distributor { background: #fffaf4; border-color: #e8d4b0; }
+  body.light .calc-dist-label { color: #c4a07a; }
+  body.light .calc-dist-row { color: #907050; }
+  body.light .calc-dist-targets { color: #b09070; }
+  body.light .calc-progress-wrap { background: #ead4b0; }
+  body.light .calc-add-select { background: #fff; border-color: #d4b890; color: #3a2010; }
+  body.light .btn-calc-add { border-color: #d4b890; color: #907050; }
+  body.light .btn-calc-add:hover { border-color: #ff6b35; color: #ff6b35; }
   </style>
 </head>
 <body>
@@ -3511,6 +3761,7 @@
           <div class="tagline">Метод Бутаковой · Coral Club</div>
         </div>
         <button class="btn-reminder-badge" id="reminder-badge" onclick="switchTab('stats')" style="display:none" title="Есть запланированные касания"></button>
+        <div class="usage-counter ok" id="usage-counter" style="display:none" title="Запросов использовано"></div>
         <button class="btn-theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Сменить тему">☀️ Светлая</button>
         <button class="logout" onclick="logout()">Выйти</button>
       </div>
@@ -4136,6 +4387,8 @@
         </div>
         <div class="contact-section-title" style="margin-top:1.5rem">Расшифровки ИИ</div>
         <div id="detail-sessions"></div>
+        <button class="btn-compare-sessions" id="btn-compare-sessions" onclick="compareClientSessions()" style="display:none">🔄 Сравнить трекеры До → После</button>
+        <div class="compare-result" id="compare-result"></div>
         <div class="contact-section-title" style="margin-top:1.5rem">Следующий шаг</div>
         <button class="btn-client-action" id="btn-client-action" onclick="generateClientAction()">✍️ Что написать клиенту</button>
         <div class="client-action-result" id="client-action-result">
@@ -4153,6 +4406,63 @@
   </div>
 
 <script>
+  // ════════════════════════════════════════
+  // БАЗА ПРОДУКТОВ CORAL CLUB
+  // ════════════════════════════════════════
+  const PRODUCTS_DB = [
+    /* ── ССС ── */
+    { id:'coq10',        name:'Коэнзим Q10 100 мг',               aliases:['коэнзим','q10'],                             system:'ССС',   club:2580,  retail:3225,  pts:19  },
+    { id:'omega3',       name:'О!Мега-3 ТГ (30 капс)',             aliases:['омега-3','о!мега','omega-3','омега3'],        system:'ССС',   club:1032,  retail:1290,  pts:7   },
+    { id:'carnitine',    name:'Корал Карнитин',                    aliases:['карнитин'],                                  system:'ССС',   club:2580,  retail:3225,  pts:20  },
+    { id:'circufit',     name:'ЦиркуФит',                         aliases:['циркуфит','circu'],                           system:'ССС',   club:2322,  retail:2903,  pts:16  },
+    /* ── ЦНС ── */
+    { id:'griffonia',    name:'Гриффония',                         aliases:['гриффони'],                                  system:'ЦНС',   club:1393,  retail:1742,  pts:10  },
+    { id:'magnesium',    name:'Корал Магний',                      aliases:['магни'],                                     system:'ЦНС',   club:1548,  retail:1935,  pts:11  },
+    { id:'memoprime',    name:'Мемо-Прайм',                        aliases:['мемо-прайм','мемопрайм'],                    system:'ЦНС',   club:2064,  retail:2580,  pts:14  },
+    /* ── КМС ── */
+    { id:'biluron',      name:'Би-Лурон (2×500 мл)',               aliases:['би-лурон','билурон','b-luron','гиалурон'],   system:'КМС',   club:19350, retail:24188, pts:135 },
+    { id:'zinc',         name:'Цинк Метионин 25 мг',               aliases:['цинк'],                                      system:'КМС',   club:946,   retail:1183,  pts:6   },
+    { id:'calciprime',   name:'Кальци-Прайм',                      aliases:['кальци'],                                    system:'КМС',   club:1892,  retail:2365,  pts:13  },
+    { id:'flexicor',     name:'ФлексиКор',                         aliases:['флексикор','flexicor'],                      system:'КМС',   club:2838,  retail:3548,  pts:20  },
+    { id:'plankton',     name:'Премиум Планктон Ойл',              aliases:['планктон','plankton'],                        system:'КМС',   club:3268,  retail:4085,  pts:23  },
+    { id:'promateen',    name:'Промарин Пептиды Коллагена (1 уп.)',aliases:['промарин пептид','promateen','промарин'],     system:'КМС',   club:4730,  retail:5913,  pts:33  },
+    { id:'trimateen',    name:'Промарин Трипептиды (1 уп.)',       aliases:['промарин трипептид','трипептид'],             system:'КМС',   club:5447,  retail:6809,  pts:38  },
+    /* ── Пищеварение ── */
+    { id:'assimil',      name:'Ассимилятор',                       aliases:['ассимилятор'],                               system:'ПС',    club:2494,  retail:3118,  pts:17  },
+    { id:'superflora',   name:'Супер-Флора',                       aliases:['супер-флора','супер флора'],                 system:'ПС',    club:1720,  retail:2150,  pts:12  },
+    { id:'lecithin',     name:'Корал Лецитин',                     aliases:['лецитин'],                                   system:'ПС',    club:1290,  retail:1634,  pts:8   },
+    { id:'artichoke',    name:'Корал Артишок',                     aliases:['артишок'],                                   system:'ПС',    club:1548,  retail:1935,  pts:11  },
+    { id:'colova_l',     name:'Коло-Вада Лайт (программа)',        aliases:['коло-вада лайт','коловада лайт'],             system:'ПС',    club:6622,  retail:8278,  pts:46  },
+    { id:'colova_p',     name:'Коло-Вада Плюс (программа)',        aliases:['коло-вада плюс','коловада плюс'],             system:'ПС',    club:7663,  retail:9579,  pts:53  },
+    { id:'parashield',   name:'Парашилд',                          aliases:['паращилд','parashield'],                     system:'ПС',    club:7224,  retail:9030,  pts:50  },
+    /* ── Лимфа / Вода ── */
+    { id:'coralmine',    name:'Корал-Майн (10 саше)',              aliases:['корал-майн','coral-mine','coral mine'],       system:'Лимфа', club:688,   retail:860,   pts:5   },
+    { id:'h500',         name:'H-500',                             aliases:['h-500','н-500'],                             system:'Лимфа', club:2752,  retail:3440,  pts:20  },
+    /* ── Иммунитет ── */
+    { id:'spirulina',    name:'Спирулина Премиум',                 aliases:['спирулин','spirulina'],                      system:'ИС',    club:2150,  retail:2688,  pts:14  },
+    { id:'dspray',       name:'D-Спрей 2000',                      aliases:['d-спрей','d спрей','dspray'],                system:'ИС',    club:1032,  retail:1290,  pts:7   },
+    { id:'selenium',     name:'Селен',                             aliases:['selenium'],                                  system:'ИС',    club:1118,  retail:1398,  pts:8   },
+    { id:'protiviti',    name:'Противити Ультра',                  aliases:['противити','protivity'],                     system:'ИС',    club:3526,  retail:4408,  pts:25  },
+    { id:'chlorella',    name:'Хлорелла',                          aliases:['хлорелл'],                                   system:'ИС',    club:2021,  retail:2527,  pts:14  },
+    { id:'triplec',      name:'Трипл Си',                          aliases:['triple c','triple-c','трипл'],               system:'ИС',    club:2150,  retail:2688,  pts:15  },
+    /* ── Эндокринная ── */
+    { id:'lipostick',    name:'Липостик Фит (60 стиков)',          aliases:['липостик','lipostick'],                      system:'ЭДС',   club:6450,  retail:8067,  pts:45  },
+    /* ── Репродуктивная ── */
+    { id:'libidextra_f', name:'ЛибидЭкстра Женская',              aliases:['либидэкстра жен','либидэкстра ж'],            system:'РС',    club:2064,  retail:2580,  pts:14  },
+    { id:'libidextra_m', name:'ЛибидЭкстра Мужская',              aliases:['либидэкстра муж','либидэкстра м'],            system:'РС',    club:2064,  retail:2580,  pts:14  },
+    /* ── Готовые ПЭКи ── */
+    { id:'pec_cns',      name:'Ментал Форс (ПЭК ЦНС)',            aliases:['ментал форс','mental force'],                 system:'ЦНС',   club:6622,  retail:8278,  pts:46  },
+    { id:'pec_cvc',      name:'КардиоПЭК',                        aliases:['кардиопэк'],                                 system:'ССС',   club:7654,  retail:9568,  pts:53  },
+    { id:'pec_gut',      name:'Здоровый Кишечник (ПЭК)',          aliases:['здоровый кишечник'],                          system:'ПС',    club:7396,  retail:9245,  pts:51  },
+    { id:'pec_imm',      name:'Иммунити Пэк',                     aliases:['иммунити пэк','immunity pak'],               system:'ИС',    club:7396,  retail:9245,  pts:51  },
+    { id:'hydramax',     name:'ГидраМакс (ПЭК Лимфа)',            aliases:['гидрамакс','hydramax'],                      system:'Лимфа', club:7052,  retail:8815,  pts:49  },
+    { id:'hydramax_p',   name:'ГидраМакс Плюс',                   aliases:['гидрамакс плюс'],                            system:'Лимфа', club:10062, retail:12578, pts:70  },
+    { id:'pec_kms',      name:'Рикавер (ПЭК КМС)',                aliases:['рикавер'],                                   system:'КМС',   club:11266, retail:14083, pts:78  },
+    { id:'pec_pns',      name:'Здоровый Старт (ПЭК ПНС)',         aliases:['здоровый старт'],                            system:'ПНС',   club:6493,  retail:8117,  pts:45  },
+  ];
+
+  const calcState = {};
+
   // ════════════════════════════════════════
   // ТЕМА
   // ════════════════════════════════════════
@@ -4287,6 +4597,7 @@
       document.getElementById('password-screen').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       updateReminderBadge();
+      updateUsageCounter();
       switchTab('home');
 
     } catch (e) {
@@ -4312,6 +4623,7 @@
     document.getElementById('password-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     updateReminderBadge();
+    updateUsageCounter();
     switchTab('home');
   }
 
@@ -4322,6 +4634,22 @@
 
   function incrementTestCounter() {
     localStorage.setItem('cc_test_count', getTestCount() + 1);
+    updateUsageCounter();
+  }
+
+  function updateUsageCounter() {
+    const el = document.getElementById('usage-counter');
+    if (!el) return;
+    if (isTestMode && isTestMode()) {
+      const used = getTestCount();
+      const left = TEST_LIMIT - used;
+      el.style.display = 'flex';
+      el.innerHTML = `<span class="usage-dot"></span>${left} из ${TEST_LIMIT}`;
+      el.className = 'usage-counter ' + (left > 10 ? 'ok' : left > 3 ? 'warn' : 'low');
+      el.title = `Использовано ${used} из ${TEST_LIMIT} запросов`;
+    } else {
+      el.style.display = 'none';
+    }
   }
 
   function isTestMode() {
@@ -4398,19 +4726,40 @@
       let html = '';
 
       if (urgent.length > 0) {
-        html += `<div class="home-section"><div class="home-section-title">🔴 Требуют внимания — ${urgent.length} ${declClients(urgent.length)}</div>`;
+        const urgCollapsed = localStorage.getItem('home_collapsed_urgent') === '1';
+        html += `<div class="home-section">
+          <div id="home-title-urgent" class="home-section-title${urgCollapsed ? ' collapsed' : ''}" onclick="toggleHomeSection('urgent')">
+            <span>🔴 Требуют внимания — ${urgent.length} ${declClients(urgent.length)}</span>
+            <span class="home-section-chevron">▼</span>
+          </div>
+          <div id="home-body-urgent" class="home-section-body${urgCollapsed ? ' collapsed' : ''}">`;
         urgent.forEach(c => { html += homeItemHTML(c, 'urgent'); });
-        html += '</div>';
+        html += '</div></div>';
       }
       if (upcoming.length > 0) {
-        html += `<div class="home-section"><div class="home-section-title">🟡 На этой неделе — ${upcoming.length} ${declClients(upcoming.length)}</div>`;
+        const upCollapsed = localStorage.getItem('home_collapsed_upcoming') === '1';
+        html += `<div class="home-section">
+          <div id="home-title-upcoming" class="home-section-title${upCollapsed ? ' collapsed' : ''}" onclick="toggleHomeSection('upcoming')">
+            <span>🟡 На этой неделе — ${upcoming.length} ${declClients(upcoming.length)}</span>
+            <span class="home-section-chevron">▼</span>
+          </div>
+          <div id="home-body-upcoming" class="home-section-body${upCollapsed ? ' collapsed' : ''}">`;
         upcoming.forEach(c => { html += homeItemHTML(c, 'upcoming'); });
-        html += '</div>';
+        html += '</div></div>';
       }
       document.getElementById('home-priorities').innerHTML = html;
     } catch(e) {
       document.getElementById('home-subtitle').textContent = '';
     }
+  }
+
+  function toggleHomeSection(key) {
+    const body  = document.getElementById('home-body-'  + key);
+    const title = document.getElementById('home-title-' + key);
+    if (!body) return;
+    const nowCollapsed = body.classList.toggle('collapsed');
+    title.classList.toggle('collapsed', nowCollapsed);
+    try { localStorage.setItem('home_collapsed_' + key, nowCollapsed ? '1' : ''); } catch(e) {}
   }
 
   function declClients(n) {
@@ -4495,7 +4844,11 @@
       resultEl.innerHTML =
         `<div class="home-item-result">${escHtml(msg)}</div>
          ${hintHTML}
-         <button class="home-item-copy" onclick="copyHomeResult('${escHtml(clientId)}', this)">Скопировать</button>`;
+         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.75rem">
+           <button class="btn-wa" data-copy="${escHtml(msg)}" onclick="openMessenger('wa',this)" title="Отправить в WhatsApp">WA</button>
+           <button class="btn-tg" data-copy="${escHtml(msg)}" onclick="openMessenger('tg',this)" title="Отправить в Telegram">TG</button>
+           <button class="home-item-copy" onclick="copyHomeResult('${escHtml(clientId)}', this)">Скопировать</button>
+         </div>`;
       resultEl.style.display = 'block';
       btn.textContent = 'Обновить';
     } catch(e) {
@@ -5192,6 +5545,7 @@
           </div>
           <div style="display:flex;gap:0.4rem;align-items:center">
             <button class="btn-sent" onclick="event.stopPropagation();markTouchSent('${cardId}')">Отправил ✓</button>
+            ${messengerBtns(t.content, true)}
             <button class="btn-copy" data-copy="${escHtml(t.content)}" onclick="event.stopPropagation();copyText(this)">Скопировать</button>
             <button class="touch-toggle-btn">${isFirst ? '▲' : '▼'}</button>
           </div>
@@ -5224,6 +5578,7 @@
             <div class="card-title">${s.icon} ${s.title}</div>
             <div style="display:flex;gap:0.4rem">
               <span style="font-size:0.75rem;color:#666;align-self:center">${s.when}</span>
+              ${messengerBtns(s.content, false)}
               <button class="btn-copy" data-copy="${escHtml(s.content)}" onclick="copyText(this)">Скопировать</button>
             </div>
           </div>
@@ -5633,6 +5988,7 @@
       reason:       extract('причина'),
       path:         extract('путь'),
       step1:        extract('шаг_1'),
+      schedule:     extract('расписание_дня'),
       objections:   extract('возражения'),
       logic:        extract('логика'),
       water:        extract('вода')
@@ -5766,6 +6122,7 @@
             <div class="ready-msg-hint">Скопируй и отправь — без правок</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
+            ${messengerBtns(data.readymsg, true)}
             <button class="btn-copy-msg ready-copy-btn" data-copy="${escHtml(data.readymsg)}" onclick="event.stopPropagation();copyMsgText(this)">📋 Скопировать</button>
             <button class="decode-toggle-btn">▲</button>
           </div>
@@ -5802,7 +6159,10 @@
           <div class="decode-body-wrap">
             <div class="step-card-body">
               <div class="step-msg-text">${renderText(s.content)}</div>
-              <button class="btn-copy-msg" data-copy="${escHtml(s.content)}" onclick="copyMsgText(this)">📋 Скопировать в мессенджер</button>
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.75rem">
+                ${messengerBtns(s.content, false)}
+                <button class="btn-copy-msg" data-copy="${escHtml(s.content)}" onclick="copyMsgText(this)">📋 Скопировать</button>
+              </div>
             </div>
           </div>
         </div>`;
@@ -5812,6 +6172,7 @@
     const internalDefs = [
       { icon: '🔍', title: 'Первопричина — главный инсайт',   content: data.rootcause,  copyable: false, downloadable: false },
       { icon: '💊', title: 'Протокол восстановления',          content: data.protocol,   copyable: true,  downloadable: true  },
+      { icon: '⏰', title: 'Расписание приёма на день',        content: data.schedule,   copyable: true,  downloadable: false },
       { icon: '🛒', title: 'Программа и цены',                 content: data.program,    copyable: true,  downloadable: false },
       { icon: '🥗', title: 'Коррекция питания',                content: data.nutrition,  copyable: true,  downloadable: false },
       { icon: '🏃', title: 'Дополнительные практики',          content: data.practices,  copyable: true,  downloadable: false },
@@ -6419,7 +6780,10 @@
       <div class="result-card card-rejection" style="margin-top:0.75rem;animation-delay:${i * 0.07}s">
         <div class="result-card-header">
           <div class="card-title">Касание ${t.num} — ${t.goal}</div>
-          <button class="btn-copy" data-copy="${escHtml(t.content)}" onclick="copyText(this)">Скопировать</button>
+          <div style="display:flex;gap:0.4rem;align-items:center">
+            ${messengerBtns(t.content, false)}
+            <button class="btn-copy" data-copy="${escHtml(t.content)}" onclick="copyText(this)">Скопировать</button>
+          </div>
         </div>
         <div class="touch-meta" style="padding:0.4rem 1.1rem 0">${t.when}</div>
         <div class="result-card-body">${renderText(t.content || '—')}</div>
@@ -6957,6 +7321,22 @@
     }
   }
 
+  function openMessenger(type, btn) {
+    const text = btn.dataset.copy || '';
+    const enc = encodeURIComponent(text);
+    const url = type === 'wa'
+      ? 'https://wa.me/?text=' + enc
+      : 'https://t.me/share/url?text=' + enc;
+    window.open(url, '_blank');
+  }
+
+  function messengerBtns(content, stopProp) {
+    const sp = stopProp ? 'event.stopPropagation();' : '';
+    const e = escHtml(content);
+    return `<button class="btn-wa" data-copy="${e}" onclick="${sp}openMessenger('wa',this)" title="Отправить в WhatsApp">WA</button>` +
+           `<button class="btn-tg" data-copy="${e}" onclick="${sp}openMessenger('tg',this)" title="Отправить в Telegram">TG</button>`;
+  }
+
   // ════════════════════════════════════════
   // КЛИЕНТЫ (Vercel KV)
   // ════════════════════════════════════════
@@ -7128,6 +7508,10 @@
       }
 
       const sessionsEl = document.getElementById('detail-sessions');
+      const compareBtn = document.getElementById('btn-compare-sessions');
+      const compareRes = document.getElementById('compare-result');
+      if (compareBtn) { compareBtn.style.display = 'none'; compareBtn.textContent = '🔄 Сравнить трекеры До → После'; compareBtn.disabled = false; }
+      if (compareRes) { compareRes.classList.remove('visible'); compareRes.innerHTML = ''; }
       if (!c.sessions || !c.sessions.length) {
         sessionsEl.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:0.5rem 0">Расшифровок пока нет</div>';
       } else {
@@ -7155,10 +7539,77 @@
             <div class="session-protocol">${escHtml(protoPreview)}</div>` : ''}
           </div>`;
         }).join('');
+        if (compareBtn && c.sessions.length >= 2) compareBtn.style.display = 'block';
       }
     } catch (e) {
       document.getElementById('detail-name').textContent = 'Ошибка загрузки';
     }
+  }
+
+  async function compareClientSessions() {
+    const c = _currentClientData;
+    if (!c || !c.sessions || c.sessions.length < 2) return;
+    const btn = document.getElementById('btn-compare-sessions');
+    const resultEl = document.getElementById('compare-result');
+    btn.disabled = true;
+    btn.textContent = '⏳ Анализирую динамику...';
+    resultEl.classList.remove('visible');
+
+    const sessions = c.sessions;
+    const s1 = sessions[0];
+    const s2 = sessions[sessions.length - 1];
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'compare',
+          token: clientsApiToken(),
+          clientName: c.name || '',
+          session1: { date: s1.date, complaints: s1.complaints, systems: s1.systems, protocol: s1.protocol },
+          session2: { date: s2.date, complaints: s2.complaints, systems: s2.systems, protocol: s2.protocol }
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка');
+      const raw = data.result || '';
+
+      const extract = (tag) => { const m = raw.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`)); return m ? m[1].trim() : ''; };
+      const plus  = extract('улучшения');
+      const minus = extract('остаётся');
+      const fix   = extract('корректировка');
+      const msg   = extract('скрипт_дистрибьютору');
+
+      const sectionHTML = (cls, icon, title, body) => body ? `
+        <div class="compare-section ${cls}">
+          <div class="compare-section-title">${icon} ${title}</div>
+          <div class="compare-section-body">${escHtml(body)}</div>
+        </div>` : '';
+
+      const msgWithBtns = msg ? `
+        <div class="compare-section msg">
+          <div class="compare-section-title">💬 Готовое сообщение клиенту</div>
+          <div class="compare-section-body">${escHtml(msg)}</div>
+          <div style="display:flex;gap:0.4rem;margin-top:0.5rem">
+            ${messengerBtns(msg, false)}
+            <button class="btn-copy" data-copy="${escHtml(msg)}" onclick="copyText(this)">Скопировать</button>
+          </div>
+        </div>` : '';
+
+      resultEl.innerHTML =
+        sectionHTML('plus',  '✅', 'Что улучшилось', plus) +
+        sectionHTML('minus', '⚠️', 'Требует внимания', minus) +
+        sectionHTML('fix',   '🔧', 'Скорректировать протокол', fix) +
+        msgWithBtns;
+      resultEl.classList.add('visible');
+      btn.textContent = '🔄 Обновить сравнение';
+    } catch(e) {
+      resultEl.innerHTML = `<div style="color:#e74c3c;font-size:0.85rem">Ошибка — ${escHtml(e.message)}</div>`;
+      resultEl.classList.add('visible');
+      btn.textContent = '🔄 Попробовать ещё раз';
+    }
+    btn.disabled = false;
   }
 
   function closeClientDetail() {
