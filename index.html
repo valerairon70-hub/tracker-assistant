@@ -200,6 +200,7 @@
       background: #1e1e1e;
       border-bottom: 1px solid #2a2a2a;
       padding: 0;
+      position: relative;
     }
 
     .tab-nav .container {
@@ -209,6 +210,20 @@
       scrollbar-width: none;
     }
     .tab-nav .container::-webkit-scrollbar { display: none; }
+
+    @media (max-width: 640px) {
+      .tab-nav::after {
+        content: '';
+        position: absolute;
+        right: 0; top: 0; bottom: 0;
+        width: 2.5rem;
+        background: linear-gradient(to right, transparent, #1e1e1e);
+        pointer-events: none;
+      }
+      body.light .tab-nav::after {
+        background: linear-gradient(to right, transparent, #fdf6ec);
+      }
+    }
 
     .tab-btn {
       background: none;
