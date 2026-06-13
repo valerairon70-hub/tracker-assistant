@@ -5957,29 +5957,38 @@
     setDecodeLoading(true);
 
     try {
-      const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mode: 'decode',
-          images: trackerInputMode === 'image' ? uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })) : [],
-          prevImages: prevImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
-          complaints: [c1, c2, c3].filter(Boolean),
-          mainGoal: mainGoal || null,
-          stage,
-          readiness,
-          clientName,
-          clientGender,
-          trackerText: trackerText || null,
-          trackerProtocols: trackerProtocols || null,
-          trackerProtocolsText: trackerProtocolsText || null,
-          token: localStorage.getItem('auth_token')
-        })
-      });
+      let res;
+      try {
+        res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'decode',
+            images: trackerInputMode === 'image' ? uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })) : [],
+            prevImages: prevImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
+            complaints: [c1, c2, c3].filter(Boolean),
+            mainGoal: mainGoal || null,
+            stage,
+            readiness,
+            clientName,
+            clientGender,
+            trackerText: trackerText || null,
+            trackerProtocols: trackerProtocols || null,
+            trackerProtocolsText: trackerProtocolsText || null,
+            token: localStorage.getItem('auth_token')
+          })
+        });
+      } catch (fetchErr) {
+        throw new Error('Ошибка отправки запроса: ' + fetchErr.message);
+      }
 
-      if (!res.ok && res.headers.get('content-type')?.includes('application/json')) {
-        const data = await res.json();
-        throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
+      if (!res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.json();
+          throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
+        }
+        throw new Error('HTTP ' + res.status + ' — ответ сервера');
       }
 
       // Читаем SSE-стрим

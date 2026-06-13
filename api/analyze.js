@@ -2806,11 +2806,12 @@ ${trackerProtocolsText}` : ''}
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('X-Accel-Buffering', 'no');
   // Немедленно сбрасываем заголовки клиенту — без этого iOS Safari ждёт ответа
-  // до таймаута и показывает "Load failed", даже если сервер думает
-  res.write(':ok\n\n');
+  // до таймаута и показывает "Load failed", даже если сервер думает.
+  // Padding 2KB нужен чтобы Vercel edge сразу сбросил буфер клиенту.
+  res.write(':' + ' '.repeat(2048) + '\n\n');
 
-  // Периодический ping — держит соединение живым пока Anthropic обрабатывает запрос
-  const keepAlive = setInterval(() => { try { res.write(':ping\n\n'); } catch(_) {} }, 5000);
+  // Периодический ping с padding — держит соединение живым пока Anthropic обрабатывает запрос
+  const keepAlive = setInterval(() => { try { res.write(':' + ' '.repeat(2048) + '\n\n'); } catch(_) {} }, 5000);
 
   try {
     const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2823,7 +2824,7 @@ ${trackerProtocolsText}` : ''}
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 8192,
+        max_tokens: 4096,
         stream: true,
         system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
         messages: [{ role: 'user', content: contentBlocks }]
