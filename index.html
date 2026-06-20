@@ -2841,6 +2841,12 @@
     .session-label:first-of-type { margin-top: 0; }
     .session-complaints { font-size: 0.83rem; color: #ccc; }
     .session-protocol { font-size: 0.81rem; color: #999; line-height: 1.55; }
+    .btn-resume-session {
+      margin-top: 0.7rem; background: transparent; border: 1px solid #ff6b35;
+      color: #ff6b35; border-radius: 8px; padding: 0.4rem 0.9rem;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .btn-resume-session:hover { background: #ff6b35; color: #fff; }
 
     .btn-delete-client {
       background: none;
@@ -6763,7 +6769,7 @@
           clientId,
           complaints: pd.complaints.join(', '),
           stage, mood: readiness,
-          result: pd.resultText.slice(0, 3000),
+          result: pd.resultText.slice(0, 20000),
           protocol: pd.protocol || '',
           systems: pd.systems || '',
           sessionType: 'tracker'
@@ -6798,6 +6804,23 @@
   function openClientAfterDecode(clientId) {
     switchTab('clients');
     setTimeout(() => openClientDetail(clientId), 250);
+  }
+
+  function resumeConsultation(sessionId) {
+    const c = _currentClientData;
+    if (!c) return;
+    const s = (c.sessions || []).find(s => s.id === sessionId);
+    if (!s || !s.result) {
+      alert('Контекст этой консультации не сохранён — нужно повторно запустить расшифровку');
+      return;
+    }
+    currentAnalysisContext = s.result;
+    closeClientDetail();
+    switchTab('decode');
+    setTimeout(() => {
+      showChat();
+      appendChatMessage('assistant', `Контекст консультации «${escHtml(c.name)}» восстановлен. Задайте вопрос — продолжаем.`, false);
+    }, 300);
   }
 
   // ════════════════════════════════════════
@@ -8046,6 +8069,7 @@
             ${protoPreview ? `
             <div class="session-label">Рекомендовали</div>
             <div class="session-protocol">${escHtml(protoPreview)}</div>` : ''}
+            ${s.result ? `<button class="btn-resume-session" onclick="resumeConsultation('${s.id}')">💬 Продолжить консультацию</button>` : ''}
           </div>`;
         }).join('');
         if (compareBtn && c.sessions.length >= 2) compareBtn.style.display = 'block';
