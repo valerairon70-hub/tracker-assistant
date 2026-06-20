@@ -7624,6 +7624,10 @@
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function stripMd(str) {
+    return (str || '').replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1');
+  }
+
   // ════════════════════════════════════════
   // ИСТОРИЯ КОНСУЛЬТАЦИЙ — МОДАЛЬНОЕ ОКНО
   // ════════════════════════════════════════
@@ -8007,8 +8011,8 @@
         const typeLabel = t => t === 'medical' ? 'Мед. документы' : 'Трекер здоровья';
         sessionsEl.innerHTML = [...c.sessions].reverse().map(s => {
           const isMedical = s.type === 'medical';
-          const proto = s.protocol || '';
-          const systems = s.systems || '';
+          const proto = stripMd(s.protocol || '');
+          const systems = stripMd(s.systems || '');
           const protoPreview   = proto.length   > 240 ? proto.slice(0, 240)   + '…' : proto;
           const systemsPreview = systems.length > 300 ? systems.slice(0, 300) + '…' : systems;
           const systemsLabel   = isMedical ? 'Что показало обследование' : 'Первопричина';
