@@ -3588,6 +3588,8 @@
   body.light .home-item-result { background: #f7f3ee; color: #444; }
   body.light .home-quick-btn { background: #f7f3ee; border-color: #e0d8cc; color: #555; }
   body.light .home-divider { border-color: #e8e0d5; }
+  .home-stat-num { color: #f0f0f0; }
+  body.light .home-stat-num { color: #222; }
 
   /* ══ Калькулятор набора ══ */
   .calc-block {
@@ -4896,9 +4898,9 @@
       const doneCount = getHomeDoneToday().filter(id => clients.some(c => c.id === id)).length;
       const statsHtml = `<div id="home-done-counter" data-total="${totalCount}" style="font-size:0.8rem;color:#888;margin-bottom:0.75rem;display:${totalCount > 0 ? 'block' : 'none'}">Сегодня сделано: ${Math.min(doneCount, totalCount)} из ${totalCount}</div>
         <div style="display:flex;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap">
-          <span style="font-size:0.8rem;color:#666">В работе: <strong style="color:#f0f0f0">${activeCount}</strong></span>
+          <span style="font-size:0.8rem;color:#666">В работе: <strong class="home-stat-num">${activeCount}</strong></span>
           <span style="font-size:0.8rem;color:#666">На протоколе: <strong style="color:#4ade80">${protocolCount}</strong></span>
-          <span style="font-size:0.8rem;color:#666">Всего клиентов: <strong style="color:#f0f0f0">${clients.length}</strong></span>
+          <span style="font-size:0.8rem;color:#666">Всего клиентов: <strong class="home-stat-num">${clients.length}</strong></span>
         </div>`;
       let html = statsHtml;
 
