@@ -2319,7 +2319,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
           'anthropic-version': '2023-06-01',
           'anthropic-beta': 'prompt-caching-2024-07-31'
         },
-        signal: AbortSignal.timeout(25000),
+        signal: AbortSignal.timeout(55000),
         body: JSON.stringify({
           model: 'claude-sonnet-4-6',
           max_tokens: 1500,

@@ -6202,7 +6202,7 @@
           if (!raw) continue;
           let evt;
           try { evt = JSON.parse(raw); } catch(_) { continue; }
-          if (evt.error) throw new Error(evt.error);
+          if (evt.error) throw new Error(evt.error + (evt.details ? ' | ' + evt.details : ''));
           if (evt.text) {
             responseText += evt.text;
             textEl.textContent = responseText;
