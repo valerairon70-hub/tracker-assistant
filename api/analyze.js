@@ -1938,6 +1938,15 @@ const CLIENT_ACTION_SYSTEM_PROMPT = `Ты — персональный трен�
 
 const crypto = require('crypto');
 
+// Extract text from Claude API response, skipping thinking blocks and stripping
+// <thinking>...</thinking> that some model versions embed in text output.
+function extractClaudeText(data) {
+  if (!data || !Array.isArray(data.content)) return '';
+  const textBlock = data.content.find(b => b.type === 'text');
+  const raw = textBlock ? textBlock.text : (data.content[0]?.text || '');
+  return raw.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '').trim();
+}
+
 function makeToken(mode, secret) {
   return crypto.createHmac('sha256', secret).update(mode).digest('hex').slice(0, 32);
 }
@@ -2031,7 +2040,7 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (invite):', err);
@@ -2100,7 +2109,7 @@ ${trackerSummary.trim()}
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (reengagement):', err);
@@ -2158,7 +2167,7 @@ ${rejectionReason && rejectionReason.trim() ? `Что сказал при отк
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (rejection):', err);
@@ -2220,7 +2229,7 @@ ${healthHints && healthHints.trim() ? `Что знаю о его здоровь�
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (dialog):', err);
@@ -2278,7 +2287,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (thinking):', err);
@@ -2522,7 +2531,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
       }
 
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
 
     } catch (err) {
       console.error('Handler error (client-action):', err);
@@ -2702,7 +2711,7 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
         return res.status(502).json({ error: 'Ошибка Claude API', details: errorText });
       }
       const data = await response.json();
-      return res.status(200).json({ result: data.content?.[0]?.text || '' });
+      return res.status(200).json({ result: extractClaudeText(data) });
     } catch (err) {
       return res.status(500).json({ error: 'Внутренняя ошибка', details: err.message });
     }
