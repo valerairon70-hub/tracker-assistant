@@ -1371,6 +1371,34 @@
     .invite-refine-btn:disabled { background: #555; cursor: default; }
 
     /* ── Диалог с клиентом ── */
+    .objection-block {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem 1.1rem;
+      background: rgba(90,70,200,0.07);
+      border: 1px solid rgba(90,70,200,0.25);
+      border-radius: 10px;
+    }
+    .objection-block-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #a78bfa;
+      margin-bottom: 0.25rem;
+    }
+    .objection-block-hint {
+      font-size: 0.78rem;
+      color: #777;
+      margin-bottom: 0.75rem;
+    }
+    .objection-block select.field-input {
+      margin-bottom: 0.6rem;
+    }
+    .objection-block .btn-action {
+      padding: 0.5rem 1.2rem;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .objection-results { margin-top: 0; }
+
     .dialog-block {
       margin-top: 1.5rem;
       padding: 1.1rem 1.25rem 1.25rem;
@@ -1859,6 +1887,142 @@
     }
 
     .btn-clear-stats:hover { border-color: #ff5555; color: #ff5555; }
+
+    /* ── Аналитика 2.0 ── */
+    .alert-banner {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.28);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .alert-banner.warning {
+      background: rgba(251,146,60,0.08);
+      border-color: rgba(251,146,60,0.28);
+    }
+    .alert-banner-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+    .alert-banner-body { flex: 1; min-width: 0; }
+    .alert-banner-title { font-size: 0.88rem; font-weight: 700; color: #f87171; margin-bottom: 0.2rem; }
+    .alert-banner.warning .alert-banner-title { color: #fb923c; }
+    .alert-banner-text { font-size: 0.8rem; color: #999; line-height: 1.4; }
+    .alert-banner-action {
+      background: none;
+      border: 1px solid rgba(248,113,113,0.5);
+      border-radius: 8px;
+      padding: 0.3rem 0.75rem;
+      color: #f87171;
+      font-size: 0.76rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+    .alert-banner.warning .alert-banner-action { border-color: rgba(251,146,60,0.5); color: #fb923c; }
+
+    .kpi-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .kpi-card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .kpi-card .kpi-label { font-size: 0.72rem; color: #777; margin-bottom: 0.3rem; }
+    .kpi-card .kpi-value { font-size: 1.55rem; font-weight: 800; line-height: 1; color: #ff6b35; }
+    .kpi-card .kpi-meta { font-size: 0.7rem; color: #666; margin-top: 0.3rem; line-height: 1.3; }
+    .kpi-card.green .kpi-value { color: #22c55e; }
+    .kpi-card.yellow .kpi-value { color: #fbbf24; }
+    .kpi-card.red .kpi-value { color: #ef4444; }
+
+    .pipeline-narrative {
+      font-size: 0.86rem;
+      color: #bbb;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .objection-insight-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .objection-insight-item:last-child { border-bottom: none; }
+    .obj-insight-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem; }
+    .obj-insight-text { font-size: 0.84rem; color: #ddd; flex: 1; padding-right: 0.5rem; }
+    .obj-insight-count {
+      background: #2a2a2a;
+      border-radius: 12px;
+      padding: 0.12rem 0.55rem;
+      font-size: 0.72rem;
+      color: #888;
+      flex-shrink: 0;
+    }
+    .obj-insight-tip {
+      font-size: 0.76rem;
+      color: #777;
+      line-height: 1.4;
+      padding-left: 0.7rem;
+      border-left: 2px solid #333;
+    }
+
+    .ai-coach-section {
+      background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, rgba(90,70,200,0.05) 100%);
+      border: 1px solid rgba(255,107,53,0.2);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .ai-coach-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .ai-coach-title { font-size: 0.92rem; font-weight: 700; color: #ff6b35; }
+    .ai-coach-desc { font-size: 0.8rem; color: #888; margin-bottom: 0.9rem; line-height: 1.45; }
+    .btn-ai-coach {
+      background: linear-gradient(135deg, #ff6b35, #d95520);
+      border: none;
+      border-radius: 10px;
+      padding: 0.65rem 1.2rem;
+      color: #fff;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+    .btn-ai-coach:hover { opacity: 0.85; }
+    .btn-ai-coach:disabled { opacity: 0.45; cursor: default; }
+    .coach-result-block { margin-top: 1rem; }
+    .coach-result-section { margin-bottom: 0.9rem; }
+    .coach-result-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #ff6b35;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+    }
+    .coach-result-text { font-size: 0.84rem; color: #ccc; line-height: 1.6; }
+    .coach-result-text ul { margin: 0.3rem 0 0 0; padding-left: 1.1rem; }
+    .coach-result-text li { margin-bottom: 0.25rem; }
+    .coach-action-card {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .coach-action-num { font-size: 0.7rem; font-weight: 700; color: #ff6b35; margin-bottom: 0.25rem; }
+    .coach-action-text { font-size: 0.83rem; color: #ccc; line-height: 1.5; }
+    .coach-focus-card {
+      background: rgba(255,107,53,0.07);
+      border: 1px solid rgba(255,107,53,0.22);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+    }
+    .coach-focus-text { font-size: 0.86rem; color: #ff6b35; font-weight: 600; line-height: 1.45; }
 
     .top-objections-list { list-style: none; }
 
@@ -3894,6 +4058,9 @@
         <button class="tab-btn" onclick="switchTab('reengagement')">
           <span class="tab-icon">🔄</span> Возобновить
         </button>
+        <button class="tab-btn" onclick="switchTab('reactivate')">
+          <span class="tab-icon">♻️</span> Вернуть
+        </button>
       </div>
     </nav>
 
@@ -3922,6 +4089,9 @@
               </button>
               <button class="home-quick-btn" onclick="switchTab('clients')">
                 <span class="qb-icon">👥</span>Все клиенты
+              </button>
+              <button class="home-quick-btn" onclick="switchTab('reactivate')">
+                <span class="qb-icon">♻️</span>Вернуть клиента
               </button>
             </div>
           </div>
@@ -4493,6 +4663,79 @@
           </div>
         </div>
 
+        <!-- ════════════════════════════════
+             ВКЛАДКА 7: ВЕРНУТЬ СТАРОГО КЛИЕНТА
+             ════════════════════════════════ -->
+        <div class="tab-panel" id="panel-reactivate">
+          <div class="layout">
+
+            <!-- Форма -->
+            <div class="input-panel">
+              <h2>Вернуть старого клиента</h2>
+              <p style="font-size:0.82rem;color:#888;margin-bottom:1.25rem;line-height:1.5">Человек раньше покупал продукты Coral Club, но давно не выходит на связь. Опиши ситуацию — получишь готовые сообщения для возврата.</p>
+
+              <div class="field-group">
+                <div class="field-label">Имя клиента <span style="color:#555">(необязательно)</span></div>
+                <input type="text" class="field-input" id="react-name" placeholder="Например: Ирина">
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">Как давно не покупает?</div>
+                <select class="field-input" id="react-inactive">
+                  <option value="1to3">1–3 месяца</option>
+                  <option value="3to6" selected>3–6 месяцев</option>
+                  <option value="6to12">6–12 месяцев</option>
+                  <option value="1year">Больше года</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">Что брал(а) раньше / на что жаловался/жаловалась? <span style="color:#555">(необязательно)</span></div>
+                <textarea class="field-input" id="react-last" rows="2"
+                  placeholder="Например: брала Гриффонию и Лецитин, жаловалась на усталость и плохой сон"></textarea>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">Канал общения</div>
+                <div class="channel-grid">
+                  <input type="radio" name="react-channel" id="react-ch-wa" value="whatsapp" class="channel-option" checked>
+                  <label for="react-ch-wa">💬 WhatsApp / Telegram</label>
+                  <input type="radio" name="react-channel" id="react-ch-ig" value="instagram" class="channel-option">
+                  <label for="react-ch-ig">📸 Instagram / соцсети</label>
+                  <input type="radio" name="react-channel" id="react-ch-live" value="person" class="channel-option">
+                  <label for="react-ch-live">🗣 Лично / по телефону</label>
+                  <input type="radio" name="react-channel" id="react-ch-zoom" value="zoom" class="channel-option">
+                  <label for="react-ch-zoom">💻 Zoom / видеозвонок</label>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <div class="field-label">Кто пишет?</div>
+                <div class="channel-grid">
+                  <input type="radio" name="react-sender" id="react-sg-male" value="male" class="channel-option" checked>
+                  <label for="react-sg-male">👨 Я — мужчина</label>
+                  <input type="radio" name="react-sender" id="react-sg-female" value="female" class="channel-option">
+                  <label for="react-sg-female">👩 Я — женщина</label>
+                </div>
+              </div>
+
+              <button class="btn-action" id="react-btn" onclick="generateReactivate()">
+                <span id="react-btn-icon">♻️</span>
+                <span id="react-btn-text">Подготовить сообщения</span>
+              </button>
+            </div>
+
+            <!-- Результаты -->
+            <div class="results-panel" id="react-results">
+              <div class="results-empty">
+                <div style="font-size:2rem;margin-bottom:0.75rem">♻️</div>
+                <div style="color:#666;font-size:0.9rem">Заполни форму — получишь 3 варианта сообщений для возврата клиента</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -4862,7 +5105,7 @@
   // ════════════════════════════════════════
   function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', ['invite','decode','stats','clients','identity','reengagement'][i] === name);
+      btn.classList.toggle('active', ['invite','decode','stats','clients','identity','reengagement','reactivate'][i] === name);
     });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
@@ -5864,8 +6107,44 @@
         </div>
       </div>`;
 
+    const objectionHtml = `
+      <div class="objection-block">
+        <div class="objection-block-label">🚫 Клиент возражает?</div>
+        <div class="objection-block-hint">Выбери что сказал — получишь 2 готовых ответа и тактику</div>
+        <select class="field-input" id="objection-select" style="margin-bottom:0.6rem">
+          <option value="">— Выбери возражение —</option>
+          <option>Нет времени на это</option>
+          <option>Сомневаюсь в точности результатов</option>
+          <option>Я чувствую себя хорошо — зачем это?</option>
+          <option>Боюсь узнать плохие результаты</option>
+          <option>Не доверяю добавкам и БАДам</option>
+          <option>Не понимаю, зачем мне это нужно</option>
+          <option>Не хочу менять образ жизни</option>
+          <option>Я всегда был/была здоровым/здоровой</option>
+          <option>Не верю, что это реально работает</option>
+          <option>Это слишком сложно и непонятно</option>
+          <option>Лучше сначала спрошу у врача</option>
+          <option>Это противоречит моим убеждениям</option>
+          <option>Доверяю только традиционной медицине</option>
+          <option>Мне это просто неинтересно</option>
+          <option>Не доверяю онлайн-тестам</option>
+          <option>Я уже принимаю другие продукты</option>
+          <option>Это выглядит как реклама</option>
+          <option>Беспокоит конфиденциальность</option>
+          <option>Не вижу в этом ценности</option>
+          <option>Доверяю только личному опыту</option>
+          <option>Уже пробовал/пробовала — не помогло</option>
+          <option>Боюсь что найдут что-то серьёзное</option>
+          <option>У меня нет никаких проблем</option>
+        </select>
+        <button class="btn-action" id="objection-btn" onclick="generateObjection()" style="padding:0.5rem 1.2rem;font-size:0.85rem;margin-bottom:0.75rem">
+          <span id="objection-btn-text">Подготовить ответ</span>
+        </button>
+        <div id="objection-results" class="objection-results"></div>
+      </div>`;
+
     const restTouches = touches.slice(1).map((t, i) => renderTouch(t, i + 1)).join('');
-    panel.innerHTML = touchHtml + dialogHtml + restTouches + segHtml + tipHtml + renderInviteOutcomeBlock(recId, personDesc) + newClientHtml + refineHtml;
+    panel.innerHTML = touchHtml + dialogHtml + restTouches + segHtml + tipHtml + renderInviteOutcomeBlock(recId, personDesc) + objectionHtml + newClientHtml + refineHtml;
     initAccordionCards(panel);
   }
 
@@ -7440,74 +7719,204 @@
   }
 
   // ════════════════════════════════════════
-  // ВКЛАДКА 3: СТАТИСТИКА
+  // ВКЛАДКА 3: СТАТИСТИКА 2.0
   // ════════════════════════════════════════
   let statsFilter = 'all';
 
+  function getObjInsight(text) {
+    const t = text.toLowerCase();
+    if (t.includes('врем') || t.includes('занят') || t.includes('некогда')) return 'Оффер звучит как нагрузка. Попробуй начинать с результата: "займёт 45 минут, всё делаю я".';
+    if (t.includes('деньг') || t.includes('дорог') || t.includes('бюджет') || t.includes('не могу')) return 'Скорее всего ценность не передана до разговора о цене. Сначала — что болит, потом — что меняется.';
+    if (t.includes('подумаю') || t.includes('подумать') || t.includes('позже') || t.includes('потом')) return 'Нет срочности и ясного следующего шага. Спроси: "что мешает начать прямо сейчас?"';
+    if (t.includes('бад') || t.includes('не верю') || t.includes('скепт') || t.includes('химия')) return 'Клиент думает, что это "БАДы". Говори о персональном протоколе под конкретный трекер — это другое.';
+    if (t.includes('витамин') || t.includes('уже пью') || t.includes('уже принимаю')) return 'Объясни разницу: протокол под трекер — не то же что витамины из аптеки. Разные задачи.';
+    if (t.includes('здоров') || t.includes('не болею') || t.includes('всё хорошо')) return 'Идеальный кандидат для трекера: "раз всё хорошо — убедимся вместе, что так и есть".';
+    if (t.includes('муж') || t.includes('жен') || t.includes('посовеща') || t.includes('спросить')) return 'Не хватает самостоятельного решения. Спроси: "а вы сами как считаете, это нужно?"';
+    return null;
+  }
+
   function renderStats() {
-    const records = getRecords();
+    const records   = getRecords();
+    const reminders = getReminders();
     const container = document.getElementById('stats-content');
+    const now       = Date.now();
+    const today     = todayStr();
+    const weekAgo   = now - 7 * 86400000;
 
-    const total    = records.length;
-    const invites  = records.filter(r => r.type === 'invite').length;
-    const decodes  = records.filter(r => r.type === 'decode').length;
-    const bought   = records.filter(r => r.outcome === 'bought').length;
-    const convRate = total ? Math.round(bought / total * 100) : 0;
+    // ── Базовые метрики ──
+    const total       = records.length;
+    const invites     = records.filter(r => r.type === 'invite').length;
+    const decodes     = records.filter(r => r.type === 'decode').length;
+    const bought      = records.filter(r => r.outcome === 'bought').length;
+    const thinkingAll = records.filter(r => r.outcome === 'thinking').length;
+    const rejectedAll = records.filter(r => r.outcome === 'rejected').length;
+    const convRate    = total ? Math.round(bought / total * 100) : 0;
+    const thisWeek    = records.filter(r => new Date(r.date).getTime() > weekAgo).length;
 
-    // Топ возражений
+    // ── Алерты ──
+    const thinkingOld = records.filter(r =>
+      r.outcome === 'thinking' && (now - new Date(r.date).getTime()) > 7 * 86400000
+    );
+    const reminderRecIds = new Set(reminders.map(r => r.recId).filter(Boolean));
+    const rejectedWithout = records.filter(r => r.outcome === 'rejected' && !reminderRecIds.has(r.id));
+    const overdueCount = reminders.filter(r => !r.done && r.dueDate < today).length;
+
+    // ── Конверсия по типу ──
+    const invBought = records.filter(r => r.type === 'invite'  && r.outcome === 'bought').length;
+    const decBought = records.filter(r => r.type === 'decode'  && r.outcome === 'bought').length;
+    const invConv   = invites ? Math.round(invBought / invites * 100) : null;
+    const decConv   = decodes ? Math.round(decBought / decodes * 100) : null;
+    let bestSrc = null;
+    if (invConv !== null || decConv !== null) {
+      if (invConv !== null && decConv !== null)
+        bestSrc = invConv >= decConv ? `Приглашения ${invConv}%` : `Расшифровки ${decConv}%`;
+      else if (invConv !== null) bestSrc = `Приглашения ${invConv}%`;
+      else bestSrc = `Расшифровки ${decConv}%`;
+    }
+
+    // ── Цвет конверсии ──
+    const convColor = convRate >= 40 ? 'green' : convRate >= 25 ? 'yellow' : total > 0 ? 'red' : '';
+    const convMeta  = convRate >= 40 ? 'выше нормы — отлично' : convRate >= 25 ? 'в норме (25–40%)' : total > 0 ? 'ниже нормы (25–40%)' : 'нет данных';
+
+    // ── Топ возражений ──
     const objMap = {};
     records.filter(r => r.outcome === 'objection' && r.objectionText).forEach(r => {
-      const key = r.objectionText.trim();
-      objMap[key] = (objMap[key] || 0) + 1;
+      const k = r.objectionText.trim();
+      objMap[k] = (objMap[k] || 0) + 1;
     });
     const topObj = Object.entries(objMap).sort((a,b) => b[1]-a[1]).slice(0, 5);
 
-    // Фильтрация записей
-    const filtered = statsFilter === 'all' ? records
-      : records.filter(r => r.type === statsFilter);
+    // ── Нарратив воронки ──
+    let narrative = '';
+    if (total === 0) {
+      narrative = 'Пока нет данных. Отмечай результат после каждой консультации — и статистика заработает сразу.';
+    } else {
+      const parts = [`${total} консультаций, ${bought} купили (${convRate}%)`];
+      if (thinkingAll > 0) parts.push(`${thinkingAll} клиентов сейчас думают`);
+      if (rejectedAll > 0) parts.push(`${rejectedAll} отказов`);
+      let commentary = '';
+      if (convRate >= 40) commentary = ' Конверсия выше среднего — хороший результат.';
+      else if (convRate >= 25) commentary = ' Конверсия в норме. Поработай с возражениями — есть потенциал роста.';
+      else if (total >= 5) commentary = ' Конверсия ниже нормы (25–40%). Скорее всего ценность не передаётся до разговора о деньгах.';
+      if (rejectedWithout.length > 0) commentary += ` ${rejectedWithout.length} отказа(ов) без серии касаний — это потенциально возвращаемые клиенты.`;
+      narrative = parts.join(', ') + '.' + commentary;
+    }
 
+    // ── Фильтрация для истории ──
+    const filtered = statsFilter === 'all' ? records : records.filter(r => r.type === statsFilter);
     const outcomePills = {
       bought:    '<span class="outcome-pill pill-bought">✅ Купил</span>',
       thinking:  '<span class="outcome-pill pill-thinking">🤔 Думает</span>',
       rejected:  '<span class="outcome-pill pill-rejected">🚫 Отказ</span>',
       objection: '<span class="outcome-pill pill-objection">⚡ Возражение</span>',
     };
-
     const typePills = {
       invite: '<span class="type-pill type-invite">Приглашение</span>',
       decode: '<span class="type-pill type-decode">Расшифровка</span>'
     };
 
-    container.innerHTML = renderRemindersSection(container) + `
-      <div class="stats-summary">
-        <div class="stat-card">
-          <div class="stat-value">${total}</div>
-          <div class="stat-label">Всего записей</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${bought}</div>
-          <div class="stat-label">Положительных</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${convRate}%</div>
-          <div class="stat-label">Конверсия</div>
-        </div>
-      </div>
+    // ── Блок алертов ──
+    const alertsHtml = (() => {
+      const items = [];
+      if (thinkingOld.length > 0) {
+        items.push(`<div class="alert-banner">
+          <div class="alert-banner-icon">⏳</div>
+          <div class="alert-banner-body">
+            <div class="alert-banner-title">${thinkingOld.length} клиент(а) ждут больше недели</div>
+            <div class="alert-banner-text">Долгое молчание убивает интерес. Напиши им сегодня — пока не остыли.</div>
+            <button class="alert-banner-action" onclick="switchTab('reengagement')">Открыть «Возобновить» →</button>
+          </div>
+        </div>`);
+      }
+      if (rejectedWithout.length > 0) {
+        items.push(`<div class="alert-banner warning">
+          <div class="alert-banner-icon">💡</div>
+          <div class="alert-banner-body">
+            <div class="alert-banner-title">${rejectedWithout.length} отказа(ов) без серии касаний</div>
+            <div class="alert-banner-text">Отказ — не конец. У этих клиентов нет запланированных касаний, а 1 из 3 возвращается после правильного follow-up.</div>
+          </div>
+        </div>`);
+      }
+      if (overdueCount > 0) {
+        items.push(`<div class="alert-banner warning">
+          <div class="alert-banner-icon">🔔</div>
+          <div class="alert-banner-body">
+            <div class="alert-banner-title">${overdueCount} просроченных касаний</div>
+            <div class="alert-banner-text">Запланированные касания прошли свой срок. Выполни их или отметь как выполненные.</div>
+          </div>
+        </div>`);
+      }
+      return items.length ? `<div style="margin-bottom:1rem">${items.join('')}</div>` : '';
+    })();
 
-      ${topObj.length > 0 ? `
-      <div class="stats-section">
-        <h3>🔥 Топ возражений</h3>
-        <ul class="top-objections-list">
-          ${topObj.map(([text, cnt]) => `
-            <li>
-              <span>${text}</span>
-              <span class="obj-count">${cnt}</span>
-            </li>
-          `).join('')}
-        </ul>
-      </div>
-      ` : ''}
+    // ── 4 КПИ-карточки ──
+    const kpiHtml = `
+      <div class="kpi-grid-4" style="margin-bottom:1rem">
+        <div class="kpi-card ${convColor}">
+          <div class="kpi-label">Конверсия</div>
+          <div class="kpi-value">${total ? convRate + '%' : '—'}</div>
+          <div class="kpi-meta">${convMeta}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">В работе сейчас</div>
+          <div class="kpi-value">${thinkingAll}</div>
+          <div class="kpi-meta">${thinkingOld.length > 0 ? `из них ${thinkingOld.length} — больше 7 дней` : 'клиентов думают'}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">За эту неделю</div>
+          <div class="kpi-value">${thisWeek}</div>
+          <div class="kpi-meta">консультаций</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Лучший источник</div>
+          <div class="kpi-value" style="font-size:1rem;padding-top:0.2rem">${bestSrc || '—'}</div>
+          <div class="kpi-meta">${bestSrc ? 'конверсия по типу' : 'нужно больше данных'}</div>
+        </div>
+      </div>`;
 
+    // ── Нарратив ──
+    const narrativeHtml = `
+      <div class="stats-section" style="margin-bottom:1rem">
+        <h3 style="margin-bottom:0.5rem">📊 Картина в целом</h3>
+        <p class="pipeline-narrative">${narrative}</p>
+      </div>`;
+
+    // ── Возражения с инсайтами ──
+    const objHtml = topObj.length > 0 ? `
+      <div class="stats-section" style="margin-bottom:1rem">
+        <h3>🔥 Частые возражения</h3>
+        ${topObj.map(([text, cnt]) => {
+          const insight = getObjInsight(text);
+          return `<div class="objection-insight-item">
+            <div class="obj-insight-row">
+              <span class="obj-insight-text">${escHtml(text)}</span>
+              <span class="obj-insight-count">${cnt}×</span>
+            </div>
+            ${insight ? `<div class="obj-insight-tip">${insight}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>` : '';
+
+    // ── AI-коуч ──
+    const coachHtml = `
+      <div class="ai-coach-section">
+        <div class="ai-coach-header">
+          <span>🤖</span>
+          <span class="ai-coach-title">Разбор моей работы</span>
+        </div>
+        <div class="ai-coach-desc">
+          Отправлю твою статистику в AI — получишь честный разбор: где теряешь клиентов, что мешает расти, и 3 конкретных действия на эту неделю.
+        </div>
+        <button class="btn-ai-coach" id="coach-btn"
+          onclick="generateAnalyticsCoach()"
+          ${total === 0 ? 'disabled title="Нет данных для анализа"' : ''}>
+          <span id="coach-btn-text">${total === 0 ? 'Нет данных для анализа' : 'Проанализировать мою работу'}</span>
+        </button>
+        <div id="coach-result"></div>
+      </div>`;
+
+    // ── История ──
+    const historyHtml = `
       <div class="stats-section">
         <h3>📋 История консультаций</h3>
         <div class="filter-row">
@@ -7517,26 +7926,18 @@
             onclick="setFilter('invite')">Приглашения (${invites})</button>
           <button class="btn-filter ${statsFilter==='decode'?'active':''}"
             onclick="setFilter('decode')">Расшифровки (${decodes})</button>
-          <button class="btn-export" onclick="exportCSV()">⬇ Экспорт CSV</button>
+          <button class="btn-export" onclick="exportCSV()">⬇ CSV</button>
           ${total > 0 ? `<button class="btn-clear-stats" onclick="clearStats()">🗑 Очистить</button>` : ''}
         </div>
-
         ${filtered.length === 0 ? `
           <div class="no-records">
             ${total === 0
               ? 'Пока нет записей. Они появятся после того как ты отметишь результат консультации или приглашения.'
               : 'Нет записей с таким фильтром.'}
-          </div>
-        ` : `
+          </div>` : `
           <table class="records-table">
             <thead>
-              <tr>
-                <th>Дата</th>
-                <th>Тип</th>
-                <th>Клиент</th>
-                <th>Итог</th>
-                <th></th>
-              </tr>
+              <tr><th>Дата</th><th>Тип</th><th>Клиент</th><th>Итог</th><th></th></tr>
             </thead>
             <tbody>
               ${filtered.map(r => `
@@ -7553,13 +7954,126 @@
                   <td style="text-align:center">
                     ${r.resultText ? `<button class="btn-open-record" onclick="openHistoryRecord('${r.id}')">Открыть</button>` : '<span style="color:#333">—</span>'}
                   </td>
-                </tr>
-              `).join('')}
+                </tr>`).join('')}
             </tbody>
-          </table>
-        `}
-      </div>
-    `;
+          </table>`}
+      </div>`;
+
+    container.innerHTML = renderRemindersSection()
+      + alertsHtml
+      + kpiHtml
+      + narrativeHtml
+      + objHtml
+      + coachHtml
+      + historyHtml;
+  }
+
+  async function generateAnalyticsCoach() {
+    const records   = getRecords();
+    const reminders = getReminders();
+    const btn       = document.getElementById('coach-btn');
+    const btnText   = document.getElementById('coach-btn-text');
+    const resultDiv = document.getElementById('coach-result');
+    if (!btn || !resultDiv) return;
+
+    btn.disabled = true;
+    btnText.textContent = 'Анализирую...';
+    resultDiv.innerHTML = '<div style="font-size:0.8rem;color:#666;padding:0.5rem 0">Собираю статистику и отправляю в AI…</div>';
+
+    const now     = Date.now();
+    const today   = todayStr();
+    const weekAgo = now - 7 * 86400000;
+    const total   = records.length;
+    const bought  = records.filter(r => r.outcome === 'bought').length;
+    const thinkingAll  = records.filter(r => r.outcome === 'thinking').length;
+    const thinkingOld  = records.filter(r => r.outcome === 'thinking' && (now - new Date(r.date).getTime()) > 7 * 86400000).length;
+    const rejected     = records.filter(r => r.outcome === 'rejected').length;
+    const objections   = records.filter(r => r.outcome === 'objection').length;
+    const convRate     = total ? Math.round(bought / total * 100) : 0;
+    const invites      = records.filter(r => r.type === 'invite').length;
+    const decodes      = records.filter(r => r.type === 'decode').length;
+    const invBought    = records.filter(r => r.type === 'invite' && r.outcome === 'bought').length;
+    const decBought    = records.filter(r => r.type === 'decode' && r.outcome === 'bought').length;
+    const thisWeek     = records.filter(r => new Date(r.date).getTime() > weekAgo).length;
+    const reminderIds  = new Set(reminders.map(r => r.recId).filter(Boolean));
+    const rejWithout   = records.filter(r => r.outcome === 'rejected' && !reminderIds.has(r.id)).length;
+    const overdue      = reminders.filter(r => !r.done && r.dueDate < today).length;
+
+    const objMap = {};
+    records.filter(r => r.outcome === 'objection' && r.objectionText).forEach(r => {
+      const k = r.objectionText.trim();
+      objMap[k] = (objMap[k] || 0) + 1;
+    });
+    const topObj = Object.entries(objMap).sort((a,b) => b[1]-a[1]).slice(0, 5);
+
+    const statsPayload = `Всего консультаций: ${total}
+Купили / согласились: ${bought} (конверсия ${convRate}%)
+Думают сейчас: ${thinkingAll}, из них ждут ответа больше 7 дней: ${thinkingOld}
+Отказов: ${rejected}, из них без серии касаний: ${rejWithout}
+Возражений зафиксировано: ${objections}
+Приглашений: ${invites} (конверсия ${invites ? Math.round(invBought/invites*100) : 0}%)
+Расшифровок: ${decodes} (конверсия ${decodes ? Math.round(decBought/decodes*100) : 0}%)
+За последние 7 дней консультаций: ${thisWeek}
+Просроченных запланированных касаний: ${overdue}
+${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) => `• "${t}" — ${c} раз`).join('\n') : ''}`;
+
+    try {
+      const resp = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: 'analytics', statsPayload, token: localStorage.getItem('auth_token') }),
+        signal: AbortSignal.timeout(35000),
+      });
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+      renderCoachResult(data.result, resultDiv);
+    } catch (err) {
+      resultDiv.innerHTML = `<div style="color:#f87171;font-size:0.82rem;margin-top:0.5rem">Ошибка: ${escHtml(err.message)}</div>`;
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = 'Обновить разбор';
+    }
+  }
+
+  function renderCoachResult(text, container) {
+    const extract = tag => {
+      const m = text.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`));
+      return m ? m[1].trim() : null;
+    };
+    const analysis  = extract('анализ_воронки');
+    const weakSpots = extract('слабые_места');
+    const act1      = extract('действие_1');
+    const act2      = extract('действие_2');
+    const act3      = extract('действие_3');
+    const focus     = extract('фокус_недели');
+
+    const renderText = t => t
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\n•/g, '\n•')
+      .replace(/^•(.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>[\s\S]*?<\/li>)/g, m => `<ul>${m}</ul>`)
+      .replace(/\n/g, '<br>');
+
+    container.innerHTML = `<div class="coach-result-block">
+      ${analysis ? `<div class="coach-result-section">
+        <div class="coach-result-label">Что вижу в твоей воронке</div>
+        <div class="coach-result-text">${renderText(analysis)}</div>
+      </div>` : ''}
+      ${weakSpots ? `<div class="coach-result-section">
+        <div class="coach-result-label">Где теряешь клиентов</div>
+        <div class="coach-result-text">${renderText(weakSpots)}</div>
+      </div>` : ''}
+      ${act1 || act2 || act3 ? `<div class="coach-result-section">
+        <div class="coach-result-label">Конкретные действия</div>
+        ${act1 ? `<div class="coach-action-card"><div class="coach-action-num">Действие 1</div><div class="coach-action-text">${renderText(act1)}</div></div>` : ''}
+        ${act2 ? `<div class="coach-action-card"><div class="coach-action-num">Действие 2</div><div class="coach-action-text">${renderText(act2)}</div></div>` : ''}
+        ${act3 ? `<div class="coach-action-card"><div class="coach-action-num">Действие 3</div><div class="coach-action-text">${renderText(act3)}</div></div>` : ''}
+      </div>` : ''}
+      ${focus ? `<div class="coach-focus-card">
+        <div class="coach-result-label" style="margin-bottom:0.3rem">Фокус этой недели</div>
+        <div class="coach-focus-text">${renderText(focus)}</div>
+      </div>` : ''}
+    </div>`;
   }
 
   function setFilter(f) {
@@ -8842,6 +9356,201 @@
       btn.disabled = false;
       btn.textContent = 'Подготовить ответ';
     }
+  }
+
+  async function generateObjection() {
+    const select = document.getElementById('objection-select');
+    const objectionType = select?.value?.trim();
+    if (!objectionType) { alert('Выбери возражение из списка'); return; }
+    if (!checkTestLimit()) return;
+
+    const btn = document.getElementById('objection-btn');
+    const btnText = document.getElementById('objection-btn-text');
+    const resultsDiv = document.getElementById('objection-results');
+    if (!btn || !resultsDiv) return;
+
+    btn.disabled = true;
+    if (btnText) btnText.textContent = 'Готовлю ответ...';
+    resultsDiv.innerHTML = '<div style="color:#888;font-size:0.85rem;padding:0.5rem 0">Анализирую возражение...</div>';
+
+    const { clientDesc, channel, senderGender } = lastInviteContext || {};
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'objection',
+          objectionType,
+          clientDesc: clientDesc || '',
+          channel: channel || 'whatsapp',
+          senderGender: senderGender || 'female',
+          token: localStorage.getItem('auth_token')
+        })
+      });
+
+      const rawText = await res.text();
+      let data;
+      try { data = JSON.parse(rawText); } catch(e) { throw new Error(`Ошибка сервера ${res.status}`); }
+      if (!res.ok || data.error) throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
+
+      renderObjectionResults(data.result, resultsDiv);
+      if (isTestMode()) incrementTestCounter();
+
+    } catch (err) {
+      if (resultsDiv) resultsDiv.innerHTML = `<div style="color:#ff5555;font-size:0.85rem;padding:0.4rem 0">${escapeHtml(err.message)}</div>`;
+    } finally {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.textContent = 'Подготовить ответ';
+    }
+  }
+
+  function renderObjectionResults(text, container) {
+    const parse = (tag) => {
+      const m = text.match(new RegExp(`<${tag}>[\\s\\S]*?<\\/${tag}>`, 'i'));
+      if (!m) return null;
+      return m[0].replace(new RegExp(`^<${tag}>`, 'i'), '').replace(new RegExp(`<\\/${tag}>$`, 'i'), '').trim();
+    };
+
+    const analysis = parse('анализ_возражения');
+    const r1 = parse('ответ_1');
+    const r2 = parse('ответ_2');
+    const tactic = parse('тактика');
+
+    let html = '';
+
+    if (analysis) {
+      html += `<div class="reeng-tactics-card" style="margin-bottom:0.75rem">
+        <div class="reeng-tactics-label">Что за этим стоит</div>
+        <div style="font-size:0.84rem;line-height:1.6">${renderText(analysis)}</div>
+      </div>`;
+    }
+
+    if (r1) {
+      html += `<div class="reeng-variant-card" style="margin-bottom:0.5rem">
+        <div class="reeng-variant-header">
+          <div class="reeng-variant-title">Вариант 1</div>
+          <button class="btn-copy" data-copy="${escHtml(r1)}" onclick="copyText(this)">Скопировать</button>
+        </div>
+        <div class="reeng-variant-body">${renderText(r1)}</div>
+      </div>`;
+    }
+
+    if (r2) {
+      html += `<div class="reeng-variant-card" style="margin-bottom:0.5rem">
+        <div class="reeng-variant-header">
+          <div class="reeng-variant-title">Вариант 2</div>
+          <button class="btn-copy" data-copy="${escHtml(r2)}" onclick="copyText(this)">Скопировать</button>
+        </div>
+        <div class="reeng-variant-body">${renderText(r2)}</div>
+      </div>`;
+    }
+
+    if (tactic) {
+      html += `<div class="reeng-tactics-card" style="margin-top:0.25rem">
+        <div class="reeng-tactics-label">Тактика дистрибьютора</div>
+        <div style="font-size:0.84rem;line-height:1.6">${renderText(tactic)}</div>
+      </div>`;
+    }
+
+    container.innerHTML = html || '<div style="color:#888;font-size:0.85rem">Не удалось распознать ответ</div>';
+  }
+
+  async function generateReactivate() {
+    if (!checkTestLimit()) return;
+
+    const clientName = document.getElementById('react-name').value.trim();
+    const inactiveMonths = document.getElementById('react-inactive').value;
+    const lastPurchase = document.getElementById('react-last').value.trim();
+    const channel = document.querySelector('input[name="react-channel"]:checked')?.value || 'whatsapp';
+    const senderGender = document.querySelector('input[name="react-sender"]:checked')?.value || 'female';
+
+    const btn = document.getElementById('react-btn');
+    const btnText = document.getElementById('react-btn-text');
+    const resultsDiv = document.getElementById('react-results');
+
+    btn.disabled = true;
+    if (btnText) btnText.textContent = 'Готовлю...';
+    resultsDiv.innerHTML = `
+      <div class="results-empty">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">⏳</div>
+        <div style="color:#666">Подбираю тактику возврата...</div>
+      </div>`;
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'reactivate',
+          clientName, inactiveMonths, lastPurchase,
+          channel, senderGender,
+          token: localStorage.getItem('auth_token')
+        })
+      });
+
+      const rawText = await res.text();
+      let data;
+      try { data = JSON.parse(rawText); } catch(e) { throw new Error(`Ошибка сервера ${res.status}: ${rawText.substring(0, 200)}`); }
+      if (!res.ok || data.error) throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
+
+      renderReactivateResults(data.result, resultsDiv);
+      if (isTestMode()) incrementTestCounter();
+
+    } catch (err) {
+      resultsDiv.innerHTML = `<div class="results-empty"><div style="color:#ff5555">Ошибка: ${escapeHtml(err.message)}</div></div>`;
+    } finally {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.textContent = 'Подготовить сообщения';
+    }
+  }
+
+  function renderReactivateResults(text, container) {
+    const parse = (tag) => {
+      const m = text.match(new RegExp(`<${tag}>[\\s\\S]*?<\\/${tag}>`, 'i'));
+      if (!m) return null;
+      return m[0].replace(new RegExp(`^<${tag}>`, 'i'), '').replace(new RegExp(`<\\/${tag}>$`, 'i'), '').trim();
+    };
+
+    const tactic = parse('тактика_дистрибьютора');
+    const v1 = parse('вариант_1');
+    const v2 = parse('вариант_2');
+    const v3 = parse('вариант_3');
+    const next = parse('следующий_шаг');
+
+    const variants = [
+      { label: 'Вариант 1 — первое касание', content: v1 },
+      { label: 'Вариант 2 — другой тон', content: v2 },
+      { label: 'Вариант 3 — если нет ответа (через 5–7 дней)', content: v3 },
+    ].filter(v => v.content);
+
+    let html = '';
+
+    if (tactic) {
+      html += `<div class="reeng-tactics-card" style="margin-bottom:1rem">
+        <div class="reeng-tactics-label">Тактика дистрибьютора</div>
+        <div style="font-size:0.84rem;line-height:1.6">${renderText(tactic)}</div>
+      </div>`;
+    }
+
+    variants.forEach(v => {
+      html += `<div class="reeng-variant-card" style="margin-bottom:0.75rem;animation:fadeIn 0.35s ease">
+        <div class="reeng-variant-header">
+          <div class="reeng-variant-title">${escHtml(v.label)}</div>
+          <button class="btn-copy" data-copy="${escHtml(v.content)}" onclick="copyText(this)">Скопировать</button>
+        </div>
+        <div class="reeng-variant-body">${renderText(v.content)}</div>
+      </div>`;
+    });
+
+    if (next) {
+      html += `<div class="reeng-tactics-card" style="margin-top:0.25rem">
+        <div class="reeng-tactics-label">Следующий шаг</div>
+        <div style="font-size:0.84rem;line-height:1.6">${renderText(next)}</div>
+      </div>`;
+    }
+
+    container.innerHTML = html || '<div class="results-empty"><div style="color:#888">Не удалось получить ответ</div></div>';
   }
 
   async function generateReengagement() {
