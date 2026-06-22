@@ -2867,6 +2867,200 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
     return res.end();
   }
 
+  // ── РЕЖИМ ФИКСАЦИИ РЕЗУЛЬТАТА (опросник + кейс для соцсетей) ──
+  if (mode === 'result') {
+    const {
+      action: resultAction,
+      clientName: rName,
+      systems: rSystems,
+      complaints: rComplaints,
+      protocol: rProtocol,
+      duration: rDuration,
+      scoreGeneral, scoreEnergy, scoreExtra, extraLabel,
+      improved, unchanged, wishMore, phrase
+    } = req.body || {};
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const rSseError = (msg) => {
+      res.write(`data: ${JSON.stringify({ error: msg })}\n\n`);
+      return res.end();
+    };
+
+    if (resultAction === 'questionnaire') {
+      if (!rSystems && !rComplaints) return rSseError('Нет данных о клиенте');
+
+      const Q_SYSTEM = `Ты помощник дистрибьютора Coral Club. Создаёшь персональный опросник для клиента который завершает протокол по методу Бутаковой.
+
+ЗАДАЧА: написать готовый текст сообщения — 5 вопросов — которые дистрибьютор скопирует и отправит клиенту в WhatsApp или Telegram.
+
+ПРАВИЛА:
+- Тёплый, неформальный тон. Обращение на "ты"
+- Без канцелярита и рекламных слов
+- Третий вопрос (шкала параметра) — персональный под ведущую систему клиента: для ЦНС → сон/настроение, для КМС → боль в суставах/подвижность, для ССС → давление/одышка, для ПС → пищеварение/вздутие, и т.д.
+- Четвёртый вопрос про "что хотела бы улучшить" — ключевой: он открывает следующий этап работы
+- Пятый вопрос — одна фраза для цитаты (кейс)
+- В конце — благодарность и что будет дальше
+
+Оборачивай весь текст в тег <questionnaire>...</questionnaire>`;
+
+      const qPrompt = [
+        rName ? `Имя клиента: ${rName}` : null,
+        rSystems ? `Ведущие системы организма: ${rSystems}` : null,
+        rComplaints ? `С чем обратился: ${rComplaints}` : null,
+        rDuration ? `Срок протокола: ${rDuration}` : null,
+        rProtocol ? `Что принимал: ${rProtocol}` : null,
+      ].filter(Boolean).join('\n');
+
+      try {
+        const qRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          signal: AbortSignal.timeout(30000),
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 1200,
+            stream: true,
+            messages: [
+              { role: 'user', content: `${Q_SYSTEM}\n\n${qPrompt}` }
+            ]
+          })
+        });
+        if (!qRes.ok) { const t = await qRes.text(); return rSseError(t); }
+        const qReader = qRes.body.getReader();
+        const qDec = new TextDecoder();
+        let qBuf = '', qDone = false;
+        while (true) {
+          const { done, value } = await qReader.read();
+          if (done) break;
+          qBuf += qDec.decode(value, { stream: true });
+          const lines = qBuf.split('\n'); qBuf = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (!raw || raw === '[DONE]') continue;
+            try {
+              const evt = JSON.parse(raw);
+              if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+                res.write(`data: ${JSON.stringify({ text: evt.delta.text })}\n\n`);
+              } else if (evt.type === 'message_stop') {
+                res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+                qDone = true;
+              }
+            } catch (_) {}
+          }
+        }
+        if (!qDone) res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      } catch (err) {
+        res.write(`data: ${JSON.stringify({ error: 'Ошибка генерации опросника', details: err.message })}\n\n`);
+      }
+      return res.end();
+    }
+
+    if (resultAction === 'case') {
+      if (!improved && !phrase) return rSseError('Заполни хотя бы поля «Что улучшилось» и «Одна фраза»');
+
+      const CASE_SYSTEM = `Ты копирайтер-практик для дистрибьюторов Coral Club. Создаёшь реальные кейсы трансформации для публикации в соцсетях.
+
+ЗАКОН КЕЙСА: история без конкретной детали — не история.
+Плохо: "Стала лучше себя чувствовать"
+Хорошо: "Перестала просыпаться в 3 ночи от боли — впервые за 4 года"
+
+ПРИНЦИПЫ:
+- Используй СЛОВА КЛИЕНТА из анкеты — не перефразируй в рекламный текст
+- Включи честный момент "что осталось" — это делает кейс доверительным, не рекламным
+- Продукты Coral Club = дополнение к здоровому образу жизни, не лечение, не диагноз
+- Никаких медицинских заявлений
+- Обращение к читателю в конце (Telegram/VK): "Если тебе откликается эта история..."
+
+ФОРМАТЫ (создавай все три):
+<case_telegram>
+10-14 строк. Полная история. Живой разговорный тон. Эмодзи 2-4 штуки органично. Абзацы через пустую строку. Без markdown-разметки и звёздочек. В конце мягкое приглашение к диалогу.
+</case_telegram>
+
+<case_vk>
+15-20 строк. Чуть подробнее — можно добавить контекст протокола. Та же живая подача. Более нарративная структура: завязка → проблема → действие → результат → одна честная оговорка → итог. В конце вопрос к читателю.
+</case_vk>
+
+<case_instagram>
+3-5 строк под фото. Начать с самой сильной детали результата. В конце 4-6 хэштегов на русском. Без markdown.
+</case_instagram>`;
+
+      const casePrompt = [
+        rName ? `Имя клиента: ${rName}` : null,
+        rSystems ? `Системы организма в работе: ${rSystems}` : null,
+        rComplaints ? `С чем обратился: ${rComplaints}` : null,
+        rDuration ? `Срок протокола: ${rDuration}` : null,
+        rProtocol ? `Что принимал: ${rProtocol}` : null,
+        '',
+        '— ОТВЕТЫ КЛИЕНТА ИЗ АНКЕТЫ:',
+        scoreGeneral ? `Общее самочувствие: было ${scoreGeneral.before}/10 → стало ${scoreGeneral.after}/10` : null,
+        scoreEnergy ? `Энергия: было ${scoreEnergy.before}/10 → стало ${scoreEnergy.after}/10` : null,
+        scoreExtra && extraLabel ? `${extraLabel}: было ${scoreExtra.before}/10 → стало ${scoreExtra.after}/10` : null,
+        improved ? `Что улучшилось: ${improved}` : null,
+        unchanged ? `Что осталось на том же уровне: ${unchanged}` : null,
+        wishMore ? `Что ещё хочет улучшить: ${wishMore}` : null,
+        phrase ? `Одна фраза клиента об опыте: "${phrase}"` : null,
+      ].filter(Boolean).join('\n');
+
+      try {
+        const cRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          signal: AbortSignal.timeout(35000),
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-6',
+            max_tokens: 2500,
+            stream: true,
+            messages: [
+              { role: 'user', content: `${CASE_SYSTEM}\n\n${casePrompt}` }
+            ]
+          })
+        });
+        if (!cRes.ok) { const t = await cRes.text(); return rSseError(t); }
+        const cReader = cRes.body.getReader();
+        const cDec = new TextDecoder();
+        let cBuf = '', cDone = false;
+        while (true) {
+          const { done, value } = await cReader.read();
+          if (done) break;
+          cBuf += cDec.decode(value, { stream: true });
+          const lines = cBuf.split('\n'); cBuf = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (!raw || raw === '[DONE]') continue;
+            try {
+              const evt = JSON.parse(raw);
+              if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
+                res.write(`data: ${JSON.stringify({ text: evt.delta.text })}\n\n`);
+              } else if (evt.type === 'message_stop') {
+                res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+                cDone = true;
+              }
+            } catch (_) {}
+          }
+        }
+        if (!cDone) res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      } catch (err) {
+        res.write(`data: ${JSON.stringify({ error: 'Ошибка генерации кейса', details: err.message })}\n\n`);
+      }
+      return res.end();
+    }
+
+    return rSseError('Неизвестное действие');
+  }
+
   // ── РЕЖИМ АНАЛИТИКИ (AI-коуч по статистике) ──
   if (mode === 'analytics') {
     if (!statsPayload) {

@@ -2984,6 +2984,157 @@
     .btn-create-case:hover { opacity: 0.88; }
     .btn-create-case:disabled { opacity: 0.45; cursor: default; }
 
+    .btn-fix-result {
+      margin-top: 0.75rem;
+      padding: 0.55rem 1.1rem;
+      background: linear-gradient(135deg, #b45309, #ff6b35);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      display: none;
+    }
+    .btn-fix-result:hover { opacity: 0.88; }
+
+    .result-section {
+      display: none;
+      margin-top: 1rem;
+      background: #181818;
+      border: 1px solid #2e2e2e;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+    }
+    .result-section.open { display: block; }
+
+    .result-step-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ff6b35;
+      margin-bottom: 0.55rem;
+    }
+
+    .result-step-divider {
+      border: none;
+      border-top: 1px solid #2e2e2e;
+      margin: 1rem 0;
+    }
+
+    .result-score-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.83rem;
+      color: #ccc;
+    }
+    .result-score-row label { flex: 1; }
+    .result-score-row input[type=number] {
+      width: 52px;
+      padding: 0.3rem 0.4rem;
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #f0f0f0;
+      font-size: 0.83rem;
+      text-align: center;
+    }
+    .result-score-arrow { color: #555; font-size: 1rem; }
+
+    .result-field {
+      margin-bottom: 0.7rem;
+    }
+    .result-field label {
+      display: block;
+      font-size: 0.78rem;
+      color: #999;
+      margin-bottom: 0.3rem;
+    }
+    .result-field textarea {
+      width: 100%;
+      padding: 0.5rem 0.7rem;
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 0.83rem;
+      resize: vertical;
+      min-height: 54px;
+      box-sizing: border-box;
+    }
+    .result-field input[type=text] {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 0.83rem;
+      box-sizing: border-box;
+    }
+    .result-field select {
+      padding: 0.4rem 0.6rem;
+      background: #222;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      color: #f0f0f0;
+      font-size: 0.83rem;
+    }
+
+    .btn-gen-questionnaire {
+      padding: 0.45rem 1rem;
+      background: #1e3a2e;
+      color: #4ade80;
+      border: 1px solid #4ade80;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-gen-questionnaire:hover { opacity: 0.85; }
+    .btn-gen-questionnaire:disabled { opacity: 0.45; cursor: default; }
+
+    .btn-gen-case {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      background: linear-gradient(135deg, #b45309, #ff6b35);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn-gen-case:hover { opacity: 0.88; }
+    .btn-gen-case:disabled { opacity: 0.45; cursor: default; }
+
+    .questionnaire-block {
+      margin-top: 0.75rem;
+      background: #1a2a1a;
+      border: 1px solid #2e4e2e;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-size: 0.82rem;
+      color: #d4f5d4;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      display: none;
+    }
+    .questionnaire-block.visible { display: block; }
+
+    .case-result-block {
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .case-result-block.visible { display: block; }
+
     .session-item {
       background: #1e1e1e;
       border: 1px solid #2e2e2e;
@@ -4815,8 +4966,80 @@
         <div id="detail-sessions"></div>
         <button class="btn-compare-sessions" id="btn-compare-sessions" onclick="compareClientSessions()" style="display:none">🔄 Сравнить трекеры До → После</button>
         <div class="compare-result" id="compare-result"></div>
-        <button class="btn-create-case" id="btn-create-case" onclick="generateClientCase()" style="display:none">✨ Создать кейс для соцсетей</button>
+        <button class="btn-create-case" id="btn-create-case" onclick="generateClientCase()" style="display:none">✨ Быстрый кейс (авто)</button>
         <div class="story-result" id="story-result"></div>
+
+        <button class="btn-fix-result" id="btn-fix-result" onclick="toggleResultSection()">📋 Зафиксировать результат</button>
+        <div class="result-section" id="result-section">
+
+          <!-- Шаг 1: Опросник -->
+          <div class="result-step-title">Шаг 1 — Отправь опросник клиенту</div>
+          <div style="font-size:0.8rem;color:#888;margin-bottom:0.6rem">Скопируй и отправь клиенту в WhatsApp или Telegram. Опросник персонализирован под его системы.</div>
+          <button class="btn-gen-questionnaire" id="btn-gen-questionnaire" onclick="generateQuestionnaire()">Сгенерировать опросник</button>
+          <div class="questionnaire-block" id="questionnaire-block">
+            <div id="questionnaire-text"></div>
+            <button class="btn-copy" style="margin-top:0.6rem;font-size:0.75rem" onclick="copyQuestionnaire()">Скопировать</button>
+          </div>
+
+          <hr class="result-step-divider">
+
+          <!-- Шаг 2: Ответы клиента -->
+          <div class="result-step-title">Шаг 2 — Внеси ответы клиента</div>
+          <div style="font-size:0.8rem;color:#888;margin-bottom:0.75rem">Заполни когда клиент ответит на опросник. AI создаст кейс из его слов.</div>
+
+          <div style="font-size:0.8rem;color:#aaa;margin-bottom:0.35rem">Оценка по шкале 1-10 (было → стало)</div>
+          <div class="result-score-row">
+            <label>Общее самочувствие</label>
+            <input type="number" id="rs-general-before" min="1" max="10" placeholder="до">
+            <span class="result-score-arrow">→</span>
+            <input type="number" id="rs-general-after" min="1" max="10" placeholder="после">
+          </div>
+          <div class="result-score-row">
+            <label>Энергия в течение дня</label>
+            <input type="number" id="rs-energy-before" min="1" max="10" placeholder="до">
+            <span class="result-score-arrow">→</span>
+            <input type="number" id="rs-energy-after" min="1" max="10" placeholder="после">
+          </div>
+          <div class="result-score-row" id="rs-extra-row" style="display:none">
+            <label id="rs-extra-label">Доп. параметр</label>
+            <input type="number" id="rs-extra-before" min="1" max="10" placeholder="до">
+            <span class="result-score-arrow">→</span>
+            <input type="number" id="rs-extra-after" min="1" max="10" placeholder="после">
+          </div>
+
+          <div class="result-field" style="margin-top:0.75rem">
+            <label>Что изменилось к лучшему? (словами клиента)</label>
+            <textarea id="rs-improved" rows="2" placeholder="Перестала просыпаться ночью, больше сил с утра..."></textarea>
+          </div>
+          <div class="result-field">
+            <label>Что осталось на том же уровне?</label>
+            <textarea id="rs-unchanged" rows="2" placeholder="Давление ещё скачет, но реже..."></textarea>
+          </div>
+          <div class="result-field">
+            <label>Что ещё хотела бы улучшить?</label>
+            <textarea id="rs-wish-more" rows="2" placeholder="Хочу разобраться с весом..."></textarea>
+          </div>
+          <div class="result-field">
+            <label>Одна фраза об опыте (цитата клиента)</label>
+            <input type="text" id="rs-phrase" placeholder="Наконец-то почувствовала что тело меня слышит">
+          </div>
+          <div class="result-field">
+            <label>Срок протокола</label>
+            <select id="rs-duration">
+              <option value="">— выбери —</option>
+              <option value="2 недели">2 недели</option>
+              <option value="3 недели">3 недели</option>
+              <option value="1 месяц">1 месяц</option>
+              <option value="6 недель">6 недель</option>
+              <option value="2 месяца">2 месяца</option>
+              <option value="3 месяца">3 месяца</option>
+            </select>
+          </div>
+
+          <button class="btn-gen-case" id="btn-gen-case" onclick="generateResultCase()">✨ Создать кейс для соцсетей</button>
+          <div class="case-result-block" id="case-result-block"></div>
+        </div>
+
         <div class="contact-section-title" style="margin-top:1.5rem">Следующий шаг</div>
         <button class="btn-client-action" id="btn-client-action" onclick="generateClientAction()">✍️ Что написать клиенту</button>
         <div class="client-action-result" id="client-action-result">
@@ -8558,6 +8781,12 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       const storyRes = document.getElementById('story-result');
       if (caseBtn) { caseBtn.style.display = 'none'; caseBtn.disabled = false; }
       if (storyRes) { storyRes.classList.remove('visible'); storyRes.innerHTML = ''; }
+      const fixBtn = document.getElementById('btn-fix-result');
+      const resultSec = document.getElementById('result-section');
+      if (fixBtn) { fixBtn.style.display = 'none'; }
+      if (resultSec) { resultSec.classList.remove('open'); }
+      document.getElementById('questionnaire-block')?.classList.remove('visible');
+      document.getElementById('case-result-block')?.classList.remove('visible');
       if (!c.sessions || !c.sessions.length) {
         sessionsEl.innerHTML = '<div style="color:#aaa;font-size:0.85rem;padding:0.5rem 0">Расшифровок пока нет</div>';
       } else {
@@ -8588,6 +8817,18 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
         }).join('');
         if (compareBtn && c.sessions.length >= 2) compareBtn.style.display = 'block';
         if (caseBtn && c.sessions.length >= 2) caseBtn.style.display = 'block';
+        if (fixBtn && c.sessions.length >= 1) {
+          fixBtn.style.display = 'block';
+          // Подставляем доп. параметр по ведущей системе
+          const firstSys = (c.sessions[0]?.systems || '').toUpperCase();
+          const extraRow = document.getElementById('rs-extra-row');
+          const extraLabel = document.getElementById('rs-extra-label');
+          if (extraRow && extraLabel) {
+            const sysMap = { 'ЦНС': 'Сон/настроение', 'КМС': 'Боль/подвижность суставов', 'ССС': 'Давление/одышка', 'ПС': 'Пищеварение', 'ЛС': 'Отёки/усталость', 'ИС': 'Иммунитет', 'РС': 'Гормональный фон', 'ЭС': 'Гормональный фон', 'МВС': 'Кожа/отёки' };
+            const matched = Object.keys(sysMap).find(k => firstSys.includes(k));
+            if (matched) { extraLabel.textContent = sysMap[matched]; extraRow.style.display = 'flex'; }
+          }
+        }
       }
     } catch (e) {
       document.getElementById('detail-name').textContent = 'Ошибка загрузки';
@@ -8689,7 +8930,205 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       resultEl.innerHTML = `<div style="color:#e74c3c;font-size:0.85rem;padding:1rem">Ошибка — ${escHtml(e.message)}</div>`;
     }
     btn.disabled = false;
+    btn.textContent = '✨ Быстрый кейс (авто)';
+  }
+
+  // ── ФИКСАЦИЯ РЕЗУЛЬТАТА: кнопка, опросник, кейс ──
+
+  function toggleResultSection() {
+    const sec = document.getElementById('result-section');
+    const btn = document.getElementById('btn-fix-result');
+    const isOpen = sec.classList.toggle('open');
+    btn.textContent = isOpen ? '📋 Скрыть' : '📋 Зафиксировать результат';
+  }
+
+  async function generateQuestionnaire() {
+    const c = _currentClientData;
+    if (!c) return;
+    const btn = document.getElementById('btn-gen-questionnaire');
+    const block = document.getElementById('questionnaire-block');
+    const textEl = document.getElementById('questionnaire-text');
+    btn.disabled = true;
+    btn.textContent = '⏳ Генерирую...';
+    block.classList.remove('visible');
+    textEl.textContent = '';
+
+    const sessions = c.sessions || [];
+    const first = sessions[0] || {};
+    const last = sessions[sessions.length - 1] || {};
+    const systems = stripMd(last.systems || first.systems || '');
+    const complaints = first.complaints || '';
+    const protocol = stripMd(last.protocol || '');
+    const duration = document.getElementById('rs-duration').value || '';
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'result',
+          action: 'questionnaire',
+          token: localStorage.getItem('auth_token'),
+          clientName: c.name || '',
+          systems, complaints, protocol, duration
+        })
+      });
+      if (!res.ok) throw new Error('Ошибка сервера');
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', fullText = '';
+      block.classList.add('visible');
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n'); buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (!raw) continue;
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.text) {
+              fullText += evt.text;
+              const m = fullText.match(/<questionnaire>([\s\S]*?)(?:<\/questionnaire>|$)/);
+              if (m) textEl.textContent = m[1].trim();
+            }
+          } catch(_) {}
+        }
+      }
+    } catch(e) {
+      block.classList.add('visible');
+      textEl.textContent = 'Ошибка: ' + e.message;
+    }
+    btn.disabled = false;
+    btn.textContent = 'Сгенерировать опросник';
+  }
+
+  function copyQuestionnaire() {
+    const text = document.getElementById('questionnaire-text').textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Скопировано ✓';
+      setTimeout(() => btn.textContent = 'Скопировать', 2000);
+    });
+  }
+
+  async function generateResultCase() {
+    const c = _currentClientData;
+    if (!c) return;
+
+    const improved = document.getElementById('rs-improved').value.trim();
+    const phrase = document.getElementById('rs-phrase').value.trim();
+    if (!improved && !phrase) {
+      alert('Заполни хотя бы поле «Что улучшилось» или «Одна фраза»');
+      return;
+    }
+
+    const btn = document.getElementById('btn-gen-case');
+    const block = document.getElementById('case-result-block');
+    btn.disabled = true;
+    btn.textContent = '⏳ Создаю кейс...';
+    block.innerHTML = '<div style="color:#ff6b35;font-size:0.82rem;padding:0.75rem">Генерирую три формата...</div>';
+    block.classList.add('visible');
+
+    const sessions = c.sessions || [];
+    const first = sessions[0] || {};
+    const last = sessions[sessions.length - 1] || {};
+
+    const gBefore = document.getElementById('rs-general-before').value;
+    const gAfter = document.getElementById('rs-general-after').value;
+    const eBefore = document.getElementById('rs-energy-before').value;
+    const eAfter = document.getElementById('rs-energy-after').value;
+    const xBefore = document.getElementById('rs-extra-before').value;
+    const xAfter = document.getElementById('rs-extra-after').value;
+    const extraLabelEl = document.getElementById('rs-extra-label');
+
+    const payload = {
+      mode: 'result',
+      action: 'case',
+      token: localStorage.getItem('auth_token'),
+      clientName: c.name || '',
+      systems: stripMd(last.systems || first.systems || ''),
+      complaints: first.complaints || '',
+      protocol: stripMd(last.protocol || ''),
+      duration: document.getElementById('rs-duration').value || '',
+      improved,
+      unchanged: document.getElementById('rs-unchanged').value.trim(),
+      wishMore: document.getElementById('rs-wish-more').value.trim(),
+      phrase,
+      scoreGeneral: (gBefore && gAfter) ? { before: gBefore, after: gAfter } : null,
+      scoreEnergy: (eBefore && eAfter) ? { before: eBefore, after: eAfter } : null,
+      scoreExtra: (xBefore && xAfter) ? { before: xBefore, after: xAfter } : null,
+      extraLabel: extraLabelEl ? extraLabelEl.textContent : ''
+    };
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Ошибка сервера');
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '', fullText = '';
+      block.innerHTML = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n'); buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (!raw) continue;
+          try {
+            const evt = JSON.parse(raw);
+            if (evt.text) {
+              fullText += evt.text;
+              renderCaseResult(block, fullText, false);
+            } else if (evt.done) {
+              renderCaseResult(block, fullText, true);
+            }
+          } catch(_) {}
+        }
+      }
+      renderCaseResult(block, fullText, true);
+    } catch(e) {
+      block.innerHTML = `<div style="color:#e74c3c;font-size:0.82rem;padding:0.75rem">Ошибка — ${escHtml(e.message)}</div>`;
+    }
+    btn.disabled = false;
     btn.textContent = '✨ Создать кейс для соцсетей';
+  }
+
+  function renderCaseResult(container, text, final) {
+    const extract = (tag) => {
+      const m = text.match(new RegExp(`<${tag}>([\\s\\S]*?)(?:<\/${tag}>|$)`));
+      return m ? m[1].trim() : '';
+    };
+    const telegram = extract('case_telegram');
+    const vk = extract('case_vk');
+    const instagram = extract('case_instagram');
+
+    const section = (label, icon, content) => {
+      if (!content && !final) return `<div class="story-format"><div class="story-format-header">${icon} ${label} <span style="color:#666">генерирую...</span></div></div>`;
+      if (!content) return '';
+      return `
+        <div class="story-format">
+          <div class="story-format-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+            ${icon} ${label}
+            <button class="btn-copy" onclick="event.stopPropagation();this.closest('.story-format').querySelector('.story-format-body').innerText&&navigator.clipboard.writeText(this.closest('.story-format').querySelector('.story-format-body').innerText).then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='Скопировать',1800)})" style="font-size:0.75rem">Скопировать</button>
+          </div>
+          <div class="story-format-body">${escHtml(content)}</div>
+        </div>`;
+    };
+
+    container.innerHTML =
+      section('Telegram', '✈️', telegram) +
+      section('ВКонтакте', '🔵', vk) +
+      section('Instagram', '📸', instagram);
   }
 
   // Генерация кейса из мини-CRM вкладки «Пригласить» (localStorage)
