@@ -236,6 +236,10 @@ module.exports = async function handler(req, res) {
       const today = new Date().toISOString().slice(0, 10);
       client.nextActionDate = nextActionDate || (days !== null ? addDays(today, days) : null);
 
+      if (status === 'on_protocol' && !client.protocolStartDate) {
+        client.protocolStartDate = today;
+      }
+
       await kvSet(clientKey(ns, clientId), client);
 
       const index = await kvGet(indexKey(ns)) || [];
@@ -243,10 +247,32 @@ module.exports = async function handler(req, res) {
       if (entry) {
         entry.status = client.status;
         entry.nextActionDate = client.nextActionDate;
+        if (client.protocolStartDate) entry.protocolStartDate = client.protocolStartDate;
         await kvSet(indexKey(ns), index);
       }
 
       return res.status(200).json({ ok: true, status: client.status, nextActionDate: client.nextActionDate });
+    }
+
+    // ── POST: сохранить дату начала протокола ──
+    if (action === 'set-protocol-start') {
+      const { clientId, protocolStartDate } = req.body;
+      if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
+
+      const client = await kvGet(clientKey(ns, clientId));
+      if (!client) return res.status(404).json({ error: 'Клиент не найден' });
+
+      client.protocolStartDate = protocolStartDate || null;
+      await kvSet(clientKey(ns, clientId), client);
+
+      const index = await kvGet(indexKey(ns)) || [];
+      const entry = index.find(c => c.id === clientId);
+      if (entry) {
+        entry.protocolStartDate = protocolStartDate || null;
+        await kvSet(indexKey(ns), index);
+      }
+
+      return res.status(200).json({ ok: true });
     }
 
     // ── POST: добавить запись о контакте ──

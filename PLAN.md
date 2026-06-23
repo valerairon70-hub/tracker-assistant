@@ -593,6 +593,77 @@ docs/knowledge/
 
 ---
 
+---
+
+## Фаза 6 — Управление доступом и безопасность (2026-06-23)
+
+> Исследование проведено 4 параллельными агентами по темам: invitation flows, SaaS security, Telegram Bot architecture, multi-tenant auth. Выводы синтезированы в единую архитектуру под наш стек (Vercel + Upstash Redis, plain HTML/JS, no framework).
+
+### Проблема
+- Партнёры не могли запросить доступ — не было формы, только страница тарифов с мёртвыми кнопками
+- Владелец узнавал о запросах только из личных сообщений (нет системы уведомлений)
+- Партнёры добавлялись через PARTNERS env var — требовал редеплой
+- Нет защиты API от злоупотреблений (rate limiting только на клиенте)
+- Один пароль на всех = риск шаринга и утечки
+
+### Архитектура решения
+
+**Флоу запроса доступа:**
+1. Партнёр заполняет форму на pricing.html (имя + Telegram)
+2. `api/request-access.js` → сохраняет в Redis (TTL 7 дней) → Telegram уведомление владельцу
+3. Владелец нажимает ✅ в Telegram (одно касание)
+4. `api/telegram-webhook.js` → генерирует уникальный пароль → сохраняет партнёра в Redis → отправляет пароль владельцу для пересылки
+5. Владелец пересылает пароль партнёру в Telegram (~10 секунд работы)
+
+**Redis-схема для партнёров:**
+```
+partners:passwords           HASH → { password: slug }   (O(1) поиск)
+partner:{slug}:data          STRING JSON → { name, telegram, created, active }
+partners:index               SET → [slug1, slug2, ...]
+req:{requestId}              STRING JSON (TTL 7 дней) → { name, telegram, message, createdAt }
+reqs:pending                 LIST → [requestId, ...]
+ratelimit:analyze:{token}    STRING (TTL 1ч) → счётчик запросов
+```
+
+**Безопасность:**
+- Rate limiting на `api/analyze.js`: 100 запросов / 1 час / токен (серверный, не localStorage)
+- Canary token в системных промптах (обнаружение попыток извлечь промпт)
+- Уникальный пароль на каждого партнёра (не общий)
+- Деактивация партнёра мгновенно через Redis (без редеплоя)
+- Новые партнёры в Redis (без редеплоя для добавления)
+
+**Telegram Bot:**
+- Новый бот через @BotFather
+- Webhook: `api/telegram-webhook.js` (сырой Bot API без SDK, только fetch)
+- env vars: `TG_BOT_TOKEN`, `TG_OWNER_CHAT_ID`, `TG_WEBHOOK_SECRET`
+- Регистрация webhook после деплоя: одна curl-команда
+
+### Задачи
+
+#### Реализовано ✅ 2026-06-23
+- [x] `api/request-access.js` — приём заявок, Redis, Telegram notification с Approve/Reject кнопками
+- [x] `api/telegram-webhook.js` — обработка одобрения/отклонения, генерация пароля, сохранение в Redis
+- [x] `api/auth.js` — добавлен Redis-поиск партнёров поверх env PARTNERS (backward compatible)
+- [x] `pricing.html` — форма запроса доступа с тёмным дизайном, валидация, success-state
+- [x] `api/analyze.js` — серверный rate limiting (100 req/h) + canary token в системных промптах
+- [x] `vercel.json` — добавлены конфиги для новых API-функций
+
+#### После деплоя (ручные шаги)
+- [ ] Создать бота через @BotFather → получить `TG_BOT_TOKEN`
+- [ ] Получить свой `TG_OWNER_CHAT_ID` (написать боту /start → getUpdates)
+- [ ] Добавить в Vercel env vars: `TG_BOT_TOKEN`, `TG_OWNER_CHAT_ID`, `TG_WEBHOOK_SECRET`
+- [ ] Зарегистрировать webhook: `curl "https://api.telegram.org/bot{TOKEN}/setWebhook?url=https://your-app.vercel.app/api/telegram-webhook&secret_token={TG_WEBHOOK_SECRET}"`
+
+#### Phase 6.2 — Будущее (не реализовано)
+- [ ] Напоминание через 6ч если заявка не обработана
+- [ ] Device fingerprinting (Thumbmark.js) — обнаружение шаринга пароля
+- [ ] Clickwrap TOS на форме входа
+- [ ] Панель управления партнёрами (список, деактивация) — прямо в боте или мини-страница
+- [ ] Мониторинг IP-разнообразия (обнаружение: 3+ IP за 1ч = шаринг)
+- [ ] Upgrade: Argon2id для хэширования паролей (сейчас: plain text как и раньше в env)
+
+---
+
 ## Конкурентный контекст (исследование 2026-06-22)
 
 **Главный вывод:** прямых конкурентов на рынке СНГ нет. Глобальные инструменты (Practice Better, Healthie, NutriAdmin, CoachAccountable) ориентированы на лицензированных практиков США/Канады и не имеют:

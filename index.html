@@ -370,6 +370,45 @@
       margin-bottom: 0.5rem;
     }
 
+    .reeng-call-script-card {
+      background: #1e1e2e;
+      border: 1px solid #3a3a6a;
+      border-left: 3px solid #ff6b35;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      font-size: 0.84rem;
+      line-height: 1.65;
+      color: #c8c8e8;
+      animation: fadeIn 0.35s ease;
+      margin-top: 0.75rem;
+    }
+    .reeng-call-script-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .reeng-call-script-icon { font-size: 1rem; }
+    .reeng-call-script-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ff6b35;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .reeng-call-script-badge {
+      font-size: 0.7rem;
+      color: #666;
+      background: #2a2a3a;
+      border-radius: 6px;
+      padding: 0.15rem 0.45rem;
+      margin-left: auto;
+    }
+    .reeng-call-script-body p {
+      margin: 0 0 0.6rem;
+    }
+    .reeng-call-script-body p:last-child { margin-bottom: 0; }
+
     .tracker-protocols-block { margin-top: 0; }
     .upload-zone.upload-protocols { border-color: #3a4a3a; padding: 0.85rem; min-height: 80px; }
     .step-label {
@@ -3246,6 +3285,123 @@
       white-space: pre-wrap;
     }
 
+    /* ── Чек-ин: сопровождение на протоколе ── */
+    .protocol-day-row {
+      display: none;
+      background: #121e12;
+      border: 1px solid #1d3d1d;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0.6rem 0;
+    }
+    .protocol-day-row.visible { display: block; }
+    .protocol-day-top {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.55rem;
+    }
+    .protocol-day-top label {
+      font-size: 0.8rem;
+      color: #aaa;
+      white-space: nowrap;
+    }
+    .protocol-day-top input[type="date"] {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #f0f0f0;
+      font-size: 0.82rem;
+      padding: 0.25rem 0.5rem;
+    }
+    .protocol-day-badge {
+      display: none;
+      background: #1a3a1a;
+      color: #70e070;
+      border: 1px solid #2a5a2a;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.7rem;
+    }
+    .protocol-day-badge.visible { display: inline-block; }
+    .protocol-day-badge.milestone {
+      background: #2a3a0a;
+      color: #c0e840;
+      border-color: #4a6a0a;
+      animation: pulse-badge 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+    .btn-checkin {
+      background: #1a3a1a;
+      border: 1px solid #2d5a2d;
+      border-radius: 8px;
+      color: #70e070;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .btn-checkin:hover { background: #233a23; border-color: #3d6a3d; }
+    .btn-checkin:disabled { opacity: 0.45; cursor: default; }
+    .checkin-result {
+      display: none;
+      margin-top: 0.6rem;
+      background: #181e18;
+      border: 1px solid #2a4a2a;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+    .checkin-result.visible { display: block; }
+    .checkin-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e0f0e0;
+      white-space: pre-wrap;
+      margin-bottom: 0.5rem;
+    }
+    .checkin-hint {
+      font-size: 0.78rem;
+      color: #7aaa7a;
+      margin-top: 0.6rem;
+      font-style: italic;
+      line-height: 1.5;
+    }
+    .btn-checkin-copy {
+      background: none;
+      border: 1px solid #3a6a3a;
+      border-radius: 6px;
+      color: #5db85d;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-checkin-copy:hover { background: #1a3a1a; }
+    /* "День N" чип в списке клиентов */
+    .protocol-day-chip {
+      display: inline-block;
+      background: #1a2a1a;
+      color: #70c070;
+      border: 1px solid #2a4a2a;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.55rem;
+      margin-left: 0.3rem;
+    }
+    .protocol-day-chip.checkin-due {
+      background: #2a3a0a;
+      color: #c0e840;
+      border-color: #4a6a1a;
+    }
+
     /* ── Журнал контактов ── */
     .contact-section-title {
       font-size: 0.82rem;
@@ -4956,6 +5112,22 @@
             <span id="detail-overdue-label" style="color:#e74c3c;display:none">просрочено</span>
           </div>
         </div>
+
+        <!-- ── Сопровождение на протоколе ── -->
+        <div class="protocol-day-row" id="protocol-day-row">
+          <div class="protocol-day-top">
+            <label>Начало протокола:</label>
+            <input type="date" id="detail-protocol-start" onchange="saveProtocolStart()">
+            <span class="protocol-day-badge" id="protocol-day-badge"></span>
+          </div>
+          <button class="btn-checkin" id="btn-checkin" onclick="generateCheckin()">⏱ Написать чек-ин</button>
+          <div class="checkin-result" id="checkin-result">
+            <div class="checkin-text" id="checkin-text"></div>
+            <button class="btn-checkin-copy" onclick="copyCheckin()">Скопировать</button>
+            <div class="checkin-hint" id="checkin-hint"></div>
+          </div>
+        </div>
+
         <div class="contact-section-title">Журнал контактов</div>
         <div id="detail-contacts-list"></div>
         <div class="add-contact-form">
@@ -8667,16 +8839,25 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
     const dot = document.getElementById('clients-overdue-dot');
     dot.style.display = overdueCount > 0 ? 'block' : 'none';
 
+    const CHECKIN_MILESTONES = [3, 7, 14, 30, 60, 90];
     container.innerHTML = `<div class="clients-grid">${clients.map(c => {
       const overdue = c.nextActionDate && c.nextActionDate < today && c.status !== 'rejected';
+      const isOnProtocol = c.status === 'on_protocol' || c.status === 'repeat_tracker' || c.status === 'permanent';
+      const protocolDay = (isOnProtocol && c.protocolStartDate)
+        ? Math.max(1, Math.floor((Date.now() - new Date(c.protocolStartDate)) / 86400000) + 1)
+        : null;
+      const isCheckinDue = protocolDay && CHECKIN_MILESTONES.some(d => Math.abs(protocolDay - d) <= 1);
+      const dayChip = protocolDay
+        ? `<span class="protocol-day-chip${isCheckinDue ? ' checkin-due' : ''}">⏱ День ${protocolDay}</span>`
+        : '';
       return `
       <div class="client-card" onclick="openClientDetail('${c.id}')">
-        ${statusBadge(c.status)}${overdue ? '<span class="overdue-badge">просрочено</span>' : ''}
+        ${statusBadge(c.status)}${overdue ? '<span class="overdue-badge">просрочено</span>' : ''}${dayChip}
         <div class="client-card-name">${escHtml(c.name)}</div>
         <div class="client-card-meta">${[c.age ? escHtml(c.age) + ' лет' : '', genderLabel(c.gender)].filter(Boolean).join(' · ')}</div>
         ${c.lastContactText ? `<div class="last-contact-snippet">💬 ${c.lastContact} — ${escHtml(c.lastContactText)}</div>` : ''}
         <div class="next-action-row${overdue ? ' overdue' : ''}">
-          ${c.nextActionDate ? 'Следующий шаг: ' + c.nextActionDate : ''}
+          ${isCheckinDue ? `⏱ Время для чек-ина` : c.nextActionDate ? 'Следующий шаг: ' + c.nextActionDate : ''}
         </div>
       </div>`;
     }).join('')}
@@ -8771,6 +8952,15 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       nextDateEl.value = c.nextActionDate || '';
       const overdueLabel = document.getElementById('detail-overdue-label');
       overdueLabel.style.display = isOverdue(c.nextActionDate) ? 'inline' : 'none';
+
+      // Протокол: дата начала и чек-ин
+      const isOnProtocol = ['on_protocol', 'repeat_tracker', 'permanent'].includes(c.status || 'invited');
+      const protocolRow = document.getElementById('protocol-day-row');
+      protocolRow.classList.toggle('visible', isOnProtocol);
+      const protocolStartInput = document.getElementById('detail-protocol-start');
+      protocolStartInput.value = c.protocolStartDate || '';
+      updateProtocolDayBadge(c.protocolStartDate);
+      document.getElementById('checkin-result').classList.remove('visible');
 
       renderContacts(c.contacts || []);
 
@@ -9313,6 +9503,22 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       document.getElementById('detail-next-date').value = '';
     }
     document.getElementById('detail-overdue-label').style.display = 'none';
+
+    // Показать/скрыть блок протокола
+    const isOnProtocol = ['on_protocol', 'repeat_tracker', 'permanent'].includes(status);
+    const protocolRow = document.getElementById('protocol-day-row');
+    protocolRow.classList.toggle('visible', isOnProtocol);
+
+    // Авто-проставить дату начала протокола если её ещё нет
+    if (status === 'on_protocol') {
+      const startInput = document.getElementById('detail-protocol-start');
+      if (!startInput.value) {
+        startInput.value = new Date().toISOString().slice(0, 10);
+        updateProtocolDayBadge(startInput.value);
+        saveProtocolStart();
+      }
+    }
+
     saveStatusChange();
   }
 
@@ -9327,6 +9533,114 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
         body: JSON.stringify({ action: 'set-status', token: clientsApiToken(), clientId: _currentClientId, status, nextActionDate })
       });
     } catch (e) { /* тихая ошибка, не мешаем пользователю */ }
+  }
+
+  // ── Обновить бейдж "День N" ──
+  function updateProtocolDayBadge(dateStr) {
+    const badge = document.getElementById('protocol-day-badge');
+    if (!badge) return;
+    if (!dateStr) {
+      badge.textContent = '';
+      badge.classList.remove('visible', 'milestone');
+      return;
+    }
+    const dayNum = Math.max(1, Math.floor((Date.now() - new Date(dateStr)) / 86400000) + 1);
+    const MILESTONES = [3, 7, 14, 30, 60, 90];
+    const isMilestone = MILESTONES.some(d => Math.abs(dayNum - d) <= 1);
+    badge.textContent = `День ${dayNum} на протоколе`;
+    badge.classList.add('visible');
+    badge.classList.toggle('milestone', isMilestone);
+  }
+
+  // ── Сохранить дату начала протокола ──
+  async function saveProtocolStart() {
+    if (!_currentClientId) return;
+    const date = document.getElementById('detail-protocol-start').value;
+    updateProtocolDayBadge(date);
+    try {
+      await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set-protocol-start', token: clientsApiToken(), clientId: _currentClientId, protocolStartDate: date || null })
+      });
+    } catch (_) {}
+  }
+
+  // ── Генерировать чек-ин ──
+  async function generateCheckin() {
+    if (!_currentClientId) return;
+    const btn = document.getElementById('btn-checkin');
+    const resultEl = document.getElementById('checkin-result');
+    const textEl = document.getElementById('checkin-text');
+    const hintEl = document.getElementById('checkin-hint');
+
+    const protocolStart = document.getElementById('detail-protocol-start').value;
+    const protocolDay = protocolStart
+      ? Math.max(1, Math.floor((Date.now() - new Date(protocolStart)) / 86400000) + 1)
+      : 1;
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Генерирую...';
+    resultEl.classList.remove('visible');
+
+    const c = _currentClientData;
+    let leadSystem = '';
+    let products = '';
+    let lastClientResponse = '';
+    if (c && c.sessions && c.sessions.length) {
+      const last = c.sessions[c.sessions.length - 1];
+      leadSystem = last.systems || '';
+      products = last.protocol ? last.protocol.slice(0, 500) : '';
+    }
+    if (c && c.contacts && c.contacts.length) {
+      const lastContact = c.contacts[c.contacts.length - 1];
+      lastClientResponse = lastContact.text.slice(0, 200);
+    }
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'checkin',
+          token: localStorage.getItem('auth_token') || '',
+          clientName: c?.name || '',
+          gender: c?.gender || '',
+          age: c?.age || '',
+          protocolDay,
+          leadSystem,
+          products,
+          clientResponse: lastClientResponse,
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Ошибка API');
+
+      const text = data.result || '';
+      const msgMatch = text.match(/<сообщение>([\s\S]*?)<\/сообщение>/);
+      const hintMatch = text.match(/<подсказка>([\s\S]*?)<\/подсказка>/);
+
+      textEl.textContent = msgMatch ? msgMatch[1].trim() : text;
+      hintEl.innerHTML = hintMatch
+        ? '<strong style="color:#5a9a5a">Для тебя:</strong> ' + escHtml(hintMatch[1].trim())
+        : '';
+      resultEl.classList.add('visible');
+    } catch (e) {
+      textEl.textContent = 'Ошибка: ' + e.message;
+      hintEl.innerHTML = '';
+      resultEl.classList.add('visible');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '⏱ Написать чек-ин';
+    }
+  }
+
+  function copyCheckin() {
+    const text = document.getElementById('checkin-text').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.btn-checkin-copy');
+      if (btn) { btn.textContent = 'Скопировано ✓'; setTimeout(() => btn.textContent = 'Скопировать', 2000); }
+    }).catch(() => {});
   }
 
   async function deleteCurrentClient() {
@@ -9644,7 +9958,8 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       v1: get('вариант_1'),
       v2: get('вариант_2'),
       v3: get('вариант_3'),
-      tactics: get('тактика')
+      tactics: get('тактика'),
+      callScript: get('шпаргалка_звонка')
     };
   }
 
@@ -9681,6 +9996,18 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
         </div>`;
     }
 
+    if (parsed.callScript) {
+      html += `
+        <div class="reeng-call-script-card">
+          <div class="reeng-call-script-header">
+            <span class="reeng-call-script-icon">📞</span>
+            <span class="reeng-call-script-label">Шпаргалка для звонка</span>
+            <span class="reeng-call-script-badge">если перезвонит сразу</span>
+          </div>
+          <div class="reeng-call-script-body">${formatCallScript(parsed.callScript)}</div>
+        </div>`;
+    }
+
     html += `
       <div class="dialog-block" id="reeng-dialog-block">
         <div class="dialog-block-label">💬 Клиент ответил? Получи готовый ответ</div>
@@ -9691,6 +10018,17 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
       </div>`;
 
     container.innerHTML = html || '<div class="results-empty"><div style="color:#666">Не удалось разобрать ответ. Попробуй ещё раз.</div></div>';
+  }
+
+  function formatCallScript(text) {
+    // Convert numbered lines and dashes into structured HTML for readability during a call
+    const escaped = escapeHtml(text);
+    return escaped
+      .replace(/^(\d+\.\s)/gm, '<strong>$1</strong>')
+      .replace(/\n{2,}/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
   }
 
   function reengCopy(id) {
