@@ -5,21 +5,22 @@ function makeToken(slug, secret) {
 }
 
 function getPartnerSlugs(secret) {
-  const raw = process.env.PARTNERS || '';
-  if (raw) {
-    return raw.split(',').map(pair => {
-      const idx = pair.indexOf(':');
-      if (idx === -1) return null;
-      const slug = pair.slice(0, idx).trim();
-      if (!slug) return null;
-      return { slug, token: makeToken(slug, secret) };
-    }).filter(Boolean);
-  }
-  // Обратная совместимость: если PARTNERS не задан
-  return [
+  const partners = [
     { slug: 'main', token: makeToken('main', secret) },
     { slug: 'test', token: makeToken('test', secret) },
   ];
+  const raw = process.env.PARTNERS || '';
+  if (raw) {
+    raw.split(',').forEach(pair => {
+      const idx = pair.indexOf(':');
+      if (idx === -1) return;
+      const slug = pair.slice(0, idx).trim();
+      if (slug && !partners.find(p => p.slug === slug)) {
+        partners.push({ slug, token: makeToken(slug, secret) });
+      }
+    });
+  }
+  return partners;
 }
 
 async function kvCmd(...args) {
