@@ -297,9 +297,130 @@
 
   </div>
 
+  <!-- Форма запроса доступа -->
+  <div class="request-section" id="request-section">
+    <div class="request-card">
+      <div class="request-icon">🔑</div>
+      <h2 class="request-title">Запросить доступ</h2>
+      <p class="request-sub">Заполни форму — отвечаем обычно в течение нескольких часов</p>
+
+      <form class="request-form" id="request-form" onsubmit="submitRequest(event)">
+        <div class="req-field">
+          <label class="req-label">Имя</label>
+          <input type="text" id="req-name" class="req-input" placeholder="Например: Иван Иванов" maxlength="100" required>
+        </div>
+        <div class="req-field">
+          <label class="req-label">Telegram <span class="req-hint">— чтобы связаться с тобой</span></label>
+          <input type="text" id="req-telegram" class="req-input" placeholder="@username или +7..." maxlength="80" required>
+        </div>
+        <div class="req-field">
+          <label class="req-label">Откуда узнал(а)? <span class="req-hint">(необязательно)</span></label>
+          <input type="text" id="req-message" class="req-input" placeholder="Например: от Валерия, из Telegram-канала..." maxlength="300">
+        </div>
+        <button type="submit" class="req-btn" id="req-btn">Отправить заявку</button>
+        <div class="req-error" id="req-error"></div>
+      </form>
+
+      <div class="req-success hidden" id="req-success">
+        <div class="req-success-icon">✅</div>
+        <div class="req-success-title">Заявка отправлена!</div>
+        <div class="req-success-sub">Валерий свяжется с тобой в Telegram в ближайшие несколько часов.</div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    Есть вопросы? <a href="#">Напишите нам</a>
+    AI-ассистент · Coral Club · Метод Бутаковой &nbsp;·&nbsp; <a href="/">Войти</a>
   </footer>
+
+  <style>
+    .request-section {
+      width: 100%;
+      max-width: 480px;
+      margin: 3rem auto 0;
+    }
+    .request-card {
+      background: #242424;
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .request-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .request-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .request-sub { color: #888; font-size: 0.9rem; margin-bottom: 1.75rem; line-height: 1.5; }
+    .request-form { text-align: left; }
+    .req-field { margin-bottom: 1.1rem; }
+    .req-label { display: block; font-size: 0.82rem; color: #aaa; margin-bottom: 0.4rem; font-weight: 500; }
+    .req-hint { color: #666; font-weight: 400; }
+    .req-input {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #3a3a3a;
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      color: #f0f0f0;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .req-input:focus { border-color: #ff6b35; }
+    .req-input::placeholder { color: #555; }
+    .req-btn {
+      width: 100%;
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .req-btn:hover { background: #e85c28; }
+    .req-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .req-error { color: #ff5555; font-size: 0.84rem; margin-top: 0.6rem; min-height: 1.2rem; }
+    .req-success { padding: 0.5rem 0; }
+    .req-success-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .req-success-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: #6dce6d; }
+    .req-success-sub { color: #999; font-size: 0.9rem; line-height: 1.5; }
+    .hidden { display: none; }
+  </style>
+
+  <script>
+    async function submitRequest(e) {
+      e.preventDefault();
+      const btn = document.getElementById('req-btn');
+      const errEl = document.getElementById('req-error');
+      const name = document.getElementById('req-name').value.trim();
+      const telegram = document.getElementById('req-telegram').value.trim();
+      const message = document.getElementById('req-message').value.trim();
+
+      errEl.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Отправляю...';
+
+      try {
+        const res = await fetch('/api/request-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, telegram, message })
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error || 'Ошибка сервера');
+
+        document.getElementById('request-form').classList.add('hidden');
+        document.getElementById('req-success').classList.remove('hidden');
+      } catch (err) {
+        errEl.textContent = err.message || 'Что-то пошло не так. Попробуй позже.';
+        btn.disabled = false;
+        btn.textContent = 'Отправить заявку';
+      }
+    }
+  </script>
 
 </body>
 </html>
