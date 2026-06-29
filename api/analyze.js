@@ -3066,24 +3066,19 @@ ${trackerProtocolsText}` : ''}
 
   // Формируем content: сначала старые скриншоты (если есть), потом новые, потом текст
   const contentBlocks = [];
+  const makeMediaBlock = img => img.mimeType === 'application/pdf'
+    ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: img.base64 } }
+    : { type: 'image',    source: { type: 'base64', media_type: img.mimeType || 'image/jpeg', data: img.base64 } };
+
   if (hasPrev) {
     contentBlocks.push({ type: 'text', text: '=== ПЕРВЫЙ (старый) трекер ===' });
-    prevImages.forEach(img => contentBlocks.push({
-      type: 'image',
-      source: { type: 'base64', media_type: img.mimeType || 'image/jpeg', data: img.base64 }
-    }));
+    prevImages.forEach(img => contentBlocks.push(makeMediaBlock(img)));
     contentBlocks.push({ type: 'text', text: '=== ТЕКУЩИЙ (новый) трекер ===' });
   }
-  allImages.forEach(img => contentBlocks.push({
-    type: 'image',
-    source: { type: 'base64', media_type: img.mimeType || 'image/jpeg', data: img.base64 }
-  }));
+  allImages.forEach(img => contentBlocks.push(makeMediaBlock(img)));
   if (Array.isArray(trackerProtocols) && trackerProtocols.length > 0) {
     contentBlocks.push({ type: 'text', text: `=== ПРОТОКОЛЫ ТРЕКЕРА (${trackerProtocols.length} шт.) ===` });
-    trackerProtocols.forEach(img => contentBlocks.push({
-      type: 'image',
-      source: { type: 'base64', media_type: img.mimeType || 'image/jpeg', data: img.base64 }
-    }));
+    trackerProtocols.forEach(img => contentBlocks.push(makeMediaBlock(img)));
   }
   contentBlocks.push({ type: 'text', text: userText });
 

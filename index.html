@@ -603,6 +603,42 @@
       border: 1px solid #444;
     }
 
+    .thumb-pdf {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      border: 1px solid #ff6b35;
+      background: #2a1a0e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .thumb-pdf-icon {
+      font-size: 10px;
+      font-weight: 700;
+      color: #ff6b35;
+      background: rgba(255,107,53,0.15);
+      padding: 1px 4px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+    }
+    .thumb-pdf-name {
+      font-size: 8px;
+      color: #ccc;
+      text-align: center;
+      word-break: break-all;
+      line-height: 1.2;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
     .thumb-remove {
       position: absolute;
       top: -5px;
@@ -4515,7 +4551,7 @@
                   <button type="button" class="mode-btn" id="mode-btn-text" onclick="setInputMode('text')">📝 Текст</button>
                 </div>
                 <div class="upload-zone" id="upload-zone">
-                  <input type="file" id="file-input" accept="image/*" multiple style="display:none">
+                  <input type="file" id="file-input" accept="image/*,.pdf" multiple style="display:none">
                   <div id="upload-placeholder">
                     <div class="upload-icon">📊</div>
                     <div class="upload-text">Нажмите, перетащите или вставьте (Ctrl+V)</div>
@@ -4658,7 +4694,7 @@
                 <div class="field-group">
                   <div class="field-label" style="color:#22c55e">📂 Первый трекер — для сравнения</div>
                   <div class="upload-zone upload-prev" id="upload-zone-prev">
-                    <input type="file" id="file-input-prev" accept="image/*" multiple style="display:none">
+                    <input type="file" id="file-input-prev" accept="image/*,.pdf" multiple style="display:none">
                     <div id="upload-placeholder-prev">
                       <div class="upload-icon">📊</div>
                       <div class="upload-text">Загрузите скриншоты первого трекера</div>
@@ -4693,7 +4729,7 @@
                 </div>
                 <p class="step-hint">Если в приложении трекера есть раздел «Рекомендации» по каждой системе — загрузите скриншоты или вставьте текст. AI сравнит с базой Coral Club и составит лучший протокол.</p>
                 <div class="upload-zone upload-protocols" id="upload-zone-protocols">
-                  <input type="file" id="file-input-protocols" accept="image/*" multiple style="display:none">
+                  <input type="file" id="file-input-protocols" accept="image/*,.pdf" multiple style="display:none">
                   <div id="upload-placeholder-protocols">
                     <div class="upload-icon" style="font-size:1.3rem">📋</div>
                     <div class="upload-text" style="font-size:0.82rem">Скриншоты рекомендаций трекера</div>
@@ -5923,6 +5959,15 @@
     document.getElementById('tracker-text-input').style.display = mode === 'text' ? 'block' : 'none';
   };
 
+  function arrayBufferToBase64(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += 8192) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+    }
+    return btoa(binary);
+  }
+
   const uploadZone = document.getElementById('upload-zone');
   const fileInput  = document.getElementById('file-input');
 
@@ -5961,7 +6006,18 @@
 
   function handleFiles(files) {
     Array.from(files).forEach(file => {
-      if (!file || !file.type.startsWith('image/')) return;
+      if (!file) return;
+      if (file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const base64 = arrayBufferToBase64(e.target.result);
+          uploadedImages.push({ base64, mimeType: 'application/pdf', name: file.name });
+          renderThumbnails();
+        };
+        reader.readAsArrayBuffer(file);
+        return;
+      }
+      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
@@ -5995,7 +6051,10 @@
     container.style.display   = 'flex';
     grid.innerHTML = uploadedImages.map((img, i) => `
       <div class="thumb-item">
-        <img src="${img.previewUrl}" alt="Скриншот ${i + 1}">
+        ${img.mimeType === 'application/pdf'
+          ? `<div class="thumb-pdf"><span class="thumb-pdf-icon">PDF</span><span class="thumb-pdf-name">${img.name}</span></div>`
+          : `<img src="${img.previewUrl}" alt="Скриншот ${i + 1}">`
+        }
         <button class="thumb-remove" onclick="removeImage(${i}, event)">×</button>
       </div>
     `).join('');
@@ -6035,7 +6094,18 @@
 
   function handleFilesPrev(files) {
     Array.from(files).forEach(file => {
-      if (!file || !file.type.startsWith('image/')) return;
+      if (!file) return;
+      if (file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const base64 = arrayBufferToBase64(e.target.result);
+          prevImages.push({ base64, mimeType: 'application/pdf', name: file.name });
+          renderThumbnailsPrev();
+        };
+        reader.readAsArrayBuffer(file);
+        return;
+      }
+      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
@@ -6069,7 +6139,10 @@
     container.style.display   = 'flex';
     grid.innerHTML = prevImages.map((img, i) => `
       <div class="thumb-item">
-        <img src="${img.previewUrl}" alt="Прошлый ${i + 1}">
+        ${img.mimeType === 'application/pdf'
+          ? `<div class="thumb-pdf"><span class="thumb-pdf-icon">PDF</span><span class="thumb-pdf-name">${img.name}</span></div>`
+          : `<img src="${img.previewUrl}" alt="Прошлый ${i + 1}">`
+        }
         <button class="thumb-remove" onclick="removePrevImage(${i}, event)">×</button>
       </div>
     `).join('');
@@ -6104,7 +6177,18 @@
 
   function handleFilesProto(files) {
     Array.from(files).forEach(file => {
-      if (!file || !file.type.startsWith('image/')) return;
+      if (!file) return;
+      if (file.type === 'application/pdf') {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const base64 = arrayBufferToBase64(e.target.result);
+          protocolImages.push({ base64, mimeType: 'application/pdf', name: file.name });
+          renderThumbnailsProto();
+        };
+        reader.readAsArrayBuffer(file);
+        return;
+      }
+      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
@@ -6138,7 +6222,10 @@
     container.style.display   = 'flex';
     grid.innerHTML = protocolImages.map((img, i) => `
       <div class="thumb-item">
-        <img src="${img.previewUrl}" alt="Протокол ${i + 1}">
+        ${img.mimeType === 'application/pdf'
+          ? `<div class="thumb-pdf"><span class="thumb-pdf-icon">PDF</span><span class="thumb-pdf-name">${img.name}</span></div>`
+          : `<img src="${img.previewUrl}" alt="Протокол ${i + 1}">`
+        }
         <button class="thumb-remove" onclick="removeProtoImage(${i}, event)">×</button>
       </div>
     `).join('');
