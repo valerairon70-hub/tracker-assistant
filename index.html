@@ -7477,7 +7477,20 @@
         ${internalHtml}
       </div>` : '';
 
-    panel.innerHTML = saveBlock + urgentBlock + screeningBlock + readymsgHtml + stepsHtml + renderPurchaseBlock() + renderPriceCalculator(data.protocol, data.program, recId) + consultantBlock + renderDecodeOutcomeBlock(recId, clientDesc);
+    // Страховка: если AI ответил текстом без XML-тегов — показываем сырой ответ
+    const noXml = internalDefs.length === 0 && !data.readymsg && !data.urgent && !!resultText;
+    const rawFallbackBlock = noXml ? `
+      <div class="result-card card-internal" style="margin-top:1rem">
+        <div class="result-card-header" style="cursor:pointer;border-left:3px solid #e87c2a" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+          <div class="card-title">⚠️ AI ответил в свободном формате — нажми чтобы увидеть</div>
+          <div style="font-size:0.75rem;color:#888;margin-top:0.2rem">Попробуй отправить запрос ещё раз — обычно помогает</div>
+        </div>
+        <div style="display:none;padding:1rem">
+          <div style="font-size:0.82rem;color:#ccc;white-space:pre-wrap;line-height:1.6">${escHtml(resultText)}</div>
+        </div>
+      </div>` : '';
+
+    panel.innerHTML = saveBlock + urgentBlock + screeningBlock + readymsgHtml + stepsHtml + renderPurchaseBlock() + renderPriceCalculator(data.protocol, data.program, recId) + consultantBlock + rawFallbackBlock + renderDecodeOutcomeBlock(recId, clientDesc);
     initAccordionCards(panel);
     calcUpdateTotals(recId);
 
