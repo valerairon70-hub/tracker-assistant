@@ -4263,6 +4263,12 @@
   .calc-progress-wrap { height: 5px; background: #252525; border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; }
   .calc-progress-bar { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 3px; transition: width 0.35s ease; }
   .calc-dist-targets { font-size: 0.72rem; color: #555; line-height: 1.55; }
+  .calc-unpriced { margin-top: 0.75rem; padding: 0.65rem 0.85rem; background: #1e1a10; border: 1px solid #3a3010; border-radius: 8px; }
+  .calc-unpriced-title { font-size: 0.73rem; color: #a08040; margin-bottom: 0.45rem; }
+  .calc-unpriced-item { display: inline-block; background: #2a2010; border: 1px solid #4a3820; border-radius: 4px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #d4a84b; margin: 0.15rem 0.15rem 0 0; }
+  body.light .calc-unpriced { background: #fffbf0; border-color: #f0d880; }
+  body.light .calc-unpriced-title { color: #907030; }
+  body.light .calc-unpriced-item { background: #fff8e0; border-color: #e0c060; color: #806020; }
   /* Light theme */
   body.light .calc-block { background: #fff8f0; border-color: #e8d4b0; border-left-color: #ff6b35; }
   body.light .calc-block-title { color: #2c1a0e; }
@@ -5283,6 +5289,7 @@
     { id:'safr',         name:'Сафрино',                           aliases:['сафрино','safr','шафран'],                   system:'ЦНС',   club:1978,  retail:2473,  pts:14  },
     { id:'gotukola',     name:'Готу Кола экстракт',                aliases:['готу кола','готу-кола','gotu','готукола','готу'],  system:'ЦНС', club:903, retail:1129, pts:6  },
     { id:'mindset',      name:'МайндСет',                          aliases:['майндсет','mindset','майнд'],                system:'ЦНС',   club:2580,  retail:3225,  pts:18  },
+    { id:'bprime',       name:'Би-Прайм Директ (30 стиков)',       aliases:['би-прайм','bi-prime','bi prime','bprime','витамины b','витамины б'], system:'ЦНС', club:1634, retail:2043, pts:11 },
     /* ── КМС ── */
     { id:'biluron',      name:'Би-Лурон (2×500 мл)',               aliases:['би-лурон','билурон','b-luron','гиалурон'],   system:'КМС',   club:19350, retail:24188, pts:135 },
     { id:'bosvellia',    name:'Корал Босвеллия (90 капс)',          aliases:['босвелия','босвеллия','bosvellia','корал босвел'], system:'КМС', club:1806, retail:2258, pts:13 },
@@ -5301,6 +5308,7 @@
     { id:'lecithin',     name:'Корал Лецитин',                     aliases:['лецитин','корал лецитин','соевый лецитин'],   system:'ПС',    club:1290,  retail:1634,  pts:8   },
     { id:'sunflower_l',  name:'Лецитин Подсолнечный',              aliases:['лецитин подсолнечный','подсолнечный лецитин','sunflower lecithin'], system:'ПС', club:1290, retail:1613, pts:8 },
     { id:'artichoke',    name:'Корал Артишок',                     aliases:['артишок'],                                   system:'ПС',    club:1548,  retail:1935,  pts:11  },
+    { id:'zaferan',      name:'Заферан (60 капс.)',                 aliases:['заферан','zaferan'],                         system:'ПС',    club:1376,  retail:1720,  pts:11  },
     { id:'colova_l',     name:'Коло-Вада Лайт (программа)',        aliases:['коло-вада лайт','коловада лайт'],             system:'ПС',    club:6622,  retail:8278,  pts:43  },
     { id:'colova_p',     name:'Коло-Вада Плюс (программа)',        aliases:['коло-вада плюс','коловада плюс'],             system:'ПС',    club:7663,  retail:9579,  pts:45  },
     { id:'colova_gr',    name:'Коло-Вада Грин (программа)',        aliases:['коло-вада грин','коловада грин'],             system:'ПС',    club:8514,  retail:10643, pts:50  },
@@ -5311,6 +5319,7 @@
     { id:'h500',         name:'H-500',                             aliases:['h-500','н-500'],                             system:'Лимфа', club:2752,  retail:3440,  pts:20  },
     { id:'oceanmin_s',  name:'Оушенмин (15 стиков)',              aliases:['оушенмин','oceanmin','ocean min','оушен мин'], system:'Лимфа', club:1634,  retail:2043,  pts:12  },
     { id:'oceanmin_l',  name:'Оушенмин (2×15 стиков)',            aliases:['оушенмин 2','оушенмин двойн','oceanmin 2'],   system:'Лимфа', club:3010,  retail:3763,  pts:22  },
+    { id:'limflow',      name:'ЛимФлоу (90 капс.)',                aliases:['лимфлоу','limflow','лим флоу'],               system:'Лимфа', club:1376,  retail:1720,  pts:10  },
     { id:'pentocan',    name:'ПентоКан (20 шип. таб.)',           aliases:['пентокан','пентакан','pentocan'],             system:'ССС',   club:1118,  retail:1398,  pts:8   },
     /* ── Кроветворная система ── */
     { id:'iron',         name:'Железо (60 капс.)',                  aliases:['железо','iron','хелатное железо'],           system:'КС',    club:946,   retail:1183,  pts:6   },
@@ -5321,7 +5330,10 @@
     { id:'selenium',     name:'Селен',                             aliases:['selenium'],                                  system:'ИС',    club:1118,  retail:1398,  pts:8   },
     { id:'protiviti',    name:'Противити Ультра',                  aliases:['противити','protivity'],                     system:'ИС',    club:3526,  retail:4408,  pts:25  },
     { id:'chlorella',    name:'Хлорелла',                          aliases:['хлорелл'],                                   system:'ИС',    club:2021,  retail:2527,  pts:14  },
-
+    { id:'colostrum',    name:'Колострум Плюс (120 капс.)',        aliases:['колострум','colostrum','молозиво'],           system:'ИС',    club:2666,  retail:3333,  pts:20  },
+    { id:'silvermax',    name:'Сильвер-Макс (118 мл)',             aliases:['сильвер-макс','silver-max','сильвер макс','silvermax','сильвер макс'], system:'ИС', club:1548, retail:1935, pts:11 },
+    /* ── Дыхательная ── */
+    { id:'licorice',     name:'Корал Солодка (100 капс.)',         aliases:['солодка','licorice','корал солодка'],         system:'ДС',    club:946,   retail:1183,  pts:6   },
     /* ── Эндокринная ── */
     { id:'tastyb',       name:'Тейсти Би (90 таб.)',               aliases:['тейсти би','тейсти','tasty b','tastyb','tasty-b','bi b'], system:'ЭДС', club:1290, retail:1613, pts:9 },
     { id:'lipostick',    name:'Липостик Фит (60 стиков)',          aliases:['липостик','lipostick'],                      system:'ЭДС',   club:6450,  retail:8067,  pts:45  },
@@ -5337,6 +5349,18 @@
     { id:'hydramax_p',   name:'ГидраМакс Плюс',                   aliases:['гидрамакс плюс'],                            system:'Лимфа', club:10062, retail:12578, pts:70  },
     { id:'pec_kms',      name:'Рикавер (ПЭК КМС)',                aliases:['рикавер'],                                   system:'КМС',   club:11266, retail:14083, pts:78  },
     { id:'pec_pns',      name:'Здоровый Старт (ПЭК ПНС)',         aliases:['здоровый старт'],                            system:'ПНС',   club:6493,  retail:8117,  pts:45  },
+    { id:'nutripec',     name:'Нутрипэк (ПЭК КС)',                aliases:['нутрипэк','nutripec','nutripak'],             system:'КС',    club:7740,  retail:9675,  pts:54  },
+    /* ── Только название (цену уточнить на сайте CC) ── */
+    { id:'burdock',      name:'Корал Бурдок Рут',    aliases:['бурдок рут','бурдок','burdock'],                  system:'ПС',   noPrice:true },
+    { id:'blkwalnut',    name:'Корал Черный Орех',   aliases:['черный орех','чёрный орех','black walnut'],       system:'ДС',   noPrice:true },
+    { id:'paudarco',     name:'КМД с Селеном',       aliases:['кмд с селен','муравьиного дерева','pau d'],       system:'ИС',   noPrice:true },
+    { id:'parafight',    name:'ПараФайт',             aliases:['парафайт','para fight','parafight'],              system:'ПС',   noPrice:true },
+    { id:'fundetox',     name:'Фандетокс',            aliases:['фандетокс','fundetox'],                          system:'ПС',   noPrice:true },
+    { id:'garlic_ext',   name:'Экстракт Чеснока',    aliases:['экстракт чеснока','чеснок','garlic'],             system:'ССС',  noPrice:true },
+    { id:'lipocurk',     name:'Липосомальный Куркумин', aliases:['куркумин','липосомальный куркумин'],           system:'ССС',  noPrice:true },
+    { id:'bikurung',     name:'Би-Курунга',           aliases:['би-курунга','бикурунга','курунга'],               system:'ПС',   noPrice:true },
+    { id:'kelp',         name:'Корал Келп',           aliases:['корал келп','kelp'],                              system:'ЭДС',  noPrice:true },
+    { id:'catclaw',      name:'Кошачий Коготь',       aliases:['кошачий коготь','cat claw'],                     system:'ИС',   noPrice:true },
   ];
 
   const calcState = {};
@@ -7046,9 +7070,23 @@
     const lower = text.toLowerCase();
     const found = [], seen = new Set();
     for (const p of PRODUCTS_DB) {
+      if (p.noPrice) continue;
       if (seen.has(p.id)) continue;
       const terms = [p.name, ...p.aliases].map(s => s.toLowerCase()).filter(Boolean);
       if (terms.some(t => lower.includes(t))) { found.push(p.id); seen.add(p.id); }
+    }
+    return found;
+  }
+
+  function calcDetectUnpriced(text) {
+    if (!text) return [];
+    const lower = text.toLowerCase();
+    const found = [], seen = new Set();
+    for (const p of PRODUCTS_DB) {
+      if (!p.noPrice) continue;
+      if (seen.has(p.id)) continue;
+      const terms = [p.name, ...p.aliases].map(s => s.toLowerCase()).filter(Boolean);
+      if (terms.some(t => lower.includes(t))) { found.push(p.name); seen.add(p.id); }
     }
     return found;
   }
@@ -7079,6 +7117,7 @@
   function renderPriceCalculator(protocolText, programText, recId) {
     const combined = (protocolText || '') + ' ' + (programText || '');
     const detected = calcDetectProducts(combined);
+    const unpriced = calcDetectUnpriced(combined);
     calcState[recId] = {};
     detected.forEach(id => { calcState[recId][id] = 1; });
 
@@ -7095,9 +7134,15 @@
 
     const selectOpts = [...PRODUCTS_DB]
       .sort((a, b) => a.name.localeCompare(b.name, 'ru'))
-      .filter(p => !detected.includes(p.id))
+      .filter(p => !p.noPrice && !detected.includes(p.id))
       .map(p => `<option value="${p.id}">${p.name} — ${p.club.toLocaleString('ru')} ₽</option>`)
       .join('');
+
+    const unpricedHtml = unpriced.length > 0 ? `
+      <div class="calc-unpriced">
+        <div class="calc-unpriced-title">📋 Тоже в протоколе — цену уточни на сайте Coral Club:</div>
+        ${unpriced.map(n => `<span class="calc-unpriced-item">${n}</span>`).join('')}
+      </div>` : '';
 
     return `<div class="calc-block" id="calc-block-${recId}">
       <div class="calc-block-title">💰 Стоимость набора</div>
@@ -7123,6 +7168,7 @@
         <div class="calc-progress-wrap"><div class="calc-progress-bar" id="calc-bar-${recId}" style="width:0%"></div></div>
         <div class="calc-dist-targets" id="calc-targets-${recId}"></div>
       </div>
+      ${unpricedHtml}
     </div>`;
   }
 
