@@ -7144,8 +7144,13 @@
         ${unpriced.map(n => `<span class="calc-unpriced-item">${n}</span>`).join('')}
       </div>` : '';
 
-    return `<div class="calc-block" id="calc-block-${recId}">
-      <div class="calc-block-title">💰 Стоимость набора</div>
+    const calcCardId = `calc-card-${recId}`;
+    return `<div class="calc-block decode-collapsed" id="${calcCardId}">
+      <div class="calc-block-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="toggleDecodeCard('${calcCardId}')">
+        <span>💰 Стоимость набора</span>
+        <button class="decode-toggle-btn" style="margin-left:8px">▼</button>
+      </div>
+      <div class="decode-body-wrap">
       <div class="calc-note">На 1 месяц · клубная цена на 20% ниже розничной</div>
       <div id="calc-rows-${recId}">${rowsHtml}</div>
       <div class="calc-add-row">
@@ -7169,6 +7174,7 @@
         <div class="calc-dist-targets" id="calc-targets-${recId}"></div>
       </div>
       ${unpricedHtml}
+      </div>
     </div>`;
   }
 
@@ -7374,13 +7380,19 @@
       </div>` : '';
 
     // Блок скрининга безопасности (показывается перед протоколом при первом контакте)
+    const screeningCardId = `screening-card-${recId}`;
     const screeningBlock = data.screening ? `
-      <div class="result-card card-screening" style="animation-delay:${data.urgent ? '0.07s' : '0s'}">
-        <div class="result-card-header">
+      <div class="result-card card-screening decode-collapsed" id="${screeningCardId}" style="animation-delay:${data.urgent ? '0.07s' : '0s'}">
+        <div class="result-card-header" style="cursor:pointer" onclick="toggleDecodeCard('${screeningCardId}')">
           <div class="card-title">🛡 Проверка перед протоколом</div>
-          <button class="btn-copy" data-copy="${escHtml(data.screening)}" onclick="copyText(this)">Скопировать</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="btn-copy" data-copy="${escHtml(data.screening)}" onclick="event.stopPropagation();copyText(this)">Скопировать</button>
+            <button class="decode-toggle-btn">▼</button>
+          </div>
         </div>
-        <div class="result-card-body">${renderText(data.screening)}</div>
+        <div class="decode-body-wrap">
+          <div class="result-card-body">${renderText(data.screening)}</div>
+        </div>
       </div>` : '';
 
     // Карточка "Готовое сообщение клиенту"
