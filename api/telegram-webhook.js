@@ -261,6 +261,40 @@ module.exports = async function handler(req, res) {
       return res.status(200).send('ok');
     }
 
+    // /mypassword — показать текущий пароль (только для владельца)
+    if (text === '/mypassword') {
+      if (!isOwner) {
+        await tgSend(chatId, '❌ Команда доступна только владельцу.');
+        return res.status(200).send('ok');
+      }
+      try {
+        const raw = await kvCmd('GET', 'partner:main:data');
+        if (!raw) {
+          await tgSend(chatId,
+            '🔑 Пароль ещё не менялся через бот.\n' +
+            'Твой текущий пароль — ACCESS_PASSWORD из Vercel.\n\n' +
+            'Чтобы перевести управление паролем в бот, отправь /repassword'
+          );
+        } else {
+          const passwords = await kvCmd('HGETALL', 'partners:passwords');
+          let ownerPassword = null;
+          if (Array.isArray(passwords)) {
+            for (let i = 0; i < passwords.length; i += 2) {
+              if (passwords[i + 1] === 'main') { ownerPassword = passwords[i]; break; }
+            }
+          }
+          if (ownerPassword) {
+            await tgSend(chatId, '🔑 Твой текущий пароль для входа:\n\n' + ownerPassword);
+          } else {
+            await tgSend(chatId, '⚠️ Пароль не найден. Отправь /repassword чтобы создать новый.');
+          }
+        }
+      } catch (err) {
+        await tgSend(chatId, '⚠️ Ошибка: ' + err.message);
+      }
+      return res.status(200).send('ok');
+    }
+
     // /analyze и /respond — подсказки режима
     if (text === '/analyze') {
       await tgSend(chatId, '📊 Режим анализа трекера.\nОтправь фото диаграммы — расшифрую и пришлю протокол.');
