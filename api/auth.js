@@ -17,6 +17,21 @@ function getEnvPartners(secret) {
   }).filter(Boolean);
 }
 
+async function checkHasRedisMain(kvUrl, kvToken) {
+  if (!kvUrl || !kvToken) return false;
+  try {
+    const res = await fetch(kvUrl, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(['EXISTS', 'partner:main:data'])
+    });
+    const data = await res.json();
+    return data.result === 1;
+  } catch {
+    return false;
+  }
+}
+
 async function findRedisPartner(password, secret) {
   const kvUrl   = process.env.KV_REST_API_URL;
   const kvToken = process.env.KV_REST_API_TOKEN;
@@ -84,7 +99,13 @@ module.exports = async function handler(req, res) {
   const accessPassword = process.env.ACCESS_PASSWORD;
   const testPassword   = process.env.TEST_PASSWORD;
   if (password === accessPassword) {
-    return res.status(200).json({ mode: 'main', token: makeToken('main', tokenSecret) });
+    const kvUrl   = process.env.KV_REST_API_URL;
+    const kvToken = process.env.KV_REST_API_TOKEN;
+    const mainInRedis = await checkHasRedisMain(kvUrl, kvToken);
+    if (!mainInRedis) {
+      return res.status(200).json({ mode: 'main', token: makeToken('main', tokenSecret) });
+    }
+    // Redis override exists — ACCESS_PASSWORD superseded, fall through to 401
   }
   if (testPassword && password === testPassword) {
     return res.status(200).json({ mode: 'test', token: makeToken('test', tokenSecret) });

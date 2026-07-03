@@ -238,6 +238,29 @@ module.exports = async function handler(req, res) {
       return res.status(200).send('ok');
     }
 
+    // /repassword — смена пароля владельца (только для владельца)
+    if (text === '/repassword') {
+      if (!isOwner) {
+        await tgSend(chatId, '❌ Команда доступна только владельцу.');
+        return res.status(200).send('ok');
+      }
+      try {
+        const newPassword = generatePassword();
+        await kvCmd('HSET', 'partners:passwords', newPassword, 'main');
+        await kvCmd('SET', 'partner:main:data', JSON.stringify({
+          name: 'Owner', created: Date.now(), active: true
+        }));
+        await tgSend(chatId,
+          '🔑 Новый пароль для входа:\n\n' + newPassword + '\n\n' +
+          'Старый пароль больше не работает.\n' +
+          'Сохрани этот пароль — он больше не отображается.'
+        );
+      } catch (err) {
+        await tgSend(chatId, '⚠️ Ошибка: ' + err.message);
+      }
+      return res.status(200).send('ok');
+    }
+
     // /analyze и /respond — подсказки режима
     if (text === '/analyze') {
       await tgSend(chatId, '📊 Режим анализа трекера.\nОтправь фото диаграммы — расшифрую и пришлю протокол.');
