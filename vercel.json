@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/analyze.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "api/clients.js": {
       "maxDuration": 15
@@ -13,7 +13,7 @@
       "maxDuration": 10
     },
     "api/telegram-webhook.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
   },
   "headers": [
