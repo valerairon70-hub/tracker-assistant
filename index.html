@@ -6365,10 +6365,15 @@
 
     try {
       const { personDesc, hints, channel, senderGender } = lastInviteContext;
+      const priorHistory = crmCurrentId ? (crmGet(crmCurrentId)?.dialogHistory || []) : [];
+      const conversationHistory = priorHistory
+        .filter(e => e.clientMessage && e.aiReply)
+        .slice(-3)
+        .map(e => ({ clientMessage: e.clientMessage, aiReply: e.aiReply }));
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'dialog', clientDesc: personDesc, healthHints: hints, channel, senderGender, clientMessage, token: localStorage.getItem('auth_token') })
+        body: JSON.stringify({ mode: 'dialog', clientDesc: personDesc, healthHints: hints, channel, senderGender, clientMessage, conversationHistory, token: localStorage.getItem('auth_token') })
       });
 
       const rawText = await res.text();
@@ -6378,7 +6383,7 @@
 
       renderDialogResults(data.result, resultsDiv);
       const dp = parseDialogResponse(data.result);
-      crmSaveDialogEntry(clientMessage, dp.objectionType);
+      crmSaveDialogEntry(clientMessage, dp.objectionType, data.result);
       if (isTestMode()) incrementTestCounter();
 
     } catch (err) {
@@ -6757,6 +6762,52 @@
   // ════════════════════════════════════════
   // ВКЛАДКА 2: РАСШИФРОВКА ТРЕКЕРА
   // ════════════════════════════════════════
+  // Отправляет одну часть расшифровки (client/protocol/extra) и возвращает накопленный текст ответа
+  async function streamDecodeRequest(body) {
+    let res;
+    try {
+      res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    } catch (fetchErr) {
+      throw new Error('Ошибка отправки запроса: ' + fetchErr.message);
+    }
+
+    if (!res.ok) {
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const data = await res.json();
+        throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
+      }
+      throw new Error('HTTP ' + res.status + ' — ответ сервера');
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let sseBuffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      sseBuffer += decoder.decode(value, { stream: true });
+      const lines = sseBuffer.split('\n');
+      sseBuffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const raw = line.slice(6).trim();
+        if (!raw) continue;
+        let evt;
+        try { evt = JSON.parse(raw); } catch(_) { continue; }
+        if (evt.error) throw new Error(evt.error + (evt.details ? ' | ' + evt.details : ''));
+        if (evt.text) fullText += evt.text;
+      }
+    }
+    return fullText;
+  }
+
   async function analyze() {
     const c1 = document.getElementById('c1').value.trim();
     const c2 = document.getElementById('c2').value.trim();
@@ -6782,79 +6833,30 @@
     setDecodeLoading(true);
 
     try {
-      let res;
-      try {
-        res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mode: 'decode',
-            images: trackerInputMode === 'image' ? uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })) : [],
-            prevImages: prevImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
-            complaints: [c1, c2, c3].filter(Boolean),
-            mainGoal: mainGoal || null,
-            stage,
-            readiness,
-            clientName,
-            clientGender,
-            trackerText: trackerText || null,
-            trackerProtocols: trackerProtocols || null,
-            trackerProtocolsText: trackerProtocolsText || null,
-            token: localStorage.getItem('auth_token')
-          })
-        });
-      } catch (fetchErr) {
-        throw new Error('Ошибка отправки запроса: ' + fetchErr.message);
+      const fullText = await streamDecodeRequest({
+        mode: 'decode',
+        images: trackerInputMode === 'image' ? uploadedImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })) : [],
+        prevImages: prevImages.map(img => ({ base64: img.base64, mimeType: img.mimeType })),
+        complaints: [c1, c2, c3].filter(Boolean),
+        mainGoal: mainGoal || null,
+        stage,
+        readiness,
+        clientName,
+        clientGender,
+        trackerText: trackerText || null,
+        trackerProtocols: trackerProtocols || null,
+        trackerProtocolsText: trackerProtocolsText || null,
+        token: localStorage.getItem('auth_token')
+      });
+
+      const parsed = parseDecodeResponse(fullText);
+      renderDecodeResults(parsed, [c1, c2, c3].filter(Boolean), clientName, fullText, clientGender);
+      if (isTestMode()) incrementTestCounter();
+      if (window.innerWidth < 720) {
+        setTimeout(() => {
+          document.getElementById('decode-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
       }
-
-      if (!res.ok) {
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-          const data = await res.json();
-          throw new Error((data.error || 'Ошибка сервера') + (data.details ? ' | ' + data.details : ''));
-        }
-        throw new Error('HTTP ' + res.status + ' — ответ сервера');
-      }
-
-      // Читаем SSE-стрим
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = '';
-      let sseBuffer = '';
-      let resultsRendered = false;
-
-      const finishRender = () => {
-        if (resultsRendered) return;
-        resultsRendered = true;
-        const parsed = parseDecodeResponse(fullText);
-        renderDecodeResults(parsed, [c1, c2, c3].filter(Boolean), clientName, fullText, clientGender);
-        if (isTestMode()) incrementTestCounter();
-        if (window.innerWidth < 720) {
-          setTimeout(() => {
-            document.getElementById('decode-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 300);
-        }
-      };
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        sseBuffer += decoder.decode(value, { stream: true });
-        const lines = sseBuffer.split('\n');
-        sseBuffer = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6).trim();
-          if (!raw) continue;
-          let evt;
-          try { evt = JSON.parse(raw); } catch(_) { continue; }
-          if (evt.error) throw new Error(evt.error + (evt.details ? ' | ' + evt.details : ''));
-          if (evt.text) fullText += evt.text;
-          if (evt.done) finishRender();
-        }
-      }
-      // Страховка: стрим закрылся без evt.done, но текст есть
-      if (!resultsRendered && fullText) finishRender();
 
     } catch (err) {
       alert('Ошибка: ' + err.message);
@@ -7453,7 +7455,6 @@
 
     // Внутренние карточки консультанта
     const internalDefs = [
-      { icon: '🗺', title: 'Карта здоровья — 12 систем',       content: data.systems,    copyable: false, downloadable: false },
       { icon: '🔍', title: 'Первопричина — главный инсайт',   content: data.rootcause,  copyable: false, downloadable: false },
       { icon: '💊', title: 'Протокол восстановления',          content: data.protocol,   copyable: true,  downloadable: true  },
       { icon: '⏰', title: 'Расписание приёма на день',        content: data.schedule,   copyable: true,  downloadable: false },
@@ -7941,11 +7942,11 @@
     }
   }
 
-  function crmSaveDialogEntry(clientMessage, objectionType) {
+  function crmSaveDialogEntry(clientMessage, objectionType, aiReply) {
     if (!crmCurrentId) return;
     const c = crmGet(crmCurrentId);
     if (!c) return;
-    const history = [...(c.dialogHistory || []), { date: Date.now(), clientMessage, objectionType: objectionType || '' }];
+    const history = [...(c.dialogHistory || []), { date: Date.now(), clientMessage, objectionType: objectionType || '', aiReply: aiReply || '' }];
     crmUpdate(crmCurrentId, { dialogHistory: history });
     if (document.getElementById('crm-card-panel').style.display !== 'none') {
       crmRenderCard(crmCurrentId);
