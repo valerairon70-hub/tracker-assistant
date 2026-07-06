@@ -7093,7 +7093,6 @@
       step1:        extract('шаг_1'),
       schedule:     extract('расписание_дня'),
       objections:   extract('возражения'),
-      logic:        extract('логика'),
       altProtocol:  extract('альтернатива_протокола'),
       water:        extract('вода'),
       screening:    extract('скрининг')
@@ -7499,8 +7498,7 @@
       { icon: '🥗', title: 'Коррекция питания',                content: data.nutrition,  copyable: true,  downloadable: false },
       { icon: '🏃', title: 'Дополнительные практики',          content: data.practices,  copyable: true,  downloadable: false },
       { icon: '⚡', title: 'Возражения — как ответить',        content: data.objections, copyable: true,  downloadable: false },
-      { icon: '💡', title: 'Почему такой протокол',            content: data.logic,      copyable: false, downloadable: false },
-      { icon: '⚖️', title: 'Разбор протокола трекера + свой вариант', content: data.altProtocol, copyable: true, downloadable: false },
+      { icon: '⚖️', title: 'Разбор протоколов',                content: data.altProtocol, copyable: true, downloadable: false },
       { icon: '🔗', title: 'Причинно-следственная цепочка',    content: data.chain,      copyable: true,  downloadable: false },
       { icon: '💧', title: 'Вода и гидратация',                content: data.water,      copyable: false, downloadable: false },
     ].filter(c => c.content);
@@ -8819,8 +8817,7 @@ ${topObj.length > 0 ? '\nТоп возражений:\n' + topObj.map(([t,c]) =>
         { icon: '🔍', title: 'Первопричина',            content: parsed.rootcause,  copyable: false },
         { icon: '💊', title: 'Протокол',               content: parsed.protocol,   copyable: true  },
         { icon: '⚡', title: 'Возражения',              content: parsed.objections, copyable: true  },
-        { icon: '💡', title: 'Почему такой протокол',  content: parsed.logic,      copyable: false },
-        { icon: '⚖️', title: 'Разбор протокола трекера + свой вариант', content: parsed.altProtocol, copyable: true },
+        { icon: '⚖️', title: 'Разбор протоколов',      content: parsed.altProtocol, copyable: true },
         { icon: '🔗', title: 'Цепочка',                content: parsed.chain,      copyable: true  },
         { icon: '💧', title: 'Вода',                   content: parsed.water,      copyable: false },
       ].filter(c => c.content);
