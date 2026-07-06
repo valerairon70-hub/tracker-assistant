@@ -744,6 +744,27 @@
     .complaint-row input:focus { border-color: #ff6b35; }
     .complaint-row input::placeholder { color: #555; }
 
+    .field-hint { margin: 0.3rem 0 0.75rem; }
+    .field-hint summary {
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #ff6b35;
+      list-style: none;
+    }
+    .field-hint summary::-webkit-details-marker { display: none; }
+    .field-hint[open] summary { margin-bottom: 0.5rem; }
+    .field-hint-body {
+      background: #1a1a1a;
+      border: 1px dashed #3a3a3a;
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.82rem;
+      color: #ccc;
+      line-height: 1.5;
+    }
+    .field-hint-body ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+    .field-hint-body li { margin-bottom: 0.3rem; }
+
     /* ── Кнопка действия ── */
     .btn-action {
       width: 100%;
@@ -2617,6 +2638,8 @@
     body.light .complaint-row input { background: #fff8f0; border-color: #d4b890; color: #1a0f07; }
     body.light .complaint-row input:focus { border-color: #b8860b; }
     body.light .complaint-row input::placeholder { color: #c4a07a; }
+    body.light .field-hint summary { color: #b8860b; }
+    body.light .field-hint-body { background: #fff8f0; border-color: #d4b890; color: #4a3520; }
 
     body.light .btn-action:disabled { background: #c4b0a0; }
 
@@ -4599,6 +4622,19 @@
               <!-- Жалобы -->
               <div class="field-group">
                 <div class="field-label">Три главные жалобы или цели клиента</div>
+                <details class="field-hint">
+                  <summary>💡 Что спросить у клиента, прежде чем заполнять</summary>
+                  <div class="field-hint-body">
+                    Не просто «что болит» — а что стоит за этим. Так протокол получится точнее, а клиент сам осознает, зачем ему меняться:
+                    <ul>
+                      <li>Что вам сейчас больше всего не даёт делать эта проблема?</li>
+                      <li>Когда вы поняли, что это уже серьёзно?</li>
+                      <li>Что уже пробовали — что помогло, а что нет?</li>
+                      <li>Как думаете, почему проблема возвращается снова?</li>
+                      <li>Если ничего не менять ещё год — что изменится?</li>
+                    </ul>
+                  </div>
+                </details>
                 <div class="complaint-row">
                   <div class="complaint-num">1</div>
                   <input type="text" id="c1" placeholder="Жалоба или цель: постоянная усталость / похудеть на 8 кг">
