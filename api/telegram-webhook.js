@@ -214,6 +214,7 @@ module.exports = async function handler(req, res) {
           const slug = await kvCmd('HGET', 'partners:passwords', password);
           if (slug) {
             await kvCmd('SET', `tg:${userId}`, slug);
+            await kvCmd('SET', `partner:${slug}:tgchatid`, String(chatId));
             await tgSend(chatId,
               '✅ Доступ открыт!\n\n' +
               'Отправь мне фото диаграммы трекера → получишь анализ и протокол.\n' +

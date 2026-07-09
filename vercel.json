@@ -14,8 +14,17 @@
     },
     "api/telegram-webhook.js": {
       "maxDuration": 300
+    },
+    "api/cron-checkins.js": {
+      "maxDuration": 30
     }
   },
+  "crons": [
+    {
+      "path": "/api/cron-checkins",
+      "schedule": "0 5 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/",
