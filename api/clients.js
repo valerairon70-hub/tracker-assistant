@@ -317,6 +317,43 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── POST: зафиксировать базовую линию (Точка А) ──
+    if (action === 'set-baseline') {
+      const { clientId, mainConcern, mainConcernScore, secondConcern, secondConcernScore, goal } = req.body;
+      if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
+      const client = await kvGet(clientKey(ns, clientId));
+      if (!client) return res.status(404).json({ error: 'Клиент не найден' });
+      client.baseline = {
+        date: new Date().toISOString().slice(0, 10),
+        mainConcern: mainConcern || '',
+        mainConcernScore: mainConcernScore ? Number(mainConcernScore) : null,
+        secondConcern: secondConcern || '',
+        secondConcernScore: secondConcernScore ? Number(secondConcernScore) : null,
+        goal: goal || ''
+      };
+      await kvSet(clientKey(ns, clientId), client);
+      return res.status(200).json({ ok: true, baseline: client.baseline });
+    }
+
+    // ── POST: записать чек-ин ──
+    if (action === 'add-checkin') {
+      const { clientId, day, score, note } = req.body;
+      if (!clientId || !day) return res.status(400).json({ error: 'Не указан clientId или day' });
+      const client = await kvGet(clientKey(ns, clientId));
+      if (!client) return res.status(404).json({ error: 'Клиент не найден' });
+      if (!client.checkins) client.checkins = [];
+      client.checkins = client.checkins.filter(c => c.day !== Number(day));
+      client.checkins.push({
+        day: Number(day),
+        date: new Date().toISOString().slice(0, 10),
+        score: score ? Number(score) : null,
+        note: note || ''
+      });
+      client.checkins.sort((a, b) => a.day - b.day);
+      await kvSet(clientKey(ns, clientId), client);
+      return res.status(200).json({ ok: true });
+    }
+
     // ── POST: удалить клиента ──
     if (action === 'delete') {
       const { clientId } = req.body;
