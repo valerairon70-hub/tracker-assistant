@@ -2329,6 +2329,9 @@ ${thinkingReason && thinkingReason.trim() ? `Что сказал / как име
             } else if (evt.type === 'message_stop') {
               res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
               chatDoneSent = true;
+            } else if (evt.type === 'error') {
+              res.write(`data: ${JSON.stringify({ error: evt.error?.message || 'Ошибка Claude API' })}\n\n`);
+              chatDoneSent = true;
             }
           } catch (_) {}
         }

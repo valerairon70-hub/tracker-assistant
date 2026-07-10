@@ -7320,8 +7320,13 @@
       }
 
       assistantDiv.classList.remove('streaming');
-      if (assistantDiv._actionsEl) assistantDiv._actionsEl.style.display = 'flex';
-      if (responseText) chatHistory.push({ role: 'assistant', content: responseText });
+      if (responseText) {
+        if (assistantDiv._actionsEl) assistantDiv._actionsEl.style.display = 'flex';
+        chatHistory.push({ role: 'assistant', content: responseText });
+      } else {
+        const errEl = assistantDiv._textEl || assistantDiv;
+        if (!errEl.textContent.trim()) errEl.textContent = 'Нет ответа от сервера. Попробуй ещё раз.';
+      }
 
     } catch (err) {
       const errEl = assistantDiv._textEl || assistantDiv;
