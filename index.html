@@ -6279,6 +6279,27 @@
   let uploadedImages = [];
   let trackerInputMode = 'image';
 
+  // Слишком много изображений в одном анализе — Claude не успевает ответить
+  // за 300 секунд (лимит функции), и вместо ошибки получается тихий пустой
+  // результат. Ограничиваем на входе, а не постфактум.
+  const MAX_ANALYZE_IMAGES = 5;
+  function totalAnalyzeImages() {
+    return uploadedImages.length + prevImages.length + protocolImages.length;
+  }
+  function enforceImageLimit(files) {
+    const filesArr = Array.from(files).filter(Boolean);
+    const remaining = MAX_ANALYZE_IMAGES - totalAnalyzeImages();
+    if (remaining <= 0) {
+      alert(`Уже загружено максимум ${MAX_ANALYZE_IMAGES} изображений на один анализ. Больше нельзя — иначе Claude не успеет обработать всё и вы получите пустой результат. Удалите лишнее или отправьте остальное отдельным анализом.`);
+      return [];
+    }
+    if (filesArr.length > remaining) {
+      alert(`Лимит — ${MAX_ANALYZE_IMAGES} изображений на один анализ (иначе система не успевает обработать и результат будет пустым). Добавлю первые ${remaining} из ${filesArr.length} — остальное отправьте отдельным анализом.`);
+      return filesArr.slice(0, remaining);
+    }
+    return filesArr;
+  }
+
   window.setInputMode = function(mode) {
     trackerInputMode = mode;
     document.getElementById('mode-btn-image').classList.toggle('active', mode === 'image');
@@ -6333,7 +6354,7 @@
   });
 
   function handleFiles(files) {
-    Array.from(files).forEach(file => {
+    enforceImageLimit(files).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();
@@ -6421,7 +6442,7 @@
   });
 
   function handleFilesPrev(files) {
-    Array.from(files).forEach(file => {
+    enforceImageLimit(files).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();
@@ -6504,7 +6525,7 @@
   });
 
   function handleFilesProto(files) {
-    Array.from(files).forEach(file => {
+    enforceImageLimit(files).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();
