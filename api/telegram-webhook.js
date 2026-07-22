@@ -383,10 +383,8 @@ module.exports = async function handler(req, res) {
         created: Date.now(),
         active: true
       }));
-      // Fast reverse-lookup: password → slug (used by auth.js)
+      // Fast reverse-lookup: password → slug (единственный источник правды о списке партнёров)
       await kvCmd('HSET', 'partners:passwords', password, slug);
-      // Track all partners
-      await kvCmd('SADD', 'partners:index', slug);
 
       await tgPost('answerCallbackQuery', { callback_query_id: callbackId, text: '✅ Доступ выдан!' });
 

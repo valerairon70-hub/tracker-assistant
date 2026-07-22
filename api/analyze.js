@@ -1715,9 +1715,7 @@ function extractClaudeText(data) {
   return raw.replace(/<thinking>[\s\S]*?<\/thinking>/gi, '').trim();
 }
 
-function makeToken(mode, secret) {
-  return crypto.createHmac('sha256', secret).update(mode).digest('hex').slice(0, 32);
-}
+const { resolveSlugByToken } = require('./_partners');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -1736,45 +1734,7 @@ module.exports = async function handler(req, res) {
   if (tokenSecret) {
     const token = req.body?.token;
     if (!token) return res.status(401).json({ error: 'Доступ запрещён' });
-
-    // Проверяем legacy токены main/test
-    if (token === makeToken('main', tokenSecret)) {
-      validSlug = 'main';
-    } else if (token === makeToken('test', tokenSecret)) {
-      validSlug = 'test';
-    } else {
-      // Проверяем env PARTNERS
-      const envPartnersRaw = process.env.PARTNERS || '';
-      if (envPartnersRaw) {
-        for (const pair of envPartnersRaw.split(',')) {
-          const idx = pair.indexOf(':');
-          if (idx === -1) continue;
-          const slug = pair.slice(0, idx).trim();
-          if (slug && makeToken(slug, tokenSecret) === token) { validSlug = slug; break; }
-        }
-      }
-      // Проверяем Redis-партнёров (добавленных через Telegram-бота)
-      if (!validSlug) {
-        const kvUrl = process.env.KV_REST_API_URL;
-        const kvAuth = process.env.KV_REST_API_TOKEN;
-        if (kvUrl && kvAuth) {
-          try {
-            const r = await fetch(kvUrl, {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${kvAuth}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify(['SMEMBERS', 'partners:index'])
-            });
-            const { result: slugs } = await r.json();
-            if (Array.isArray(slugs)) {
-              for (const slug of slugs) {
-                if (makeToken(slug, tokenSecret) === token) { validSlug = slug; break; }
-              }
-            }
-          } catch { /* Redis недоступен — не блокируем */ }
-        }
-      }
-    }
-
+    validSlug = await resolveSlugByToken(token, tokenSecret);
     if (!validSlug) return res.status(401).json({ error: 'Доступ запрещён' });
   }
 

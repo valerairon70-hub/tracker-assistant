@@ -1,27 +1,4 @@
-const crypto = require('crypto');
-
-function makeToken(slug, secret) {
-  return crypto.createHmac('sha256', secret).update(slug).digest('hex').slice(0, 32);
-}
-
-function getPartnerSlugs(secret) {
-  const partners = [
-    { slug: 'main', token: makeToken('main', secret) },
-    { slug: 'test', token: makeToken('test', secret) },
-  ];
-  const raw = process.env.PARTNERS || '';
-  if (raw) {
-    raw.split(',').forEach(pair => {
-      const idx = pair.indexOf(':');
-      if (idx === -1) return;
-      const slug = pair.slice(0, idx).trim();
-      if (slug && !partners.find(p => p.slug === slug)) {
-        partners.push({ slug, token: makeToken(slug, secret) });
-      }
-    });
-  }
-  return partners;
-}
+const { resolveSlugByToken } = require('./_partners');
 
 async function kvCmd(...args) {
   const res = await fetch(process.env.KV_REST_API_URL, {
@@ -53,22 +30,6 @@ async function kvDel(key) {
 // Ключи с пространством имён
 function indexKey(ns)       { return `ns:${ns}:clients:index`; }
 function clientKey(ns, id)  { return `ns:${ns}:client:${id}`; }
-
-// Одноразовая миграция: если у main нет данных в новом формате — копируем из старого
-async function maybeMigrateMain(ns) {
-  if (ns !== 'main') return;
-  const existing = await kvGet(indexKey('main'));
-  if (existing !== null) return; // уже мигрировано
-  const oldIndex = await kvGet('clients:index');
-  if (!oldIndex || oldIndex.length === 0) return;
-  // Копируем индекс
-  await kvSet(indexKey('main'), oldIndex);
-  // Копируем каждого клиента
-  await Promise.all(oldIndex.map(async entry => {
-    const client = await kvGet(`client:${entry.id}`);
-    if (client) await kvSet(clientKey('main', entry.id), client);
-  }));
-}
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -110,16 +71,11 @@ module.exports = async function handler(req, res) {
   let ns = null;
   if (tokenSecret) {
     const token = req.method === 'GET' ? req.query?.token : req.body?.token;
-    const partners = getPartnerSlugs(tokenSecret);
-    const matched = partners.find(p => p.token === token);
-    if (!matched) return res.status(401).json({ error: 'Нет доступа' });
-    ns = matched.slug;
+    ns = await resolveSlugByToken(token, tokenSecret);
+    if (!ns) return res.status(401).json({ error: 'Нет доступа' });
   } else {
     ns = 'main'; // dev-режим без секрета
   }
-
-  // Одноразовая миграция данных main при первом обращении
-  await maybeMigrateMain(ns);
 
   const action = req.method === 'GET' ? req.query?.action : req.body?.action;
 
