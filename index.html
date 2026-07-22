@@ -7087,6 +7087,7 @@
     const decoder = new TextDecoder();
     let fullText = '';
     let sseBuffer = '';
+    let streamCompleted = false;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -7102,8 +7103,14 @@
         try { evt = JSON.parse(raw); } catch(_) { continue; }
         if (evt.error) throw new Error(evt.error + (evt.details ? ' | ' + evt.details : ''));
         if (evt.text) fullText += evt.text;
+        if (evt.done) streamCompleted = true;
       }
     }
+
+    if (!streamCompleted) {
+      throw new Error('Соединение оборвалось до конца ответа — вероятно, слишком много скриншотов в одном запросе или сложный кейс. Попробуйте отправить меньше файлов за раз (например, разделить на 2 запроса) или дождаться повторной попытки.');
+    }
+
     return fullText;
   }
 
