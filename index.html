@@ -6281,20 +6281,20 @@
 
   // Слишком много изображений в одном анализе — Claude не успевает ответить
   // за 300 секунд (лимит функции), и вместо ошибки получается тихий пустой
-  // результат. Ограничиваем на входе, а не постфактум.
-  const MAX_ANALYZE_IMAGES = 5;
-  function totalAnalyzeImages() {
-    return uploadedImages.length + prevImages.length + protocolImages.length;
-  }
-  function enforceImageLimit(files) {
+  // результат. Лимит отдельно по каждой зоне загрузки (не общая сумма) —
+  // диаграмма+мед.документы, сравнение до/после и протоколы решают разные
+  // задачи и не должны отнимать лимит друг у друга.
+  const ZONE_IMAGE_LIMITS = { main: 10, prev: 8, protocol: 12 };
+  function enforceImageLimit(files, zone, currentArr) {
+    const max = ZONE_IMAGE_LIMITS[zone];
     const filesArr = Array.from(files).filter(Boolean);
-    const remaining = MAX_ANALYZE_IMAGES - totalAnalyzeImages();
+    const remaining = max - currentArr.length;
     if (remaining <= 0) {
-      alert(`Уже загружено максимум ${MAX_ANALYZE_IMAGES} изображений на один анализ. Больше нельзя — иначе Claude не успеет обработать всё и вы получите пустой результат. Удалите лишнее или отправьте остальное отдельным анализом.`);
+      alert(`Уже загружено максимум ${max} изображений в эту зону. Больше нельзя — иначе Claude не успеет обработать всё и вы получите пустой результат. Удалите лишнее или отправьте остальное отдельным анализом.`);
       return [];
     }
     if (filesArr.length > remaining) {
-      alert(`Лимит — ${MAX_ANALYZE_IMAGES} изображений на один анализ (иначе система не успевает обработать и результат будет пустым). Добавлю первые ${remaining} из ${filesArr.length} — остальное отправьте отдельным анализом.`);
+      alert(`Лимит для этой зоны — ${max} изображений (иначе система не успевает обработать и результат будет пустым). Добавлю первые ${remaining} из ${filesArr.length} — остальное отправьте отдельным анализом.`);
       return filesArr.slice(0, remaining);
     }
     return filesArr;
@@ -6354,7 +6354,7 @@
   });
 
   function handleFiles(files) {
-    enforceImageLimit(files).forEach(file => {
+    enforceImageLimit(files, 'main', uploadedImages).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();
@@ -6442,7 +6442,7 @@
   });
 
   function handleFilesPrev(files) {
-    enforceImageLimit(files).forEach(file => {
+    enforceImageLimit(files, 'prev', prevImages).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();
@@ -6525,7 +6525,7 @@
   });
 
   function handleFilesProto(files) {
-    enforceImageLimit(files).forEach(file => {
+    enforceImageLimit(files, 'protocol', protocolImages).forEach(file => {
       if (!file) return;
       if (file.type === 'application/pdf') {
         const reader = new FileReader();

@@ -3150,7 +3150,8 @@ ${trackerProtocolsText}` : ''}
         max_tokens: 16000,
         stream: true,
         system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral', ttl: '1h' } }],
-        messages: [{ role: 'user', content: contentBlocks }]
+        messages: [{ role: 'user', content: contentBlocks }],
+        output_config: { effort: 'medium' }
       })
     });
 
