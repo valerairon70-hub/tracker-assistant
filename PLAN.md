@@ -1195,7 +1195,7 @@ Cron запускается в 08:00 МСК (05:00 UTC) ежедневно. Пр
 - [x] `index.html` — `renderCheckinHistory()` реализована (~строка 10217) — таблица чек-инов с дельтой от baseline уже работает
 
 #### После деплоя
-- [ ] Добавить `CRON_SECRET` в Vercel Dashboard → Settings → Environment Variables
+- [x] `CRON_SECRET` добавлен в Vercel (2026-07-25) — проверено: без секрета `/api/cron-checkins` отвечает 401, с секретом 200. Vercel Cron сам подставляет `Authorization: Bearer` для переменной с этим именем — донастройка расписания не нужна.
 - [ ] Протестировать: создать клиента с `protocolStartDate` = 3 дня назад → запустить cron вручную через curl → проверить что пришло Telegram-уведомление
 - [ ] Проверить что baseline сохраняется и отображается в карточке
 
