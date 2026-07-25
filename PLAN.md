@@ -668,10 +668,10 @@ ratelimit:analyze:{token}    STRING (TTL 1ч) → счётчик запросо�
 - [x] `vercel.json` — добавлены конфиги для новых API-функций
 
 #### После деплоя (ручные шаги)
-- [ ] Создать бота через @BotFather → получить `TG_BOT_TOKEN`
-- [ ] Получить свой `TG_OWNER_CHAT_ID` (написать боту /start → getUpdates)
-- [ ] Добавить в Vercel env vars: `TG_BOT_TOKEN`, `TG_OWNER_CHAT_ID`, `TG_WEBHOOK_SECRET`
-- [ ] Зарегистрировать webhook: `curl "https://api.telegram.org/bot{TOKEN}/setWebhook?url=https://your-app.vercel.app/api/telegram-webhook&secret_token={TG_WEBHOOK_SECRET}"`
+- [x] Бот создан, `TG_BOT_TOKEN` получен — подтверждено (2026-07-25): переменная в Vercel production (пометка «не сделано» устарела — тот же паттерн док-дрифта)
+- [x] `TG_OWNER_CHAT_ID` получен и настроен — подтверждено (2026-07-25), стоит в Vercel production
+- [x] `TG_BOT_TOKEN`, `TG_OWNER_CHAT_ID`, `TG_WEBHOOK_SECRET` — все три в Vercel production (проверено `vercel env ls`)
+- [x] Webhook зарегистрирован и работает — бот использовался живьём в этой же сессии (`/mypassword`, одобрение заявок через `/request-access`)
 
 #### Phase 6.2 — Будущее (не реализовано)
 - [ ] Напоминание через 6ч если заявка не обработана
@@ -750,11 +750,8 @@ ratelimit:analyze:{token}    STRING (TTL 1ч) → счётчик запросо�
 - В блоке "Для дистрибьютора" — сигнал: паразитарный фон возможен, рассмотреть Парашилд позже
 
 ### Фаза 7Б — Настройка бота (ручные шаги, 30 минут)
-- [ ] Создать бота через @BotFather → получить `TG_BOT_TOKEN`
-- [ ] Получить свой `TG_OWNER_CHAT_ID` (написать боту /start → getUpdates)
-- [ ] Добавить в Vercel: `TG_BOT_TOKEN`, `TG_OWNER_CHAT_ID`, `TG_WEBHOOK_SECRET`
-- [ ] Зарегистрировать webhook: одна curl-команда после деплоя
-- [ ] Проверить: отправить боту скриншот трекера → получить 3 сообщения
+- [x] Бот создан и настроен — подтверждено (2026-07-25), см. идентичный чек-лист выше (Фаза 6, «После деплоя»), эта копия описывает те же переменные/webhook, устарела так же
+- [ ] Живой тест: отправить боту скриншот трекера → убедиться, что приходят 3 отдельных сообщения (не проверено в этой сессии — нужен реальный тест с вашей стороны)
 
 ---
 
