@@ -1775,6 +1775,7 @@ module.exports = async function handler(req, res) {
     clientName, clientGender,
     trackerText,
     trackerProtocols, trackerProtocolsText,
+    previousSessions,
     rejectionReason, thinkingReason,
     refinement, previousResult,
     clientMessage, conversationHistory,
@@ -3068,6 +3069,11 @@ ${hasPrev
     : `Диаграмма трекера не предоставлена. Клиент обратился с запросом/целью без прохождения трекера. Работай только на основе жалоб и целей клиента. В блоке <системы> укажи предположительно затронутые системы на основе жалоб. В скрипте предложи клиенту пройти трекер для точной картины.`
 }
 ${trackerText ? `\n═══ ДАННЫЕ ТРЕКЕРА (текст) ═══\n${trackerText}\n═══════════════════════════` : ''}
+${(Array.isArray(previousSessions) && previousSessions.length > 0) ? `
+═══ ИСТОРИЯ КЛИЕНТА (${previousSessions.length} предыдущ${previousSessions.length > 1 ? 'их сессии' : 'ая сессия'}) ═══
+${previousSessions.map((s, i) => `— Сессия от ${s.date}:\n  Системы: ${s.systems || '(не указано)'}\n  Причина: ${s.reason || '(не указано)'}\n  Протокол: ${s.protocol || '(не указано)'}`).join('\n')}
+═══════════════════════════
+ВАЖНО: это тот же клиент, повторное обращение. Не подавай уже известные из истории находки как новое открытие. В <причина> и <цепочка> явно сравни текущую картину с историей: что изменилось (улучшение/ухудшение/без изменений), а не повторяй прошлый разбор заново.` : ''}
 
 ${((trackerProtocols && trackerProtocols.length > 0) || trackerProtocolsText) ? `
 ═══ ПРОТОКОЛЫ ТРЕКЕРА (рекомендации автора метода) ═══

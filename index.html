@@ -7159,6 +7159,25 @@
 
     setDecodeLoading(true);
 
+    // Если анализ привязан к существующему клиенту — подтягиваем его последние
+    // сессии коротким текстом (не картинками), чтобы Claude видел динамику,
+    // а не начинал каждый раз "с чистого листа".
+    const linkedClientId = document.getElementById('decode-linked-client')?.value || '';
+    let previousSessions = null;
+    if (linkedClientId) {
+      try {
+        const histRes = await fetch(`/api/clients?action=get&id=${encodeURIComponent(linkedClientId)}&token=${encodeURIComponent(localStorage.getItem('auth_token') || '')}`);
+        const histData = await histRes.json();
+        const sessions = histData?.client?.sessions || [];
+        previousSessions = sessions.slice(-2).map(s => ({
+          date: s.date,
+          systems: (s.systems || '').slice(0, 800),
+          reason: (s.reason || '').slice(0, 800),
+          protocol: (s.protocol || '').slice(0, 800)
+        }));
+      } catch (_) { /* история не критична — продолжаем без неё */ }
+    }
+
     try {
       const fullText = await streamDecodeRequest({
         mode: 'decode',
@@ -7173,6 +7192,7 @@
         trackerText: trackerText || null,
         trackerProtocols: trackerProtocols || null,
         trackerProtocolsText: trackerProtocolsText || null,
+        previousSessions: previousSessions && previousSessions.length > 0 ? previousSessions : null,
         token: localStorage.getItem('auth_token')
       });
 
@@ -7699,7 +7719,7 @@
     const recId = genId();
     const clientDesc = (clientName ? clientName + ' — ' : '') + 'Жалобы: ' + complaints.join(', ');
     if (resultText) pendingResults[recId] = { resultText, type: 'decode', clientDesc };
-    pendingDecodes[recId] = { clientName: clientName || '', clientGender: clientGender || 'female', complaints, resultText: resultText || '', protocol: data.protocol || '', systems: data.rootcause || data.systems || '' };
+    pendingDecodes[recId] = { clientName: clientName || '', clientGender: clientGender || 'female', complaints, resultText: resultText || '', protocol: data.protocol || '', systems: data.systems || '', reason: data.reason || data.rootcause || '', chain: data.chain || '', screening: data.screening || '', altProtocol: data.altProtocol || '' };
 
     const saveBlock = renderSaveToClientsBlock(recId, clientName);
 
@@ -7954,6 +7974,10 @@
           result: pd.resultText.slice(0, 20000),
           protocol: pd.protocol || '',
           systems: pd.systems || '',
+          reason: pd.reason || '',
+          chain: pd.chain || '',
+          screening: pd.screening || '',
+          altProtocol: pd.altProtocol || '',
           sessionType: 'tracker'
         })
       });

@@ -121,7 +121,7 @@ module.exports = async function handler(req, res) {
 
     // ── POST: добавить сессию ──
     if (action === 'add-session') {
-      const { clientId, complaints, stage, mood, result, protocol, systems, sessionType } = req.body;
+      const { clientId, complaints, stage, mood, result, protocol, systems, reason, chain, screening, altProtocol, sessionType } = req.body;
       if (!clientId) return res.status(400).json({ error: 'Не указан clientId' });
 
       const client = await kvGet(clientKey(ns, clientId));
@@ -139,6 +139,10 @@ module.exports = async function handler(req, res) {
         result: result || '',
         protocol: protocol || '',
         systems: systems || '',
+        reason: reason || '',
+        chain: chain || '',
+        screening: screening || '',
+        altProtocol: altProtocol || '',
         type: sessionType || 'tracker'
       };
 
