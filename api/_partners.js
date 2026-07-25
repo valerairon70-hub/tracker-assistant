@@ -43,7 +43,11 @@ async function resolveSlugByPassword(password) {
     if (slug && await isActive(slug)) return slug;
   } catch { /* Redis недоступен */ }
 
-  // Бутстрап: main ещё ни разу не мигрировал в Redis — разрешаем ACCESS_PASSWORD
+  // Аварийный доступ (не бутстрап — main уже зарегистрирован в Redis с 2026-07-22).
+  // Эта ветка срабатывает только если Redis полностью недоступен (kvCmd выше
+  // выбросил, GET здесь тоже упадёт и .catch вернёт null) — тогда владелец
+  // всё равно может войти по статичному паролю из env. Решение зафиксировано
+  // в PLAN.md (Фаза 14/16): держим как disaster-recovery, не удаляем.
   if (password === process.env.ACCESS_PASSWORD) {
     const mainData = await kvCmd('GET', 'partner:main:data').catch(() => null);
     if (!mainData) return 'main';
